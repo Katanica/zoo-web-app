@@ -1,10 +1,10 @@
-package com.web.zoo;
+package zoo_web_app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ZooApplicationTests {
+class ZooWebAppApplicationTests {
 
 	@Test
 	void contextLoads() {

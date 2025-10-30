@@ -1,13 +1,13 @@
-package com.web.zoo;
+package zoo_web_app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ZooApplication {
+public class ZooWebAppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ZooApplication.class, args);
+		SpringApplication.run(ZooWebAppApplication.class, args);
 	}
 
 }
