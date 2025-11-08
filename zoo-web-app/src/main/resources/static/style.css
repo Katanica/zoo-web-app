@@ -5,6 +5,7 @@
     box-sizing: border-box;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: rgb(26, 26, 26);
+    list-style: none;
 }
 
 body {
@@ -12,14 +13,15 @@ body {
 }
 
 #section-2 {
-    height: 85%;
     display: flex;
 }
 
 nav {
     background-color: aquamarine;
     width: 15%;
+    height: 85%;
     text-align: center;
+    position: fixed;
 }
 
 nav ul {
@@ -36,6 +38,7 @@ nav ul li {
     width: 90%;
 }
 
+
 nav ul li:hover {
     background-color: rgba(0, 0, 0, 0.09);
     cursor: pointer;
@@ -44,23 +47,30 @@ nav ul li:hover {
 
 main {
     background-color: beige;
-    width: 85%;
+    width: 100%;
+    min-height: 85vh;
     padding: 50px 75px;
+    padding-left: 45vh;
 }
 
 header {
+    position: fixed;
     background-color: gray;
     text-align: center;
     display: flex;
     height: 15%;
+    width: 100%;
     flex-direction: column;
     justify-content: center;
 }
 
-main form input {
-    margin-bottom: 50px;
-    margin-top: 10px;
-    padding: 5px;
+#header-container {
+    height: 15%;
+}
+
+.manji-input {
+    margin: 20px 0 ;
+    padding: 10px;
     border-radius: 10px;
     border: none;
 }
@@ -70,13 +80,44 @@ main form input {
     display: inline-block;
 }
 
-main button {
+.veci-button {
     padding: 10px;
     border-radius: 10px;
     transition: 0.05s;
 }
 
-main button:hover {
+.veci-button:hover {
     cursor: pointer;
     background-color: rgb(216, 216, 216);
+}
+
+#lista {
+    background-color: blueviolet;
+    width: 50vw;
+    margin-top: 50px;
+}
+
+.x-button {
+    width: 25px;
+    height: 25px;
+    border-radius: 7px;
+}
+.input-cont{
+    background-color: gray;
+    margin-bottom: 50px;
+}
+.karakteristika {
+    background-color: red;
+    padding: 7px;
+    border-radius: 7px;
+    margin-right: 5px;
+}
+.nastamba-cont{
+    background-color: white;
+    padding: 20px 50px;
+    margin-top: 20px;
+    display: flex;
+}
+#nastamba-delete-btn{
+    height: 50px;
 }

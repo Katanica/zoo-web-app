@@ -1,7 +1,9 @@
-package zoo_web_app.Zoo;
+package zoo_web_app.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import zoo_web_app.Entity.Zoo;
+import zoo_web_app.Repository.ZooRepository;
 
 import java.util.Optional;
 

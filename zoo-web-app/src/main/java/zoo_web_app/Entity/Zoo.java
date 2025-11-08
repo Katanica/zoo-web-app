@@ -1,12 +1,11 @@
-package zoo_web_app.Zoo;
+package zoo_web_app.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 // automatski definira get-ere, set-ere...
@@ -21,4 +20,7 @@ public class Zoo {
     private String adresa;
     private String telefon;
     private String mail;
+
+    @OneToMany(mappedBy ="zoo")
+    private List<Nastamba> nastambe;
 }
