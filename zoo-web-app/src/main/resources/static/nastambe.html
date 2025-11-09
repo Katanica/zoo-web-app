@@ -1,221 +1,372 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="hr">
 <head>
-    <title>ZOO WEB APP</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZOO WEB APP - Nastambe</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: 0.3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .back-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        .manji-input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .veci-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            transition: 0.3s;
+        }
+
+        .veci-button:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        .x-button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        .karakteristika {
+            display: inline-flex;
+            align-items: center;
+            background: var(--light);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            margin: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group {
+            margin: 0.5rem 0;
+        }
+
+        .checkbox-group label {
+            display: block;
+            margin: 0.4rem 0;
+            font-size: 0.95rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        .nastamba-card {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary);
+            position: relative;
+        }
+
+        .delete-nastamba {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .delete-nastamba:hover {
+            background: #c0392b;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <header>
-        <h1>ZOO WEB APP - PODACI O NASTAMBAMA</h1>
-    </header>
-    <div id="header-container">
+
+<header>
+    <a href="index.html" class="back-btn">POČETNA</a>
+    <h1>ZOO WEB APP - PODACI O NASTAMBAMA</h1>
+</header>
+
+<div class="container">
+
+    <!-- DODAJ KARAKTERISTIKU -->
+    <div class="card">
+        <h3>Dodaj karakteristiku</h3>
+        <input id="input-karakteristike" class="manji-input" type="text" placeholder="npr. Suncano, Veliko...">
+        <button onclick="dodajKarakteristiku()" class="veci-button">Dodaj</button>
+        <div id="lista-karakteristika" style="margin-top: 1rem;"></div>
     </div>
-    <div id="section-2">
-        <nav>
-            <ul>
-                <li>POCETNA</li>
-                <a href="zoo.html" target="_self">
-                    <li>ZOO</li>
-                </a>
-                <a href="Zivotinja.html" target="_self">
-                    <li>Zivotinje</li>
-                </a>
-                <a href="" target="_self">
-                    <li>Nastambe</li>
-                </a>
-                <a href="" target="_self">
-                    <li>Radnici</li>
-                </a>
-                <a href="" target="_self">
-                    <li>Obaveze</li>
-                </a>
-                <a href="" target="_self">
-                    <li>Posjete</li>
-                </a>
-                <a href="" target="_self">
-                    <li>Incidenti</li>
-                </a>
-            </ul>
-        </nav>
-        <main>
-            <div class="input-cont" id="dodaj-karakteristiku-cont">
-                <h3>Dodaj karakteristiku:</h3>
-                <input id="input-karakteristike" class="manji-input" type="text">
-                <button id="dodaj-karakteristiku-btn" onClick="dodajKarakteristiku()"
-                    class="veci-button">Dodaj</button><br>
-                <div id="lista-karakteristika">
-                    <span class="karakteristika">Suncano <button class="x-button">x</button></span>
-                </div>
 
-            </div>
-            <div class="input-cont" id="dodaj-nastambu-cont">
-                <h3>Dodaj nastambu:</h3>
-                <h4>Oznaka:</h4> <input type="text" id="input-oznake" class="manji-input"><br>
-                <h4>Geometrija:</h4> <input type="text" id="input-geometrije" class="manji-input"><br>
-                <h4>Karakteristike:</h4>
-                <div id="ponuda-karakteristika">
-
-                </div>
-                <br><h4>Zivotinje:</h4>
-                <div id="ponuda-zivotinja">
-
-                </div>
-                <br><br>
-                <button id="dodaj-nastambu-btn" onClick="dodajNastambu()" class="veci-button">Dodaj</button><br>
-
-            </div>
-            <div class="input-cont" id="trenutne-nastambe">
-                <h3>Trenutne nastambe:</h3>
-            </div>
-        </main>
+    <!-- DODAJ NASTAMBU -->
+    <div class="card">
+        <h3>Dodaj nastambu</h3>
+        <h4>Oznaka:</h4>
+        <input type="text" id="input-oznake" class="manji-input" placeholder="npr. A1">
+        <h4>Geometrija:</h4>
+        <input type="text" id="input-geometrije" class="manji-input" placeholder="npr. 10x15m">
+        <h4>Karakteristike:</h4>
+        <div id="ponuda-karakteristika" class="checkbox-group"></div>
+        <h4>Životinje:</h4>
+        <div id="ponuda-zivotinja" class="checkbox-group"></div>
+        <br>
+        <button onclick="dodajNastambu()" class="veci-button">Dodaj nastambu</button>
     </div>
-    <script>
-        const API_URL_K = "http://localhost:8080/karakteristike";
-        const API_URL_N = "http://localhost:8080/nastamba";
 
-        async function prikaziKarakteristike() {
-            const rez = await fetch(API_URL_K);
-            const rezJSON = await rez.json();
+    <!-- TRENUTNE NASTAMBE -->
+    <div class="card full-width">
+        <h3>Trenutne nastambe</h3>
+        <div id="trenutne-nastambe"></div>
+    </div>
 
-            const lista = document.getElementById("lista-karakteristika");
-            const div = document.getElementById("ponuda-karakteristika");
-            lista.innerHTML = "";
-            div.innerHTML = "";
+</div>
 
-            rezJSON.forEach(k => {
-                const span = document.createElement("span");
-                span.className = "karakteristika";
-                span.textContent = `${k.naziv_karakteristike}`;
+<script>
+    const API_URL_K = "http://localhost:8080/karakteristike";
+    const API_URL_N = "http://localhost:8080/nastamba";
+    const API_URL_Z = "http://localhost:8080/api/zivotinje";
 
+    async function prikaziKarakteristike() {
+        const res = await fetch(API_URL_K);
+        const data = await res.json();
 
-                const label = document.createElement("label");
-                const karak = document.createElement("input");
-                label.textContent = `   ${k.naziv_karakteristike}`;
-                karak.type = "checkbox";
-                karak.value = `${k.id_karakteristike}`;
-                label.append(karak)
+        const lista = document.getElementById("lista-karakteristika");
+        const ponuda = document.getElementById("ponuda-karakteristika");
+        lista.innerHTML = "";
+        ponuda.innerHTML = "";
 
-                const button = document.createElement("button")
-                button.className = "x-button";
-                button.innerHTML = "x";
-                button.onclick = async () => {
-                    await fetch(`${API_URL_K}/${k.id_karakteristike}`, { method: "DELETE" });
-                    await prikaziKarakteristike();
-                }
+        data.forEach(k => {
+            // Lista za brisanje
+            const span = document.createElement("span");
+            span.className = "karakteristika";
+            span.innerHTML = `${k.naziv_karakteristike} `;
+            const btn = document.createElement("button");
+            btn.className = "x-button";
+            btn.innerHTML = "×";
+            btn.onclick = async () => {
+                await fetch(`${API_URL_K}/${k.id_karakteristike}`, { method: "DELETE" });
+                prikaziKarakteristike();
+            };
+            span.appendChild(btn);
+            lista.appendChild(span);
 
-                div.append(label);
-                span.append(button);
-                lista.append(span);
-            });
+            // Checkbox za nastambu
+            const label = document.createElement("label");
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.value = k.id_karakteristike;
+            label.appendChild(cb);
+            label.append(` ${k.naziv_karakteristike}`);
+            ponuda.appendChild(label);
+        });
+    }
 
-        }
+    async function dodajKarakteristiku() {
+        const input = document.getElementById("input-karakteristike");
+        const naziv = input.value.trim();
+        if (!naziv) return;
 
-        async function dodajKarakteristiku() {
-            const nazivInput = document.getElementById("input-karakteristike");
-            const naziv = nazivInput.value;
-
-            if (naziv) {
-                await fetch(API_URL_K, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ naziv_karakteristike: naziv })
-                });
-                document.getElementById("input-karakteristike").value = "";
-                await prikaziKarakteristike();
-            }
-        }
-        async function prikaziZivotinje(){
-            const API_URL = "http://localhost:8080/api/zivotinje";
-
-            const data = await fetch(API_URL);
-            const res = await data.json();
-            const ponudaDiv = document.getElementById("ponuda-zivotinja");
-
-            ponudaDiv.innerHTML = "";
-
-            res.forEach(z =>{
-               const label = document.createElement("label");
-               label.textContent=`${z.ime}`;
-                const check = document.createElement("input");
-               check.type="checkbox";
-               check.value = `${z.id}`;
-
-                ponudaDiv.append(check);
-                ponudaDiv.append(label);
-            });
-        }
-
-        async function prikaziNastambe() {
-            const res = await fetch(API_URL_N)
-            const data = await res.json();
-
-            console.log(res);
-            console.log(data);
-
-            const lista = document.getElementById("trenutne-nastambe")
-            lista.innerHTML = "";
-
-            data.forEach(n => {
-                const divNastamba = document.createElement("div");
-                divNastamba.className = "nastamba-cont";
-                divNastamba.innerHTML += `Oznaka: ${n.oznaka}<br>Geometrija: ${n.geometrija}<br>`;
-                divNastamba.innerHTML += "Karakteristike: ";
-                n.karakteristike.forEach(k => {
-                    divNastamba.innerHTML += `${k.naziv_karakteristike}, `;
-                });
-                divNastamba.innerHTML += "<br>Zivotinje: ";
-                n.zivotinje.forEach(z =>{
-                    divNastamba.innerHTML += `${z.ime}`;
-                });
-                const button = document.createElement("button");
-                button.innerHTML = "Obrisi";
-                button.id = "nastamba-delete-btn";
-                button.onclick = async () => {
-                    await fetch(`${API_URL_N}/${n.id_nastambe}`, { method: "DELETE" });
-                    await prikaziNastambe();
-                }
-
-                divNastamba.append(button);
-                lista.append(divNastamba);
-            });
-        }
-
-        async function dodajNastambu() {
-            const oznakaInput = document.getElementById("input-oznake");
-            const geometrijaInput = document.getElementById("input-geometrije");
-            const oznaka = oznakaInput.value;
-            const geometrija = geometrijaInput.value;
-
-            const checkedKarakt = [...document.querySelectorAll('#ponuda-karakteristika input:checked')].map(c => parseInt(c.value));
-            const checkedZivotinje = [...document.querySelectorAll('#ponuda-zivotinja input:checked')].map(z=>parseInt(z.value));
-
-            console.log(checkedZivotinje);
-
-            if ((geometrija) && (oznaka)) {
-                await fetch(API_URL_N, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        oznaka: oznaka,
-                        geometrija: geometrija,
-                        karakteristikeIds: checkedKarakt,
-                        zivotinjeIds: checkedZivotinje
-                    })
-                });
-                await prikaziNastambe();
-                oznakaInput.value = "";
-                geometrijaInput.value = "";
-
-                document.querySelectorAll('#ponuda-zivotinja input[type="checkbox"]').forEach(cb => cb.checked = false);
-                document.querySelectorAll('#ponuda-karakteristika input[type="checkbox"]').forEach(cb => cb.checked = false);
-            }
-        }
-
-        prikaziNastambe();
-        prikaziZivotinje();
+        await fetch(API_URL_K, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ naziv_karakteristike: naziv })
+        });
+        input.value = "";
         prikaziKarakteristike();
-    </script>
-</body>
+    }
 
+    async function prikaziZivotinje() {
+        const res = await fetch(API_URL_Z);
+        const data = await res.json();
+        const ponuda = document.getElementById("ponuda-zivotinja");
+        ponuda.innerHTML = "";
+
+        data.forEach(z => {
+            const label = document.createElement("label");
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.value = z.id;
+            label.appendChild(cb);
+            label.append(` ${z.ime}`);
+            ponuda.appendChild(label);
+        });
+    }
+
+    async function prikaziNastambe() {
+        const res = await fetch(API_URL_N);
+        const data = await res.json();
+        const container = document.getElementById("trenutne-nastambe");
+        container.innerHTML = "";
+
+        if (data.length === 0) {
+            container.innerHTML = "<p style='color: #777; text-align: center;'>Nema dodanih nastambi.</p>";
+            return;
+        }
+
+        data.forEach(n => {
+            const div = document.createElement("div");
+            div.className = "nastamba-card";
+
+            let html = `<strong>Oznaka:</strong> ${n.oznaka}<br>`;
+            html += `<strong>Geometrija:</strong> ${n.geometrija}<br>`;
+            html += `<strong>Karakteristike:</strong> ${n.karakteristike.map(k => k.naziv_karakteristike).join(", ") || "Nema"}<br>`;
+            html += `<strong>Životinje:</strong> ${n.zivotinje.map(z => z.ime).join(", ") || "Nema"}`;
+
+            div.innerHTML = html;
+
+            const btn = document.createElement("button");
+            btn.className = "delete-nastamba";
+            btn.innerHTML = "Obriši";
+            btn.onclick = async () => {
+                if (confirm("Sigurno želiš obrisati ovu nastambu?")) {
+                    await fetch(`${API_URL_N}/${n.id_nastambe}`, { method: "DELETE" });
+                    prikaziNastambe();
+                }
+            };
+            div.appendChild(btn);
+            container.appendChild(div);
+        });
+    }
+
+    async function dodajNastambu() {
+        const oznaka = document.getElementById("input-oznake").value.trim();
+        const geometrija = document.getElementById("input-geometrije").value.trim();
+        const karakIds = Array.from(document.querySelectorAll('#ponuda-karakteristika input:checked'))
+                              .map(cb => parseInt(cb.value));
+        const zivIds = Array.from(document.querySelectorAll('#ponuda-zivotinja input:checked'))
+                             .map(cb => parseInt(cb.value));
+
+        if (!oznaka || !geometrija) {
+            alert("Oznaka i geometrija su obavezni!");
+            return;
+        }
+
+        await fetch(API_URL_N, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                oznaka,
+                geometrija,
+                karakteristikeIds: karakIds,
+                zivotinjeIds: zivIds
+            })
+        });
+
+        document.getElementById("input-oznake").value = "";
+        document.getElementById("input-geometrije").value = "";
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        prikaziNastambe();
+    }
+
+    // Inicijalizacija
+    document.addEventListener("DOMContentLoaded", () => {
+        prikaziKarakteristike();
+        prikaziZivotinje();
+        prikaziNastambe();
+    });
+</script>
+</body>
 </html>

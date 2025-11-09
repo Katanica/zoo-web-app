@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Novi zaposlenik</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        label { display: block; margin: 10px 0 5px; }
+        input, select, textarea { width: 100%; padding: 8px; }
+        button { padding: 10px 20px; margin-top: 20px; }
+        .btn-cancel { background: #6c757d; color: white; }
+    </style>
+</head>
+<body>
+<h1>Novi zaposlenik</h1>
+
+<form id="forma">
+    <input type="hidden" id="id" />
+
+    <label>Ime:</label>
+    <input type="text" id="ime" required />
+
+    <label>Prezime:</label>
+    <input type="text" id="prezime" required />
+
+    <label>Email:</label>
+    <input type="email" id="email" required />
+
+    <label>Telefon:</label>
+    <input type="text" id="telefon" required />
+
+    <label>Obrazovanje:</label>
+    <input type="text" id="obrazovanje" />
+
+    <label>Kvalifikacije:</label>
+    <textarea id="kvalifikacije" rows="2"></textarea>
+
+    <label>Status:</label>
+    <select id="status">
+        <option value="STALNI">Stalni</option>
+        <option value="PRIVREMENI">Privremeni</option>
+    </select>
+
+    <button type="button" onclick="spremi()">Spremi</button>
+    <button type="button" class="btn-cancel" onclick="window.location.href='zaposlenici.html'">Odustani</button>
+</form>
+
+<script>
+    function spremi() {
+        const zaposlenik = {
+            id: document.getElementById('id').value || null,
+            ime: document.getElementById('ime').value,
+            prezime: document.getElementById('prezime').value,
+            email: document.getElementById('email').value,
+            telefon: document.getElementById('telefon').value,
+            obrazovanje: document.getElementById('obrazovanje').value || null,
+            kvalifikacije: document.getElementById('kvalifikacije').value || null,
+            status: document.getElementById('status').value,
+            licence: [],
+            smjene: [],
+            bolovanja: [],
+            godisnjiOdmori: []
+        };
+
+        const method = zaposlenik.id ? 'PUT' : 'POST';
+        const url = zaposlenik.id ? `/api/zaposlenici/${zaposlenik.id}` : '/api/zaposlenici';
+
+        fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(zaposlenik)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Greška: ' + res.status);
+            window.location.href = 'zaposlenici.html';
+        })
+        .catch(err => alert('Greška: ' + err.message));
+    }
+</script>
+</body>
+</html>
