@@ -1,127 +1,169 @@
+/* GLOBAL RESET */
 * {
     margin: 0;
     padding: 0;
-    text-decoration: none;
     box-sizing: border-box;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: rgb(26, 26, 26);
-    list-style: none;
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
+/* BODY BACKGROUND */
 body {
-    height: 100%;
+ 
+
+
+
 }
 
+/* HEADER */
+header {
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+    font-size: 1.4em;
+    letter-spacing: 1px;
+}
+
+/* LAYOUT */
 #section-2 {
     display: flex;
+    margin-top: 100px;
 }
 
+/* NAVIGATION */
 nav {
-    background-color: aquamarine;
-    width: 15%;
-    height: 85%;
-    text-align: center;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+    border-radius: 0 15px 15px 0;
+    width: 230px;
+    height: 100vh;
+    padding: 25px 15px;
     position: fixed;
+    top: 100px;
+    left: 0;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
 }
 
 nav ul {
-    max-height: 100%;
+    list-style: none;
 }
 
 nav ul li {
-    background-color: rgba(0, 0, 0, 0.181);
-    border-radius: 5px;
-    margin: 0 auto;
-    margin-top: 15px;
-    transition: 0.2s;
-    padding: 10px 0;
-    width: 90%;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    margin: 12px 0;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #2563eb;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-
 nav ul li:hover {
-    background-color: rgba(0, 0, 0, 0.09);
+    background-color: #2563eb;
+    color: white;
     cursor: pointer;
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4);
+}
+
+/* MAIN CONTENT */
+main {
+    margin-left: 270px;
+    padding: 40px;
+}
+
+/* INPUT & BUTTON */
+input, select, textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    width: 240px;
+    margin: 6px;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.4);
+    outline: none;
+}
+
+button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: #1e40af;
     transform: scale(1.05);
 }
 
-main {
-    background-color: beige;
-    width: 100%;
-    min-height: 85vh;
-    padding: 50px 75px;
-    padding-left: 45vh;
+/* CONTAINERS (GLASS EFFECT) */
+.input-cont, .nastamba-cont {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    color: #0b0b0b;
 }
 
-header {
-    position: fixed;
-    background-color: gray;
-    text-align: center;
-    display: flex;
-    height: 15%;
-    width: 100%;
-    flex-direction: column;
-    justify-content: center;
+/* LABELS I OPISI (poboljšana vidljivost) */
+label, p {
+    font-weight: 600;
+    color: #1e293b;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
 }
 
-#header-container {
-    height: 15vh;
-}
-
-.manji-input {
-    margin: 20px 0;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-}
-
-.box {
-    width: 25%;
+/* TAGS */
+.karakteristika {
+    background-color: #3b82f6;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-right: 5px;
     display: inline-block;
 }
 
-.veci-button {
-    padding: 10px;
-    border-radius: 10px;
-    transition: 0.05s;
-}
-
-.veci-button:hover {
-    cursor: pointer;
-    background-color: rgb(216, 216, 216);
-}
-
-#lista {
-    background-color: blueviolet;
-    width: 50vw;
-    margin-top: 50px;
-}
-
 .x-button {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
     width: 25px;
     height: 25px;
-    border-radius: 7px;
+    margin-left: 5px;
+    cursor: pointer;
 }
 
-.input-cont {
-    background-color: gray;
-    margin-bottom: 50px;
-}
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    nav {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none;
+    }
 
-.karakteristika {
-    background-color: red;
-    padding: 7px;
-    border-radius: 7px;
-    margin-right: 5px;
-}
-
-.nastamba-cont {
-    background-color: white;
-    padding: 20px 50px;
-    margin-top: 20px;
-    display: flex;
-}
-
-#nastamba-delete-btn {
-    height: 50px;
+    main {
+        margin-left: 0;
+        padding: 20px;
+    }
 }
