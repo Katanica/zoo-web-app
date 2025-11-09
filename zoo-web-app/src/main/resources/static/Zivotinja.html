@@ -46,7 +46,8 @@
                 <input type="text" id="ime" placeholder="Ime">
                 <input type="text" id="latinskiNaziv" placeholder="Latinski naziv">
                 <input type="text" id="tip" placeholder="Tip">
-                <input type="text" id="nacinNabave" placeholder="Na■in nabave">
+                <input type="text" id="nacinNabave" placeholder="Nacin nabave">
+                <input type="text" id="link" placeholder="Link"><br>
                 <button type="button" onclick="dodajZivotinju()">Dodaj</button>
             </form>
             <ul id="lista"></ul>
@@ -59,22 +60,50 @@
             const lista = document.getElementById("lista");
             lista.innerHTML = "";
             data.forEach(z => {
-                lista.innerHTML += `<li>${z.ime} (${z.latinskiNaziv}) - ${z.tip}</li>`;
+                const span = document.createElement("span");
+                span.innerHTML = `${z.ime} (${z.latinskiNaziv}) - ${z.tip}`;
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Obrisi";
+                deleteButton.onclick = async () => {
+                    await fetch(`/api/zivotinje/${z.id}`, {
+                        method: "DELETE"
+                    });
+                    await ucitajZivotinje();
+                }
+                lista.append(span);
+                lista.append(deleteButton);
+                lista.append(document.createElement("br"));
             });
         }
         async function dodajZivotinju() {
-            const body = {
-                ime: document.getElementById("ime").value,
-                latinskiNaziv: document.getElementById("latinskiNaziv").value,
-                tip: document.getElementById("tip").value,
-                nacinNabave: document.getElementById("nacinNabave").value
-            };
-            await fetch("/api/zivotinje", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
-            });
+            const ime = document.getElementById("ime");
+            const latinskiNaziv = document.getElementById("latinskiNaziv");
+            const tip = document.getElementById("tip");
+            const nacinNabave = document.getElementById("nacinNabave");
+            const link = document.getElementById("link");
+
+
+                const body = {
+                    ime: ime.value,
+                    latinskiNaziv: latinskiNaziv.value,
+                    tip: tip.value,
+                    nacinNabave: nacinNabave.value
+                };
+            if((ime.value) && (latinskiNaziv.value) && (tip.value) && (nacinNabave.value) && (link.value)){
+                await fetch("/api/zivotinje", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                ime.value = "";
+                latinskiNaziv.value="";
+                tip.value="";
+                nacinNabave.value="";
+                link.value="";
+
             await ucitajZivotinje();
+            }
         }
         ucitajZivotinje();
     </script>

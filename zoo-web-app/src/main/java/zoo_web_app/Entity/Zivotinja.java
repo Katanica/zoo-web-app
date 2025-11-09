@@ -1,4 +1,4 @@
-package zoo_web_app.Zoo;
+package zoo_web_app.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,6 +23,5 @@ public class Zivotinja {
     private String nacinNabave;
     private LocalDate datumUnosa;
     private boolean aktivna = true;
-
 
 }

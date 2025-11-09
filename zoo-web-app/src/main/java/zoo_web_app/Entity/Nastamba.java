@@ -30,4 +30,12 @@ public class Nastamba {
             inverseJoinColumns = @JoinColumn(name = "id_karakteristike")
     )
     private List<Karakteristika> karakteristike;
+
+    @ManyToMany
+    @JoinTable(
+            name="nastamba_zivotinja",
+            joinColumns = @JoinColumn(name="id_nastambe"),
+            inverseJoinColumns = @JoinColumn(name = "id_zivotinje")
+    )
+    private List<Zivotinja> zivotinje;
 }

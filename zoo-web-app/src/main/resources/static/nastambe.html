@@ -51,10 +51,14 @@
             </div>
             <div class="input-cont" id="dodaj-nastambu-cont">
                 <h3>Dodaj nastambu:</h3>
-                Oznaka: <input type="text" id="input-oznake" class="manji-input"><br>
-                Geometrija: <input type="text" id="input-geometrije" class="manji-input"><br>
-                Karakteristike:
+                <h4>Oznaka:</h4> <input type="text" id="input-oznake" class="manji-input"><br>
+                <h4>Geometrija:</h4> <input type="text" id="input-geometrije" class="manji-input"><br>
+                <h4>Karakteristike:</h4>
                 <div id="ponuda-karakteristika">
+
+                </div>
+                <br><h4>Zivotinje:</h4>
+                <div id="ponuda-zivotinja">
 
                 </div>
                 <br><br>
@@ -63,10 +67,6 @@
             </div>
             <div class="input-cont" id="trenutne-nastambe">
                 <h3>Trenutne nastambe:</h3>
-                <div class="nastamba-cont">Oznaka: D54<br>Geometrija: kocka<br>Karakteristike: ... ... ...
-                    <button id="nastamba-delete-btn">Obrisi</button>
-                </div>
-                <div class="nastamba-cont">Oznaka: D54<br>Geometrija: kocka<br>Karakteristike: ... ... ...</div>
             </div>
         </main>
     </div>
@@ -79,12 +79,22 @@
             const rezJSON = await rez.json();
 
             const lista = document.getElementById("lista-karakteristika");
+            const div = document.getElementById("ponuda-karakteristika");
             lista.innerHTML = "";
+            div.innerHTML = "";
 
             rezJSON.forEach(k => {
                 const span = document.createElement("span");
                 span.className = "karakteristika";
                 span.textContent = `${k.naziv_karakteristike}`;
+
+
+                const label = document.createElement("label");
+                const karak = document.createElement("input");
+                label.textContent = `   ${k.naziv_karakteristike}`;
+                karak.type = "checkbox";
+                karak.value = `${k.id_karakteristike}`;
+                label.append(karak)
 
                 const button = document.createElement("button")
                 button.className = "x-button";
@@ -94,6 +104,7 @@
                     await prikaziKarakteristike();
                 }
 
+                div.append(label);
                 span.append(button);
                 lista.append(span);
             });
@@ -103,7 +114,6 @@
         async function dodajKarakteristiku() {
             const nazivInput = document.getElementById("input-karakteristike");
             const naziv = nazivInput.value;
-            console.log(naziv);
 
             if (naziv) {
                 await fetch(API_URL_K, {
@@ -115,10 +125,33 @@
                 await prikaziKarakteristike();
             }
         }
+        async function prikaziZivotinje(){
+            const API_URL = "http://localhost:8080/api/zivotinje";
+
+            const data = await fetch(API_URL);
+            const res = await data.json();
+            const ponudaDiv = document.getElementById("ponuda-zivotinja");
+
+            ponudaDiv.innerHTML = "";
+
+            res.forEach(z =>{
+               const label = document.createElement("label");
+               label.textContent=`${z.ime}`;
+                const check = document.createElement("input");
+               check.type="checkbox";
+               check.value = `${z.id}`;
+
+                ponudaDiv.append(check);
+                ponudaDiv.append(label);
+            });
+        }
 
         async function prikaziNastambe() {
             const res = await fetch(API_URL_N)
             const data = await res.json();
+
+            console.log(res);
+            console.log(data);
 
             const lista = document.getElementById("trenutne-nastambe")
             lista.innerHTML = "";
@@ -127,6 +160,14 @@
                 const divNastamba = document.createElement("div");
                 divNastamba.className = "nastamba-cont";
                 divNastamba.innerHTML += `Oznaka: ${n.oznaka}<br>Geometrija: ${n.geometrija}<br>`;
+                divNastamba.innerHTML += "Karakteristike: ";
+                n.karakteristike.forEach(k => {
+                    divNastamba.innerHTML += `${k.naziv_karakteristike}, `;
+                });
+                divNastamba.innerHTML += "<br>Zivotinje: ";
+                n.zivotinje.forEach(z =>{
+                    divNastamba.innerHTML += `${z.ime}`;
+                });
                 const button = document.createElement("button");
                 button.innerHTML = "Obrisi";
                 button.id = "nastamba-delete-btn";
@@ -146,24 +187,33 @@
             const oznaka = oznakaInput.value;
             const geometrija = geometrijaInput.value;
 
+            const checkedKarakt = [...document.querySelectorAll('#ponuda-karakteristika input:checked')].map(c => parseInt(c.value));
+            const checkedZivotinje = [...document.querySelectorAll('#ponuda-zivotinja input:checked')].map(z=>parseInt(z.value));
+
+            console.log(checkedZivotinje);
+
             if ((geometrija) && (oznaka)) {
                 await fetch(API_URL_N, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         oznaka: oznaka,
-                        geometrija: geometrija
+                        geometrija: geometrija,
+                        karakteristikeIds: checkedKarakt,
+                        zivotinjeIds: checkedZivotinje
                     })
                 });
                 await prikaziNastambe();
                 oznakaInput.value = "";
                 geometrijaInput.value = "";
+
+                document.querySelectorAll('#ponuda-zivotinja input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.querySelectorAll('#ponuda-karakteristika input[type="checkbox"]').forEach(cb => cb.checked = false);
             }
-
-
         }
 
         prikaziNastambe();
+        prikaziZivotinje();
         prikaziKarakteristike();
     </script>
 </body>
