@@ -1,44 +1,83 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Životinje</title>
- <meta charset="UTF-8">
+    <title>Životinje</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
- <h1>Životinje u ZOO</h1>
- <form id="zivotinjaForm">
- <input type="text" id="ime" placeholder="Ime">
- <input type="text" id="latinskiNaziv" placeholder="Latinski naziv">
- <input type="text" id="tip" placeholder="Tip">
- <input type="text" id="nacinNabave" placeholder="Na■in nabave">
- <button type="button" onclick="dodajZivotinju()">Dodaj</button>
- </form>
- <ul id="lista"></ul>
- <script>
- async function ucitajZivotinje(){
- const res = await fetch("/api/zivotinje");
- const data = await res.json();
- const lista = document.getElementById("lista");
- lista.innerHTML = "";
- data.forEach(z => {
- lista.innerHTML += `<li>${z.ime} (${z.latinskiNaziv}) - ${z.tip}</li>`;
- });
- }
- async function dodajZivotinju(){
- const body = {
- ime: document.getElementById("ime").value,
- latinskiNaziv: document.getElementById("latinskiNaziv").value,
- tip: document.getElementById("tip").value,
- nacinNabave: document.getElementById("nacinNabave").value
- };
- await fetch("/api/zivotinje", {
- method: "POST",
- headers: {"Content-Type": "application/json"},
- body: JSON.stringify(body)
- });
- await ucitajZivotinje();
- }
- ucitajZivotinje();
- </script>
+    <header>
+        <h1>ZIVOTINJE U ZOO</h1>
+    </header>
+    <div id="header-container">
+
+    </div>
+    <div id="section-2">
+        <nav>
+            <ul>
+                <li>POCETNA</li>
+                <a href="zoo.html" target="_self">
+                    <li>ZOO</li>
+                </a>
+                <a href="" target="_self">
+                    <li>Zivotinje</li>
+                </a>
+                <a href="nastambe.html" target="_self">
+                    <li>Nastambe</li>
+                </a>
+                <a href="" target="_self">
+                    <li>Radnici</li>
+                </a>
+                <a href="" target="_self">
+                    <li>Obaveze</li>
+                </a>
+                <a href="" target="_self">
+                    <li>Posjete</li>
+                </a>
+                <a href="" target="_self">
+                    <li>Incidenti</li>
+                </a>
+            </ul>
+        </nav>
+        <main>
+            <form id="zivotinjaForm">
+                <input type="text" id="ime" placeholder="Ime">
+                <input type="text" id="latinskiNaziv" placeholder="Latinski naziv">
+                <input type="text" id="tip" placeholder="Tip">
+                <input type="text" id="nacinNabave" placeholder="Na■in nabave">
+                <button type="button" onclick="dodajZivotinju()">Dodaj</button>
+            </form>
+            <ul id="lista"></ul>
+        </main>
+    </div>
+    <script>
+        async function ucitajZivotinje() {
+            const res = await fetch("/api/zivotinje");
+            const data = await res.json();
+            const lista = document.getElementById("lista");
+            lista.innerHTML = "";
+            data.forEach(z => {
+                lista.innerHTML += `<li>${z.ime} (${z.latinskiNaziv}) - ${z.tip}</li>`;
+            });
+        }
+        async function dodajZivotinju() {
+            const body = {
+                ime: document.getElementById("ime").value,
+                latinskiNaziv: document.getElementById("latinskiNaziv").value,
+                tip: document.getElementById("tip").value,
+                nacinNabave: document.getElementById("nacinNabave").value
+            };
+            await fetch("/api/zivotinje", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            await ucitajZivotinje();
+        }
+        ucitajZivotinje();
+    </script>
 </body>
+
 </html>

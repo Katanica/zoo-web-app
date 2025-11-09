@@ -18,10 +18,10 @@
                 <a href="zoo.html" target="_self">
                     <li>ZOO</li>
                 </a>
-                <a href="" target="_self">
+                <a href="Zivotinja.html" target="_self">
                     <li>Zivotinje</li>
                 </a>
-                <a href="nastambe.html" target="_self">
+                <a href="" target="_self">
                     <li>Nastambe</li>
                 </a>
                 <a href="" target="_self">
@@ -42,7 +42,8 @@
             <div class="input-cont" id="dodaj-karakteristiku-cont">
                 <h3>Dodaj karakteristiku:</h3>
                 <input id="input-karakteristike" class="manji-input" type="text">
-                <button id="dodaj-karakteristiku-btn" onClick="dodajKarakteristiku()" class="veci-button">Dodaj</button><br>
+                <button id="dodaj-karakteristiku-btn" onClick="dodajKarakteristiku()"
+                    class="veci-button">Dodaj</button><br>
                 <div id="lista-karakteristika">
                     <span class="karakteristika">Suncano <button class="x-button">x</button></span>
                 </div>
@@ -73,7 +74,7 @@
         const API_URL_K = "http://localhost:8080/karakteristike";
         const API_URL_N = "http://localhost:8080/nastamba";
 
-        async function prikaziKarakteristike(){
+        async function prikaziKarakteristike() {
             const rez = await fetch(API_URL_K);
             const rezJSON = await rez.json();
 
@@ -82,14 +83,14 @@
 
             rezJSON.forEach(k => {
                 const span = document.createElement("span");
-                span.className= "karakteristika";
+                span.className = "karakteristika";
                 span.textContent = `${k.naziv_karakteristike}`;
 
                 const button = document.createElement("button")
-                button.className="x-button";
+                button.className = "x-button";
                 button.innerHTML = "x";
                 button.onclick = async () => {
-                    await fetch(`${API_URL_K}/${k.id_karakteristike}`, {method:"DELETE"});
+                    await fetch(`${API_URL_K}/${k.id_karakteristike}`, { method: "DELETE" });
                     await prikaziKarakteristike();
                 }
 
@@ -99,23 +100,23 @@
 
         }
 
-        async function dodajKarakteristiku(){
+        async function dodajKarakteristiku() {
             const nazivInput = document.getElementById("input-karakteristike");
             const naziv = nazivInput.value;
             console.log(naziv);
 
-            if(naziv){
+            if (naziv) {
                 await fetch(API_URL_K, {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({naziv_karakteristike: naziv})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ naziv_karakteristike: naziv })
                 });
                 document.getElementById("input-karakteristike").value = "";
                 await prikaziKarakteristike();
             }
         }
 
-        async function prikaziNastambe(){
+        async function prikaziNastambe() {
             const res = await fetch(API_URL_N)
             const data = await res.json();
 
@@ -124,13 +125,13 @@
 
             data.forEach(n => {
                 const divNastamba = document.createElement("div");
-                divNastamba.className="nastamba-cont";
+                divNastamba.className = "nastamba-cont";
                 divNastamba.innerHTML += `Oznaka: ${n.oznaka}<br>Geometrija: ${n.geometrija}<br>`;
                 const button = document.createElement("button");
                 button.innerHTML = "Obrisi";
                 button.id = "nastamba-delete-btn";
                 button.onclick = async () => {
-                    await fetch(`${API_URL_N}/${n.id_nastambe}`, {method: "DELETE"});
+                    await fetch(`${API_URL_N}/${n.id_nastambe}`, { method: "DELETE" });
                     await prikaziNastambe();
                 }
 
@@ -139,19 +140,20 @@
             });
         }
 
-        async function dodajNastambu(){
-            const oznakaInput =  document.getElementById("input-oznake");
-            const geometrijaInput =  document.getElementById("input-geometrije");
+        async function dodajNastambu() {
+            const oznakaInput = document.getElementById("input-oznake");
+            const geometrijaInput = document.getElementById("input-geometrije");
             const oznaka = oznakaInput.value;
             const geometrija = geometrijaInput.value;
 
-            if((geometrija) && (oznaka)){
+            if ((geometrija) && (oznaka)) {
                 await fetch(API_URL_N, {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         oznaka: oznaka,
-                        geometrija: geometrija})
+                        geometrija: geometrija
+                    })
                 });
                 await prikaziNastambe();
                 oznakaInput.value = "";

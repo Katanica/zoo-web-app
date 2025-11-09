@@ -65,11 +65,11 @@ header {
 }
 
 #header-container {
-    height: 15%;
+    height: 15vh;
 }
 
 .manji-input {
-    margin: 20px 0 ;
+    margin: 20px 0;
     padding: 10px;
     border-radius: 10px;
     border: none;
@@ -102,22 +102,26 @@ header {
     height: 25px;
     border-radius: 7px;
 }
-.input-cont{
+
+.input-cont {
     background-color: gray;
     margin-bottom: 50px;
 }
+
 .karakteristika {
     background-color: red;
     padding: 7px;
     border-radius: 7px;
     margin-right: 5px;
 }
-.nastamba-cont{
+
+.nastamba-cont {
     background-color: white;
     padding: 20px 50px;
     margin-top: 20px;
     display: flex;
 }
-#nastamba-delete-btn{
+
+#nastamba-delete-btn {
     height: 50px;
 }
