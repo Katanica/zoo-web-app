@@ -54,10 +54,12 @@
         </main>
     </div>
     <script>
+        const API_URL_Z = "http://localhost:8080/api/zivotinje";
         async function ucitajZivotinje() {
-            const res = await fetch("/api/zivotinje");
+            const res = await fetch(API_URL_Z);
             const data = await res.json();
             const lista = document.getElementById("lista");
+
             lista.innerHTML = "";
             data.forEach(z => {
                 const span = document.createElement("span");
@@ -65,7 +67,7 @@
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Obrisi";
                 deleteButton.onclick = async () => {
-                    await fetch(`/api/zivotinje/${z.id}`, {
+                    await fetch(`${API_URL_Z}/${z.id}`, {
                         method: "DELETE"
                     });
                     await ucitajZivotinje();

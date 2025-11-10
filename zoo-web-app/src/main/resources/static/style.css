@@ -112,6 +112,9 @@ button:hover {
     background-color: #1e40af;
     transform: scale(1.05);
 }
+a{
+    text-decoration: none;
+}
 
 /* CONTAINERS (GLASS EFFECT) */
 .input-cont, .nastamba-cont {

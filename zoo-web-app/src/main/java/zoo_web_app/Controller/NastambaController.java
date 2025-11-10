@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/nastamba")
+@RequestMapping("/nastamba")
 public class NastambaController {
     @Autowired
     private NastambaRepository nastambaRepository;
