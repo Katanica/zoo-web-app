@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Zoo Web App | Administracija</title>
+
+    <!-- Google Fonts: Roboto (profesionalno) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <style>
+        :root {
+          --primary: #1a5d57;
+          --primary-light: #2c8a6b;
+          --gray: #555;
+          --light-gray: #f5f5f5;
+          --border: #ddd;
+          --text: #333;
+          --bg: #fafafa;
+        }
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: 'Roboto', sans-serif;
+          background: var(--bg);
+          color: var(--text);
+          line-height: 1.6;
+        }
+
+        .container {
+          max-width: 1300px;
+          margin: 0 auto;
+          padding: 15px;
+        }
+
+        /* Header */
+        header {
+          background: white;
+          border-bottom: 1px solid var(--border);
+          padding: 15px 0;
+          margin-bottom: 25px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .logo {
+          font-size: 1.6rem;
+          font-weight: 700;
+          color: var(--primary);
+        }
+
+        .logo i {
+          margin-right: 8px;
+        }
+
+        .user-info {
+          font-size: 0.95rem;
+          color: var(--gray);
+        }
+
+        .user-info i {
+          margin-right: 5px;
+          color: var(--primary);
+        }
+
+        /* Stats */
+        .stats {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 15px;
+          margin-bottom: 30px;
+        }
+
+        .stat-box {
+          background: white;
+          padding: 18px;
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          text-align: center;
+        }
+
+        .stat-box h3 {
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--primary);
+          margin-bottom: 5px;
+        }
+
+        .stat-box p {
+          font-size: 0.9rem;
+          color: var(--gray);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 18px;
+        }
+
+        .menu-card {
+          background: white;
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          overflow: hidden;
+          transition: all 0.2s ease;
+        }
+
+        .menu-card:hover {
+          border-color: var(--primary);
+          box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .menu-header {
+          background: var(--primary);
+          color: white;
+          padding: 14px 18px;
+          font-weight: 500;
+          font-size: 1.1rem;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .menu-header i {
+          font-size: 1.2rem;
+        }
+
+        .menu-body {
+          padding: 18px;
+        }
+
+        .menu-body p {
+          font-size: 0.95rem;
+          color: var(--gray);
+          margin-bottom: 15px;
+          line-height: 1.5;
+        }
+
+        .menu-actions {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .btn {
+          padding: 8px 14px;
+          border: none;
+          border-radius: 4px;
+          font-size: 0.9rem;
+          font-weight: 500;
+          cursor: pointer;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.2s;
+        }
+
+        .btn-primary {
+          background: var(--primary);
+          color: white;
+        }
+
+        .btn-primary:hover {
+          background: #144a45;
+        }
+
+        .btn-outline {
+          background: transparent;
+          color: var(--primary);
+          border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+          background: var(--primary-light);
+          color: white;
+        }
+
+        /* Footer */
+        footer {
+          text-align: center;
+          padding: 20px 0;
+          margin-top: 50px;
+          color: var(--gray);
+          font-size: 0.85rem;
+          border-top: 1px solid var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+          }
+          .menu-grid {
+            grid-template-columns: 1fr;
+          }
+          .menu-actions {
+            justify-content: center;
+          }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-paw"></i> Zoo Web App
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user"></i> Prijavljen: Marko Petrović
+            </div>
+        </div>
+    </header>
+
+    <!-- Brze statistike -->
+    <div class="stats">
+        <div class="stat-box">
+            <h3 id="total-animals">47</h3>
+            <p>Životinja</p>
+        </div>
+        <div class="stat-box">
+            <h3 id="total-enclosures">23</h3>
+            <p>Nastambi</p>
+        </div>
+        <div class="stat-box">
+            <h3 id="active-tasks">8</h3>
+            <p>Aktivnih obaveza</p>
+        </div>
+        <div class="stat-box">
+            <h3 id="total-workers">18</h3>
+            <p>Radnika</p>
+        </div>
+    </div>
+
+    <!-- Glavni meni -->
+    <div class="menu-grid">
+
+        <!-- Nastambe -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-home"></i> Nastambe
+            </div>
+            <div class="menu-body">
+                <p>Upravljanje prostorima, oznakama, opisima, infrastrukturom i lokacijama.</p>
+                <div class="menu-actions">
+                    <a href="nastambe.html" class="btn btn-primary">
+                        <i class="fas fa-list"></i> Pregled
+                    </a>
+                    <a href="nastambe.html#add" class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Nova
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Životinje -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-paw"></i> Životinje
+            </div>
+            <div class="menu-body">
+                <p>Pojedinačne životinje i grupe, vrste, nabavka, status, neaktivne.</p>
+                <div class="menu-actions">
+                    <a href="animals.html" class="btn btn-primary">
+                        <i class="fas fa-list"></i> Pregled
+                    </a>
+                    <a href="animals.html#add" class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Nova
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Obaveze -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-tasks"></i> Obaveze
+            </div>
+            <div class="menu-body">
+                <p>Hranjenje, čišćenje, pregledi, raspored radnika, ponavljajući zadaci.</p>
+                <div class="menu-actions">
+                    <a href=":', 'tasks.html" class="btn btn-primary">
+                        <i class="fas fa-calendar"></i> Raspored
+                    </a>
+                    <a href="tasks.html#add" class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Planiraj
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Radnici -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-users"></i> Radnici
+            </div>
+            <div class="menu-body">
+                <p>Podaci, smjene, bolovanja, obrazovanje, kompetencije, kalendar.</p>
+                <div class="menu-actions">
+                    <a href="workers.html" class="btn btn-primary">
+                        <i class="fas fa-list"></i> Spisak
+                    </a>
+                    <a href="workers.html#add" class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Dodaj
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Troškovi -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-euro-sign"></i> Troškovi
+            </div>
+            <div class="menu-body">
+                <p>Novčani troškovi i radni sati po životinjama, izveštaji, rangiranje.</p>
+                <div class="menu-actions">
+                    <a href="costs.html" class="btn btn-primary">
+                        <i class="fas fa-chart-bar"></i> Izveštaj
+                    </a>
+                    <a href="costs.html#add" class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Unos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grupne ture -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-user-friends"></i> Grupne ture
+            </div>
+            <div class="menu-body">
+                <p>Najave poseta, dodela vodiča, termini, potvrde.</p>
+                <div class="menu-actions">
+                    <a href="tours.html" class="btn btn-primary">
+                        <i class="fas fa-calendar-check"></i> Najave
+                    </a>
+                    <a href="tours.html#add" class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Nova
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incidenti -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-exclamation-triangle"></i> Incidenti
+            </div>
+            <div class="menu-body">
+                <p>Prijave neželjenih događaja, sanacija, troškovi, zahvaćenost.</p>
+                <div class="menu-actions">
+                    <a href="incidents.html" class="btn btn-primary">
+                        <i class="fas fa-list"></i> Arhiva
+                    </a>
+                    <a href="incidents.html#add" class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Prijavi
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Izveštaji -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-file-alt"></i> Izveštaji
+            </div>
+            <div class="menu-body">
+                <p>Statistike, troškovi, radni sati, aktivnosti radnika, pretrage.</p>
+                <div class="menu-actions">
+                    <a href="reports.html" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Generiši
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Zoo Web App © 2025 | Verzija 1.0 | Razvijeno za upravljanje zoološkim vrtom</p>
+    </footer>
+
+</div>
+
+<!-- Demo podaci (kasnije zameni sa localStorage / API) -->
+<script>
+    // Primer ažuriranja statistike
+    const stats = {
+      animals: 47,
+      enclosures: 23,
+      tasks: 8,
+      workers: 18
+    };
+
+    document.getElementById('total-animals').textContent = stats.animals;
+    document.getElementById('total-enclosures').textContent = stats.enclosures;
+    document.getElementById('active-tasks').textContent = stats.tasks;
+    document.getElementById('total-workers').textContent = stats.workers;
+</script>
+
+</body>
+</html>
