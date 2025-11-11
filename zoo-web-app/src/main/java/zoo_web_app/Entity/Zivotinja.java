@@ -1,17 +1,14 @@
 package zoo_web_app.Entity;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 import java.util.List;
-
-@Entity
+import jakarta.persistence.*;
+import lombok.*;
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
+
 public class Zivotinja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,5 +20,4 @@ public class Zivotinja {
     private String nacinNabave;
     private LocalDate datumUnosa;
     private boolean aktivna = true;
-
 }
