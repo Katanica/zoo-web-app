@@ -14,7 +14,7 @@ import java.util.List;
 public class Nastamba {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long id_nastambe;
+    private Long id_nastambe;
 
     private String oznaka;
     private String geometrija;

@@ -27,4 +27,6 @@ public class ZaposlenikService {
     public List<Zaposlenik> filterByKvalifikacija(String kvalifikacija) {
         return repository.findByKvalifikacijeContainingIgnoreCase(kvalifikacija);
     }
-}
+
+
+    }
