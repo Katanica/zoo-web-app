@@ -1,10 +1,15 @@
-HELP.md
+# === Maven / Build ===
 target/
 .mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
 
-### STS ###
+# === IDE ===
+## IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+## Eclipse / STS
 .apt_generated
 .classpath
 .factorypath
@@ -13,25 +18,23 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+## NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+## VS Code
 .vscode/
 
-src/main/resources/application.properties
-src\main\resources\application-local.properties
+# === Spring Boot config ===
+# NIKAD U GIT: lokalne postavke sa lozinkama!
+src/main/resources/application-local.properties
 
+# Default config – može u Git, ali bez osjetljivih podataka
+src/main/resources/application.properties
+
+# === Ostalo ===
+HELP.md
