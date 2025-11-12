@@ -1,0 +1,9 @@
+spring.datasource.url=jdbc:mysql://localhost:VAS_PORT/zoo_db
+spring.datasource.username=root
+spring.datasource.password= VASA_LOZINKA
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+uredite port u prvom redu i uredite lozinku u trecem redu, upisite svoje podatke
+i onda ih zalijepite u src/main/resources/application.properties
