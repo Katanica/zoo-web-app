@@ -2,12 +2,8 @@ package zoo_web_app.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import zoo_web_app.Entity.Karakteristika;
-import zoo_web_app.Entity.Nastamba;
-import zoo_web_app.Entity.Zivotinja;
 import zoo_web_app.Repository.KarakteristikaRepository;
 import zoo_web_app.Repository.NastambaRepository;
-import zoo_web_app.Repository.ZivotinjaRepository;
 
 import java.util.List;
 import java.util.Map;

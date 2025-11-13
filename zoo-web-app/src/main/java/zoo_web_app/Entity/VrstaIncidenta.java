@@ -5,20 +5,20 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "KARAKTERISTIKA")
+@Table(name = "VRSTA_INCIDENTA")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Karakteristika {
+public class VrstaIncidenta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_karakteristike")
+    @Column(name = "id_vrste")
     private Long id;
 
-    @Column(name = "naziv", nullable = false, unique = true)
+    @Column(name = "naziv", nullable = false)
     private String naziv;
 
-    @OneToMany(mappedBy = "karakteristika")
-    private List<NastambaKarakteristika> nastambe;
+    @OneToMany(mappedBy = "vrsta")
+    private List<Incident> incidenti;
 }

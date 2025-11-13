@@ -2,7 +2,6 @@ package zoo_web_app.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import zoo_web_app.Entity.Obaveza;
 import zoo_web_app.Service.ObavezaService;
 
 import java.time.LocalDateTime;

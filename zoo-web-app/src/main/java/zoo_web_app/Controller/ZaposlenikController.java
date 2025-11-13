@@ -1,6 +1,5 @@
 package zoo_web_app.Controller;
 
-import zoo_web_app.Entity.Zaposlenik;
 import zoo_web_app.Service.ZaposlenikService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
