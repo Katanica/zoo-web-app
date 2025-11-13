@@ -1,0 +1,133 @@
+Evo **ujedinjeni i sređeni opis projekta** koji spaja sve tri verzije (PROJEKT ZA FAKS, PROJA MAKA i ZAPISNIK ZA PROJEKT) u jednu cjelovitu verziju bez ponavljanja i s jasnom strukturom:
+
+---
+
+## **Projekt: Evidencija zoološkog vrta**
+
+### **Tehnologije**
+
+* **Backend:** C#, .NET, SQL
+* **Frontend:** HTML, CSS, JavaScript
+
+---
+
+### **Opis projekta**
+
+Cilj projekta je izrada softvera za upravljanje zoološkim vrtom.
+Aplikacija omogućava evidenciju životinja, nastambi, radnika, troškova, rasporeda obaveza i incidenata.
+Podaci su trenutno djelomično u papirnatom obliku i u “kolektivnom pamćenju”, što otežava organizaciju.
+Aplikacija bi trebala centralizirati sve informacije te biti dovoljno fleksibilna da se može koristiti i u drugim zoološkim vrtovima.
+
+---
+
+### **Nastambe**
+
+* Zoološki vrt je podijeljen na više **nastambi** i **lokacija**.
+* Svaka nastamba ima:
+
+  * Jedinstvenu oznaku (npr. D51 – gušteri)
+  * Opis i **geometriju** (krug, kvadrat, poligon)
+  * Karakteristike poput: vanjska/unutarnja, sunčano/sjenovito, suho/vlažno, temperatura itd.
+* Evidentira se:
+
+  * Što se nalazi u nastambi (životinje, stijene, ljuljačke, drveće, poligoni itd.)
+  * Ako se u nastambi nalazi životinja kojoj to nije primarno stanište, to se posebno bilježi.
+* Povijest promjena nije važna, osim ako korisnik želi dodati komentar.
+
+---
+
+### **Životinje**
+
+* Životinje se dijele na:
+
+  * **Jedinke** (npr. lav Simba)
+  * **Skupine** (npr. skupina žohara)
+* Evidentira se:
+
+  * Hrvatsko i latinsko ime
+  * Nadimak ili identifikacijski broj
+  * Link za dodatne informacije (npr. Wikipedia)
+  * Broj jedinki u skupini
+  * Način nabave (kupovina, uzgoj, spašavanje, rehabilitacija itd.)
+  * Datum nabave i komentari
+* Podaci o životinjama se **ne brišu**, već se označavaju kao “uginula” ili “premještena”.
+* Jedna životinja može biti vezana samo za **jednu nastambu**, ali u nastambi može biti više vrsta životinja.
+
+---
+
+### **Radnici**
+
+* Evidentiraju se osnovni podaci:
+
+  * Ime, prezime, broj mobitela (obavezno), e-mail (opcionalno)
+  * Položeni tečajevi i prakse (npr. hranjenje lavova)
+  * Obrazovanje i licence (trajne ili vremenski ograničene)
+* Vodi se **kalendar rada** (smjene, godišnji odmori, bolovanja).
+
+  * Npr. jedan tjedan prva smjena, sljedeći tjedan druga.
+
+---
+
+### **Obaveze i aktivnosti**
+
+* Aktivnosti prema životinjama: hranjenje, čišćenje, veterinarski pregledi itd.
+* Mogu biti:
+
+  * Planirane
+  * Otkazane
+  * Odradene
+* Planirane aktivnosti se mogu unijeti bez određenog radnika ili datuma te se kasnije dopunjavaju.
+* Mogućnost **ponavljajućih aktivnosti** (npr. hranjenje svakog četvrtka).
+* Svaki radnik može imati samo jednu aktivnost u određenom vremenu (ne može biti na dva mjesta odjednom).
+
+---
+
+### **Troškovi**
+
+* Troškovi se dijele na:
+
+  * **Financijske** (hrana, plaće, popravci)
+  * **Radne sate** (broj sati i satnica za obavljene poslove)
+* Potrebno je generirati izvješće s troškovima po životinjama te označiti na što se najviše troši.
+
+---
+
+### **Posjete**
+
+* Posjete mogu biti:
+
+  * **Individualne** (ne evidentiraju se)
+  * **Grupne** (evidentiraju se jer zahtijevaju vodiča)
+* Jedna grupa = jedan vodič.
+* Vodiči se biraju prema kvalifikacijama i ocjenama (od najboljih prema lošijima).
+* Za svaku grupu vodi se izvješće o radu vodiča i terminu posjete.
+
+---
+
+### **Incidenti**
+
+* Evidentiraju se događaji poput:
+
+  * Vandalizma
+  * Vremenskih nepogoda
+  * Nesreća posjetitelja ili životinja
+* Svaki incident sadrži:
+
+  * Datum
+  * Opis
+  * Lokaciju/nastambu
+  * Životinje koje su zahvaćene
+  * Razinu ozbiljnosti za životinju (opasno, rizično, bezopasno)
+  * Razinu oštećenosti nastambe (kritično, visoka, umjerena, niska, bez oštećenja)
+* Moguće je evidentirati radove i troškove povezane s rješavanjem incidenta.
+
+---
+
+### **Dodatno**
+
+* Aplikacija **ne koristi korisničke račune** — pristup imaju samo ovlaštene osobe.
+* Softver se može kasnije **prodavati drugim zoološkim vrtovima** uz mogućnost nadogradnje.
+
+---
+
+Želiš da ti ovaj finalni opis formatiram kao **službeni dokument (Word ili PDF)** s naslovnicom i podnaslovima za predaju na fakultetu?

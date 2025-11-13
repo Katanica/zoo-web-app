@@ -1,0 +1,158 @@
+# 🦁 Specifikacija aplikacije za upravljanje zoološkim vrtom
+
+## 1. Opći opis
+
+Aplikacija služi za **upravljanje i evidenciju podataka u zoološkom vrtu**.  
+Glavni cilj je omogućiti praćenje životinja, nastambi, zaposlenika, troškova, posjetitelja i incidenata na **jednostavan i automatiziran način**.
+
+Sustav treba biti **optimalan i prilagodljiv drugim zoološkim vrtovima**, a ne ograničen na jedan.
+
+---
+
+## 2. Ciljevi sustava
+
+- Evidencija životinja, skupina i nastambi  
+- Automatizacija svakodnevnih procesa (hranjenje, čišćenje, nadopuna vode, planiranje obaveza)  
+- Evidencija zaposlenika, vodiča i njihovih smjena, kvalifikacija i sati rada  
+- Evidencija troškova po životinji, skupini ili nastambi  
+- Upravljanje posjetama grupa i vodičima  
+- Praćenje i dokumentacija incidenata  
+- Izvještaji i analitika troškova, sati rada i aktivnosti  
+
+---
+
+## 3. Funkcionalnosti sustava
+
+### 3.1. Upravljanje životinjama
+Evidencija pojedinačnih životinja i skupina (npr. kolonije, insekti).
+
+**Polja:**
+- Nadimak i ID broj  
+- Hrvatski i latinski naziv  
+- Link na Wikipediju  
+- Broj jedinki (za skupine)  
+- Način nabave (uz mogućnost *custom* unosa s komentarom i datumom)  
+- Deaktivacija zastarjelih podataka umjesto brisanja (uz navođenje razloga)  
+
+---
+
+### 3.2. Nastambe
+Svaka nastamba ima jedinstvenu oznaku (npr. `S51` za sisavce).
+
+**Evidencija uključuje:**
+- Geometriju nastambe (polje u bazi)  
+- Uvjete (sunčano/hladno, vlažno/suho itd.)  
+- Predmete unutar nastambe (igračke, pribor)  
+- Životinje koje borave u nastambi  
+
+**Pravilo:**
+- Jedna skupina životinja → jedna nastamba  
+- Jedna nastamba → može imati više skupina  
+
+---
+
+### 3.3. Evidencija obaveza
+
+Evidencija svih aktivnosti i obaveza: hranjenje, pregled, čišćenje, planiranje, obavljanje, otkazivanje, odgađanje.
+
+**Polja:**
+- Naziv i opis obaveze  
+- Datum i vrijeme  
+- Dodijeljeni radnik  
+- Status (*planirano, u tijeku, završeno, odgođeno, otkazano*)  
+- Razlog izmjene statusa  
+- Mogućnost automatskog ponavljanja obaveza (npr. hranjenje svaki dan u 12h)  
+
+---
+
+### 3.4. Zaposlenici
+
+**Evidencija radnika:**
+- Ime, prezime, e-mail, telefon (obavezno)  
+- Obrazovanje i kvalifikacije (filtriranje po poslovima)  
+- Status (stalni ili privremeni)  
+- Licence i diplome (s datumima valjanosti)  
+- Evidencija smjena (prva, druga), bolovanja i godišnjih odmora  
+- Izvještaji o satima rada i troškovima po životinji ili zadatku  
+
+---
+
+### 3.5. Troškovi
+
+Svaka životinja i skupina imaju povezane troškove održavanja.
+
+**Troškovi se iskazuju:**
+- Novčano  
+- U satima rada  
+
+**Izvještaji:**
+- Po životinji, skupini ili nastambi  
+- Sortirano po ukupnom trošku  
+
+---
+
+### 3.6. Posjetioci i vodiči
+
+Evidencija **grupa posjetitelja** (individualni posjeti se ne bilježe).
+
+**Za svaku grupu:**
+- Vodič, plan posjete, datum i trajanje  
+
+**Evidencija vodiča:**
+- Ime, status, satnica, obrazovanje i kompetencije  
+- Samo jedan vodič može biti dodijeljen jednoj grupi  
+- Izvještaj o satima rada vodiča na kraju mjeseca  
+
+---
+
+### 3.7. Incidenti
+
+Evidencija svih incidenata u zoološkom vrtu: vandalizam, povrede, vremenske nepogode, kvarovi, ozljede na radu i *custom* slučajevi.
+
+**Polja:**
+- Opis događaja  
+- Datum  
+- Pogođene nastambe i životinje (moguće više njih)  
+- Razina ozbiljnosti (*bezazleno / blago opasno / značajno opasno po život*)  
+- Trošak i proces popravka  
+- Mogućnost unosa fotografija i statusa popravka  
+
+---
+
+## 4. Model baze podataka (osnovni zahtjevi)
+
+Baza podataka mora sadržavati sljedeće osnovne entitete:
+
+| Entitet | Opis |
+|----------|------|
+| Životinja | Evidencija pojedinačnih životinja |
+| Skupina | Povezuje više životinja istog tipa |
+| Nastamba | Fizički prostor u kojem borave životinje |
+| Obaveza | Aktivnosti i zadaci |
+| Radnik | Zaposlenici zoološkog vrta |
+| Vodič | Osobe zadužene za vođenje grupa |
+| Grupa posjetitelja | Organizirane posjete |
+| Incident | Evidencija nepredviđenih događaja |
+| Trošak | Financijska i radna potrošnja |
+
+Svaki entitet mora imati:
+- Jedinstveni ID  
+- Povezanost s drugim tablicama prema pravilima relacija (`1:N`, `N:M` gdje je potrebno)  
+
+---
+
+## 5. Dodatni zahtjevi
+
+- Automatizacija rutinskih procesa (hranjenje, evidencija troškova, obavijesti)  
+- Filtriranje i pretraga podataka po kategorijama (životinje, nastambe, radnici, troškovi)  
+- Izvještaji u **PDF** ili **Excel** formatu  
+- Pristupne razine korisnika (*administrator, radnik, vodič*)  
+- Sigurnosne kopije baze podataka i zabrana brisanja ključnih evidencija (samo deaktivacija)  
+
+---
+
+## 6. Zaključak
+
+Ova aplikacija ima za cilj omogućiti **potpunu digitalnu kontrolu nad funkcioniranjem zoološkog vrta** — od evidencije životinja do upravljanja ljudskim resursima, troškovima i incidentima.  
+
+Sustav treba biti **jednostavan za korištenje**, **modularan** i **lako prilagodljiv** različitim zoološkim ustanovama.
