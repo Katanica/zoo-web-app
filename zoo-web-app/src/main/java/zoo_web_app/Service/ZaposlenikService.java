@@ -1,7 +1,5 @@
 package zoo_web_app.Service;
 
-import zoo_web_app.Entity.Zaposlenik;
-import zoo_web_app.Repository.ZaposlenikRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;

@@ -1,7 +1,9 @@
 package zoo_web_app.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import zoo_web_app.Entity.Karakteristika;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface KarakteristikaRepository extends JpaRepository<Karakteristika, Long>{
+@Repository
+public interface KarakteristikaRepository extends JpaRepository<Karakteristika, Long> {
 }

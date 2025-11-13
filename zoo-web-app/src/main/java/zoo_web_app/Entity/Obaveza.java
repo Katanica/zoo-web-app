@@ -1,54 +1,47 @@
 package zoo_web_app.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.DayOfWeek;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "OBAVEZA")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-
-
+@AllArgsConstructor
 public class Obaveza {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_obaveze")
     private Long id;
-    @Enumerated(EnumType.STRING)
+
+    @ManyToOne
+    @JoinColumn(name = "id_tipa", nullable = false)
     private TipObaveze tip;
 
-    @Enumerated(EnumType.STRING)
-    private StatusObaveze status = StatusObaveze.PLANIRANA;
-
-    private String opis; // npr Hranjenje lavova, Veterinarski pregled itdddd
-
-
-    // vrijeme kad treba biti obavljena ( moze biti i null )
-
-    private LocalDateTime pocetak;
-    private LocalDateTime kraj;
-
-    //radnik koji je zaduzen za obavezu ( moze biti null dok ga ne odredis)
+    @ManyToOne
+    @JoinColumn(name = "id_statusa", nullable = false)
+    private StatusObaveze status;
 
     @ManyToOne
-    @JoinColumn(name = " zaposlenik_id")
-    private Zaposlenik zaposlenik;
-
-    //povezivanje sa zivotinjom ili nastambom
+    @JoinColumn(name = "id_radnika")
+    private Radnik radnik;  // moze biti null
 
     @ManyToOne
-    @JoinColumn(name = "zivotinja_id")
-    private Zivotinja zivotinja;
+    @JoinColumn(name = "id_jedinke")
+    private Jedinka jedinka;
 
     @ManyToOne
-    @JoinColumn(name = "nastamba_id")
-    private Nastamba nastamba;
+    @JoinColumn(name = "id_skupine")
+    private Skupina skupina;
 
+    @Column(name = "datum_od")
+    private LocalDateTime datumOd;
 
+    @Column(name = "datum_do")
+    private LocalDateTime datumDo;
 
+    @Column(name = "komentar")
+    private String komentar;
 }

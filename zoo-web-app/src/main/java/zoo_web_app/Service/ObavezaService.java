@@ -2,11 +2,7 @@ package zoo_web_app.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import zoo_web_app.Entity.Obaveza;
-import zoo_web_app.Entity.StatusObaveze;
 import zoo_web_app.Repository.NastambaRepository;
-import zoo_web_app.Repository.ObavezaRepository;
-import zoo_web_app.Repository.ZivotinjaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
