@@ -1,57 +1,53 @@
 package zoo_web_app.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import zoo_web_app.Repository.KarakteristikaRepository;
-import zoo_web_app.Repository.NastambaRepository;
+import zoo_web_app.Entity.Nastamba;
+import zoo_web_app.Service.NastambaService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/nastamba")
+@RequestMapping("/api/nastambe")
 public class NastambaController {
-    @Autowired
-    private NastambaRepository nastambaRepository;
 
-    @Autowired
-    private KarakteristikaRepository karakteristikaRepository;
+    private final NastambaService nastambaService;
 
-    @Autowired
-    private ZivotinjaRepository zivotinjaRepository;
+    public NastambaController(NastambaService nastambaService) {
+        this.nastambaService = nastambaService;
+    }
 
+    // GET ALL
     @GetMapping
-    public List<Nastamba> getAll(){
-        return nastambaRepository.findAll();
+    public ResponseEntity<List<Nastamba>> getAll() {
+        return ResponseEntity.ok(nastambaService.findAll());
     }
 
+    // GET BY ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Nastamba> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(nastambaService.findById(id));
+    }
+
+    // CREATE
     @PostMapping
-    public Nastamba add(@RequestBody Map<String, Object> body){
-        String oznaka = (String) body.get("oznaka");
-        String geometrija = (String) body.get("geometrija");
-
-        List<Long> karaktIds = (List<Long>) body.get("karakteristikeIds");
-        List<Long> zivotinjeIds = (List<Long>) body.get("zivotinjeIds");
-
-        Nastamba n = new Nastamba();
-
-        n.setOznaka(oznaka);
-        n.setGeometrija(geometrija);
-
-        List<Karakteristika> karakteristike = karaktIds != null ? karakteristikaRepository.findAllById(karaktIds) : List.of();
-        n.setKarakteristike(karakteristike);
-
-        List<Zivotinja> zivotinje = zivotinjeIds != null ? zivotinjaRepository.findAllById(zivotinjeIds) : List.of();
-        n.setZivotinje(zivotinje);
-
-        System.out.println("ZIVOTINJE" + zivotinje);
-
-        return nastambaRepository.save(n);
+    public ResponseEntity<Nastamba> create(@RequestBody Nastamba nastamba) {
+        return ResponseEntity.ok(nastambaService.create(nastamba));
     }
 
+    // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<Nastamba> update(
+            @PathVariable Long id,
+            @RequestBody Nastamba updated
+    ) {
+        return ResponseEntity.ok(nastambaService.update(id, updated));
+    }
+
+    // DELETE
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id){
-        nastambaRepository.deleteById(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        nastambaService.delete(id);
+        return ResponseEntity.noContent().build();
     }
-
 }
