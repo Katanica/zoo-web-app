@@ -1,9 +1,9 @@
 package zoo_web_app.Controller;
 
-import zoo_web_app.Entity.Jedinka;
-import zoo_web_app.Service.JedinkaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zoo_web_app.Entity.Jedinka;
+import zoo_web_app.Service.JedinkaService;
 
 import java.util.List;
 

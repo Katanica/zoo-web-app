@@ -1,9 +1,9 @@
 package zoo_web_app.Service.impl;
 
+import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Jedinka;
 import zoo_web_app.Repository.JedinkaRepository;
 import zoo_web_app.Service.JedinkaService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,8 +23,7 @@ public class JedinkaServiceImpl implements JedinkaService {
 
     @Override
     public Jedinka findById(Long id) {
-        return jedinkaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Jedinka nije pronađena: " + id));
+        return jedinkaRepository.findById(id).orElseThrow(() -> new RuntimeException("Jedinka nije pronađena: " + id));
     }
 
     @Override

@@ -13,18 +13,18 @@ public class KarakteristikaController {
     private KarakteristikaRepository karakteristikaRepository;
 
     @PostMapping
-    public Karakteristika add(@RequestBody Karakteristika karakteristika){
+    public Karakteristika add(@RequestBody Karakteristika karakteristika) {
         System.out.println(karakteristika);
         return karakteristikaRepository.save(karakteristika);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id){
+    public void deleteById(@PathVariable Long id) {
         karakteristikaRepository.deleteById(id);
     }
 
     @GetMapping
-    public List<Karakteristika> getAll(){
+    public List<Karakteristika> getAll() {
         return karakteristikaRepository.findAll();
     }
 }
