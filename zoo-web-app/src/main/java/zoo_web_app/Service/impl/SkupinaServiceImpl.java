@@ -13,6 +13,7 @@ public class SkupinaServiceImpl implements SkupinaService {
     private final SkupinaRepository skupinaRepository;
 
     public SkupinaServiceImpl(SkupinaRepository skupinaRepository) {
+
         this.skupinaRepository = skupinaRepository;
     }
 
@@ -56,18 +57,3 @@ public class SkupinaServiceImpl implements SkupinaService {
         skupinaRepository.delete(s);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
