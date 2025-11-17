@@ -41,9 +41,6 @@ public class RadnikServiceImpl implements RadnikService {
         r.setPrezime(updated.getPrezime());
         r.setTelefon(updated.getTelefon());
         r.setEmail(updated.getEmail());
-        r.setObrazovanja(updated.getObrazovanja());
-        r.setObaveze(updated.getObaveze());
-        r.setGrupe(updated.getGrupe());
 
         return radnikRepository.save(r);
     }
