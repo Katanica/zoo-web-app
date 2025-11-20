@@ -36,7 +36,6 @@ public class IncidentSkupinaServiceImpl implements IncidentSkupinaService {
     public IncidentSkupina update(Long id, IncidentSkupina updated) {
         IncidentSkupina is = findById(id);
 
-        is.setId(updated.getId());
         is.setIncident(updated.getIncident());
         is.setSkupina(updated.getSkupina());
         is.setRazinaStete(updated.getRazinaStete());
