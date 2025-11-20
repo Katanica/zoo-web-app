@@ -35,7 +35,6 @@ public class ObavezaServiceImpl implements ObavezaService {
     public Obaveza update(Long id, Obaveza updated) {
         Obaveza o = findById(id);
 
-        o.setId(updated.getId());
         o.setTip(updated.getTip());
         o.setStatus(updated.getStatus());
         o.setRadnik(updated.getRadnik());

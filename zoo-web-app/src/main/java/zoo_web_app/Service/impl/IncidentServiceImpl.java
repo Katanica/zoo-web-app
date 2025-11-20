@@ -35,7 +35,6 @@ public class IncidentServiceImpl implements IncidentService {
     public Incident update(Long id, Incident updated) {
         Incident i = findById(id);
 
-        i.setId(updated.getId());
         i.setVrsta(updated.getVrsta());
         i.setDatum(updated.getDatum());
         i.setOpis(updated.getOpis());

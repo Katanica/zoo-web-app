@@ -36,7 +36,6 @@ public class RadnikServiceImpl implements RadnikService {
     public Radnik update(Long id, Radnik updated) {
         Radnik r = findById(id);
 
-        r.setId(updated.getId());
         r.setIme(updated.getIme());
         r.setPrezime(updated.getPrezime());
         r.setTelefon(updated.getTelefon());

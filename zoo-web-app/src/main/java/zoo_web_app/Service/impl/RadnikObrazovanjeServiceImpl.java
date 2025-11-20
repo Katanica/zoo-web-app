@@ -36,7 +36,6 @@ public class RadnikObrazovanjeServiceImpl implements RadnikObrazovanjeService {
     public RadnikObrazovanje update(Long id, RadnikObrazovanje updated) {
         RadnikObrazovanje ro = findById(id);
 
-        ro.setId(updated.getId());
         ro.setRadnik(updated.getRadnik());
         ro.setObrazovanje(updated.getObrazovanje());
         ro.setDatumStjecanja(updated.getDatumStjecanja());
