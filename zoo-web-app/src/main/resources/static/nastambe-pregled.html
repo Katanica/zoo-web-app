@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZOO WEB APP - Nastambe</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: 0.3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .back-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        .manji-input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .veci-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            transition: 0.3s;
+        }
+
+        .veci-button:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        .x-button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        .karakteristika {
+            display: inline-flex;
+            align-items: center;
+            background: var(--light);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            margin: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group {
+            margin: 0.5rem 0;
+        }
+
+        .checkbox-group label {
+            display: block;
+            margin: 0.4rem 0;
+            font-size: 0.95rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        .nastamba-card {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary);
+            position: relative;
+        }
+
+        .delete-nastamba {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .delete-nastamba:hover {
+            background: #c0392b;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">POČETNA</a>
+    <h1>ZOO WEB APP - PODACI O NASTAMBAMA</h1>
+</header>
+
+<div class="container">
+
+    <!-- TRENUTNE NASTAMBE -->
+    <div class="card full-width">
+        <h3>Trenutne nastambe</h3>
+        <div id="trenutne-nastambe"></div>
+    </div>
+
+</div>
+
+<script>
+    const API_URL_K = "http://localhost:8080/karakteristike";
+    const API_URL_N = "http://localhost:8080/nastamba";
+    const API_URL_Z = "http://localhost:8080/api/zivotinje";
+
+    async function prikaziKarakteristike() {
+        const res = await fetch(API_URL_K);
+        const data = await res.json();
+
+        const lista = document.getElementById("lista-karakteristika");
+        const ponuda = document.getElementById("ponuda-karakteristika");
+        lista.innerHTML = "";
+        ponuda.innerHTML = "";
+
+        data.forEach(k => {
+            // Lista za brisanje
+            const span = document.createElement("span");
+            span.className = "karakteristika";
+            span.innerHTML = `${k.naziv_karakteristike} `;
+            const btn = document.createElement("button");
+            btn.className = "x-button";
+            btn.innerHTML = "×";
+            btn.onclick = async () => {
+                await fetch(`${API_URL_K}/${k.id_karakteristike}`, { method: "DELETE" });
+                prikaziKarakteristike();
+            };
+            span.appendChild(btn);
+            lista.appendChild(span);
+
+            // Checkbox za nastambu
+            const label = document.createElement("label");
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.value = k.id_karakteristike;
+            label.appendChild(cb);
+            label.append(` ${k.naziv_karakteristike}`);
+            ponuda.appendChild(label);
+        });
+    }
+    async function prikaziZivotinje() {
+        const res = await fetch(API_URL_Z);
+        const data = await res.json();
+        const ponuda = document.getElementById("ponuda-zivotinja");
+        ponuda.innerHTML = "";
+
+        data.forEach(z => {
+            const label = document.createElement("label");
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.value = z.id;
+            label.appendChild(cb);
+            label.append(` ${z.ime}`);
+            ponuda.appendChild(label);
+        });
+    }
+
+    async function prikaziNastambe() {
+        const res = await fetch(API_URL_N);
+        const data = await res.json();
+        const container = document.getElementById("trenutne-nastambe");
+        container.innerHTML = "";
+
+        if (data.length === 0) {
+            container.innerHTML = "<p style='color: #777; text-align: center;'>Nema dodanih nastambi.</p>";
+            return;
+        }
+
+        data.forEach(n => {
+            const div = document.createElement("div");
+            div.className = "nastamba-card";
+
+            let html = `<strong>Oznaka:</strong> ${n.oznaka}<br>`;
+            html += `<strong>Geometrija:</strong> ${n.geometrija}<br>`;
+            html += `<strong>Karakteristike:</strong> ${n.karakteristike.map(k => k.naziv_karakteristike).join(", ") || "Nema"}<br>`;
+            html += `<strong>Životinje:</strong> ${n.zivotinje.map(z => z.ime).join(", ") || "Nema"}`;
+
+            div.innerHTML = html;
+
+            const btn = document.createElement("button");
+            btn.className = "delete-nastamba";
+            btn.innerHTML = "Obriši";
+            btn.onclick = async () => {
+                if (confirm("Sigurno želiš obrisati ovu nastambu?")) {
+                    await fetch(`${API_URL_N}/${n.id_nastambe}`, { method: "DELETE" });
+                    prikaziNastambe();
+                }
+            };
+            div.appendChild(btn);
+            container.appendChild(div);
+        });
+    }
+
+
+    // Inicijalizacija
+    document.addEventListener("DOMContentLoaded", () => {
+        prikaziKarakteristike();
+        prikaziZivotinje();
+        prikaziNastambe();
+    });
+</script>
+</body>
+</html>
