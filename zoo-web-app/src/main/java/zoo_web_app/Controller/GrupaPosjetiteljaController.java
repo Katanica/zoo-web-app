@@ -8,7 +8,7 @@ import zoo_web_app.Service.GrupaPosjetiteljaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/grupaPosjetitelja")
+@RequestMapping("/api/grupaPosjetitelja")
 public class GrupaPosjetiteljaController {
 
     private final GrupaPosjetiteljaService grupaPosjetiteljaService;
