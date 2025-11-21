@@ -8,7 +8,7 @@ import zoo_web_app.Service.NastambaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/nastambe")
+@RequestMapping("/api/nastambe")
 public class NastambaController {
 
     private final NastambaService nastambaService;
