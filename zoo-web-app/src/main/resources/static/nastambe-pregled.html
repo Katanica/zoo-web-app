@@ -203,7 +203,7 @@
 
 <script>
     const API_URL_K = "http://localhost:8080/karakteristike";
-    const API_URL_N = "http://localhost:8080/nastamba";
+    const API_URL_N = "http://localhost:8080/nastambe";
     const API_URL_Z = "http://localhost:8080/api/zivotinje";
 
     async function prikaziKarakteristike() {
@@ -264,7 +264,7 @@
         container.innerHTML = "";
 
         if (data.length === 0) {
-            container.innerHTML = "<p style='color: #777; text-align: center;'>Nema dodanih nastambi.</p>";
+            container.innerHTML = "<p style='color:#777;text-align:center;'>Nema dodanih nastambi.</p>";
             return;
         }
 
@@ -272,10 +272,12 @@
             const div = document.createElement("div");
             div.className = "nastamba-card";
 
-            let html = `<strong>Oznaka:</strong> ${n.oznaka}<br>`;
-            html += `<strong>Geometrija:</strong> ${n.geometrija}<br>`;
-            html += `<strong>Karakteristike:</strong> ${n.karakteristike.map(k => k.naziv_karakteristike).join(", ") || "Nema"}<br>`;
-            html += `<strong>Životinje:</strong> ${n.zivotinje.map(z => z.ime).join(", ") || "Nema"}`;
+            let html = `
+            <strong>Oznaka:</strong> ${n.oznaka}<br>
+            <strong>Geometrija:</strong> ${n.geometrija}<br>
+            <strong>Karakteristike:</strong> ${n.karakteristike?.map(k => k.naziv_karakteristike).join(", ") || "Nema"}<br>
+            <strong>Životinje:</strong> ${n.zivotinje?.map(z => z.ime).join(", ") || "Nema"}
+        `;
 
             div.innerHTML = html;
 
@@ -284,10 +286,11 @@
             btn.innerHTML = "Obriši";
             btn.onclick = async () => {
                 if (confirm("Sigurno želiš obrisati ovu nastambu?")) {
-                    await fetch(`${API_URL_N}/${n.id_nastambe}`, { method: "DELETE" });
+                    await fetch(`${API_URL_N}/${n.id}`, { method: "DELETE" });
                     prikaziNastambe();
                 }
             };
+
             div.appendChild(btn);
             container.appendChild(div);
         });

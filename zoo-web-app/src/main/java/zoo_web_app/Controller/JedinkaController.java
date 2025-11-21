@@ -8,7 +8,7 @@ import zoo_web_app.Service.JedinkaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/jedinke")
+@RequestMapping("/jedinke")
 public class JedinkaController {
 
     private final JedinkaService jedinkaService;

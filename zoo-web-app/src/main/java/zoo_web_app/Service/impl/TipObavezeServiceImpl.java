@@ -1,5 +1,6 @@
 package zoo_web_app.Service.impl;
 
+import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Obaveza;
 import zoo_web_app.Entity.TipObaveze;
 import zoo_web_app.Repository.TipObavezeRepository;
@@ -7,6 +8,7 @@ import zoo_web_app.Service.TipObavezeService;
 
 import java.util.List;
 
+@Service
 public class TipObavezeServiceImpl implements TipObavezeService {
 
     private final TipObavezeRepository repository;

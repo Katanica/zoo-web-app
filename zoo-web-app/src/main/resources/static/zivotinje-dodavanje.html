@@ -141,8 +141,10 @@
     <!-- DODAJ ŽIVOTINJU -->
     <div class="card full-width">
         <h3>Dodaj životinju</h3>
-
-        <h4>Nadimak / ime:</h4>
+        <h4>Jedinka ili skupina:</h4>
+        <input type="radio" id="radio-jedinka" name="kolicina">&nbsp;Jedinka&nbsp;
+        <input type="radio" id="radio-skupina" name="kolicina">&nbsp;Skupina
+        <h4 id="input-ime-naslov">Nadimak / ime:</h4>
         <input id="input-ime" class="manji-input" type="text" placeholder="npr. Boris, Leo...">
 
         <h4>Identifikator:</h4>
@@ -168,16 +170,33 @@
 
     <!-- LISTA ŽIVOTINJA -->
     <div class="card full-width">
-        <h3>Trenutne životinje</h3>
-        <div id="trenutne-zivotinje"></div>
+        <h3>Trenutne jednike:</h3>
+        <div id="trenutne-jedinke"></div>
+    </div>
+    <div class="card full-width">
+        <h3>Trenutne skupine:</h3>
+        <div id="trenutne-skupine"></div>
     </div>
 
 </div>
 
 <script>
-    const API_Z = "http://localhost:8080/api/zivotinje";
-    const API_NAST = "http://localhost:8080/nastamba";
+    const API_J = "http://localhost:8080/jedinke";
+    const API_NAST = "http://localhost:8080/nastambe";
     const API_NACIN = "http://localhost:8080/nacinNabave";
+
+    const radioJedinka = document.getElementById("radio-jedinka");
+
+    document.getElementById("radio-skupina").onclick =  () => {
+        document.getElementById("input-ime").value = "";
+        document.getElementById("input-ime").style.display = "none";
+        document.getElementById("input-ime-naslov").style.display = "none";
+    }
+    document.getElementById("radio-jedinka").onclick =  () => {
+        document.getElementById("input-ime").value = "";
+        document.getElementById("input-ime").style.display = "block";
+        document.getElementById("input-ime-naslov").style.display = "block";
+    }
 
     async function prikaziNastambe() {
         const res = await fetch(API_NAST);
@@ -190,7 +209,7 @@
             const cb = document.createElement("input");
             cb.type = "radio";
             cb.name = "nastamba";
-            cb.value = n.id_nastambe;
+            cb.value = n.id;
             label.appendChild(cb);
             label.append(` ${n.oznaka}`);
             ponuda.appendChild(label);
@@ -211,21 +230,22 @@
         });
     }
 
-    async function prikaziZivotinje() {
-        const res = await fetch(API_Z);
+    async function prikaziJedinke() {
+        const res = await fetch(API_J);
         const data = await res.json();
-        const container = document.getElementById("trenutne-zivotinje");
+        const container = document.getElementById("trenutne-jedinke");
         container.innerHTML = "";
 
         data.forEach(z => {
             const div = document.createElement("div");
             div.className = "zivotinja-card";
 
-            let html = `<strong>Ime:</strong> ${z.ime}<br>`;
-            html += `<strong>Identifikator:</strong> ${z.identifikator}<br>`;
+            // NEDOVRSENO
+            let html = `<strong>Ime:</strong> ${z.nadimak}<br>`;
             html += `<strong>Vrsta:</strong> ${z.hrvatskiNaziv} (${z.latinskiNaziv})<br>`;
             html += `<strong>Nastamba:</strong> ${z.nastamba ? z.nastamba.oznaka : "N/A"}<br>`;
             html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.naziv : "N/A"}`;
+            // NEDOVRSENO
 
             div.innerHTML = html;
 
@@ -250,11 +270,35 @@
         const nacinId = document.getElementById("input-nacin").value;
         const nastId = document.querySelector("input[name='nastamba']:checked");
 
-        if (!ime || !ident || !lat || !hrv || !nastId) {
+        if (!ime/* || !ident || !lat || !hrv || !nastId*/) {
             alert("Sva polja osim linka su obavezna!");
             return;
         }
 
         await fetch(API_Z, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                ime,
+                ident,
+                lat,
+                hrv,
+                link,
+                nacinId,
+                nastId,
+            })
+        });
+        document.getElementById("input-ime").value = "";
+        document.getElementById("input-identifikator").value = "";
+        document.getElementById("input-latinski").value = "";
+        document.getElementById("input-hrvatski").value = "";
+        document.getElementById("input-link").value = "";
+        document.getElementById("input-nacin").value = "";
+        document.querySelector("input[name='nastamba']").forEach(r=>r.checked=false);
+    }
+
+
+    prikaziNastambe();
+</script>
+</body>
+</html>
