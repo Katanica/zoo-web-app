@@ -226,7 +226,7 @@
 
 <script>
     const API_URL_K = "http://localhost:8080/karakteristike";
-    const API_URL_N = "http://localhost:8080/nastamba";
+    const API_URL_N = "http://localhost:8080/nastambe";
     const API_URL_Z = "http://localhost:8080/api/zivotinje";
 
     async function prikaziKarakteristike() {
@@ -239,25 +239,24 @@
         ponuda.innerHTML = "";
 
         data.forEach(k => {
-            // Lista za brisanje
             const span = document.createElement("span");
             span.className = "karakteristika";
             span.innerHTML = `${k.naziv_karakteristike} `;
+
             const btn = document.createElement("button");
             btn.className = "x-button";
             btn.innerHTML = "×";
             btn.onclick = async () => {
-                await fetch(`${API_URL_K}/${k.id_karakteristike}`, { method: "DELETE" });
+                await fetch(`${API_URL_K}/${k.id}`, { method: "DELETE" });
                 prikaziKarakteristike();
             };
             span.appendChild(btn);
             lista.appendChild(span);
 
-            // Checkbox za nastambu
             const label = document.createElement("label");
             const cb = document.createElement("input");
             cb.type = "checkbox";
-            cb.value = k.id_karakteristike;
+            cb.value = k.id;
             label.appendChild(cb);
             label.append(` ${k.naziv_karakteristike}`);
             ponuda.appendChild(label);
@@ -274,6 +273,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ naziv_karakteristike: naziv })
         });
+
         input.value = "";
         prikaziKarakteristike();
     }
@@ -302,7 +302,7 @@
         container.innerHTML = "";
 
         if (data.length === 0) {
-            container.innerHTML = "<p style='color: #777; text-align: center;'>Nema dodanih nastambi.</p>";
+            container.innerHTML = "<p style='color:#777;text-align:center;'>Nema dodanih nastambi.</p>";
             return;
         }
 
@@ -310,10 +310,12 @@
             const div = document.createElement("div");
             div.className = "nastamba-card";
 
-            let html = `<strong>Oznaka:</strong> ${n.oznaka}<br>`;
-            html += `<strong>Geometrija:</strong> ${n.geometrija}<br>`;
-            html += `<strong>Karakteristike:</strong> ${n.karakteristike.map(k => k.naziv_karakteristike).join(", ") || "Nema"}<br>`;
-            html += `<strong>Životinje:</strong> ${n.zivotinje.map(z => z.ime).join(", ") || "Nema"}`;
+            let html = `
+            <strong>Oznaka:</strong> ${n.oznaka}<br>
+            <strong>Geometrija:</strong> ${n.geometrija}<br>
+            <strong>Karakteristike:</strong> ${n.karakteristike?.map(k => k.naziv_karakteristike).join(", ") || "Nema"}<br>
+            <strong>Životinje:</strong> ${n.zivotinje?.map(z => z.ime).join(", ") || "Nema"}
+        `;
 
             div.innerHTML = html;
 
@@ -322,10 +324,11 @@
             btn.innerHTML = "Obriši";
             btn.onclick = async () => {
                 if (confirm("Sigurno želiš obrisati ovu nastambu?")) {
-                    await fetch(`${API_URL_N}/${n.id_nastambe}`, { method: "DELETE" });
+                    await fetch(`${API_URL_N}/${n.id}`, { method: "DELETE" });
                     prikaziNastambe();
                 }
             };
+
             div.appendChild(btn);
             container.appendChild(div);
         });
@@ -334,10 +337,14 @@
     async function dodajNastambu() {
         const oznaka = document.getElementById("input-oznake").value.trim();
         const geometrija = document.getElementById("input-geometrije").value.trim();
-        const karakIds = Array.from(document.querySelectorAll('#ponuda-karakteristika input:checked'))
-                              .map(cb => parseInt(cb.value));
-        const zivIds = Array.from(document.querySelectorAll('#ponuda-zivotinja input:checked'))
-                             .map(cb => parseInt(cb.value));
+
+        const karakIds = Array.from(
+            document.querySelectorAll('#ponuda-karakteristika input:checked')
+        ).map(cb => parseInt(cb.value));
+
+        const zivIds = Array.from(
+            document.querySelectorAll('#ponuda-zivotinja input:checked')
+        ).map(cb => parseInt(cb.value));
 
         if (!oznaka || !geometrija) {
             alert("Oznaka i geometrija su obavezni!");
@@ -358,10 +365,10 @@
         document.getElementById("input-oznake").value = "";
         document.getElementById("input-geometrije").value = "";
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-        await prikaziNastambe();
+
+        prikaziNastambe();
     }
 
-    // Inicijalizacija
     document.addEventListener("DOMContentLoaded", () => {
         prikaziKarakteristike();
         prikaziZivotinje();

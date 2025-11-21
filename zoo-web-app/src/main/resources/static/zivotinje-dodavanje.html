@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZOO WEB APP - Životinje</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        header { text-align: center; margin-bottom: 2rem; }
+        header h1 { font-size: 2.2rem; color: var(--primary); font-weight: 600; }
+
+        .back-btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: 0.3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .back-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        .manji-input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .veci-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            transition: 0.3s;
+        }
+        .veci-button:hover { background: #219a52; transform: translateY(-2px); }
+
+        .checkbox-group label {
+            display: block;
+            margin: 0.4rem 0;
+            font-size: 0.95rem;
+        }
+
+        .zivotinja-card {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary);
+            position: relative;
+        }
+
+        .delete-zivotinja {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .delete-zivotinja:hover { background: #c0392b; }
+
+        .full-width { grid-column: span 2; }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">POČETNA</a>
+    <h1>ZOO WEB APP - PODACI O ŽIVOTINJAMA</h1>
+</header>
+
+<div class="container">
+
+    <!-- DODAJ ŽIVOTINJU -->
+    <div class="card full-width">
+        <h3>Dodaj životinju</h3>
+
+        <h4>Nadimak / ime:</h4>
+        <input id="input-ime" class="manji-input" type="text" placeholder="npr. Boris, Leo...">
+
+        <h4>Identifikator:</h4>
+        <input id="input-identifikator" class="manji-input" type="text" placeholder="npr. M12, Z47...">
+
+        <h4>Latinski naziv:</h4>
+        <input id="input-latinski" class="manji-input" type="text" placeholder="npr. Panthera leo">
+
+        <h4>Hrvatski naziv:</h4>
+        <input id="input-hrvatski" class="manji-input" type="text" placeholder="npr. Lav">
+
+        <h4>Nastamba:</h4>
+        <div id="ponuda-nastambi" class="checkbox-group"></div>
+
+        <h4>Način nabave:</h4>
+        <select id="input-nacin" class="manji-input"></select>
+
+        <h4>Poveznica za više informacija:</h4>
+        <input id="input-link" class="manji-input" type="text" placeholder="URL članka o vrsti">
+
+        <button onclick="dodajZivotinju()" class="veci-button">Dodaj životinju</button>
+    </div>
+
+    <!-- LISTA ŽIVOTINJA -->
+    <div class="card full-width">
+        <h3>Trenutne životinje</h3>
+        <div id="trenutne-zivotinje"></div>
+    </div>
+
+</div>
+
+<script>
+    const API_Z = "http://localhost:8080/api/zivotinje";
+    const API_NAST = "http://localhost:8080/nastamba";
+    const API_NACIN = "http://localhost:8080/nacinNabave";
+
+    async function prikaziNastambe() {
+        const res = await fetch(API_NAST);
+        const data = await res.json();
+        const ponuda = document.getElementById("ponuda-nastambi");
+        ponuda.innerHTML = "";
+
+        data.forEach(n => {
+            const label = document.createElement("label");
+            const cb = document.createElement("input");
+            cb.type = "radio";
+            cb.name = "nastamba";
+            cb.value = n.id_nastambe;
+            label.appendChild(cb);
+            label.append(` ${n.oznaka}`);
+            ponuda.appendChild(label);
+        });
+    }
+
+    async function prikaziNacinNabave() {
+        const res = await fetch(API_NACIN);
+        const data = await res.json();
+        const select = document.getElementById("input-nacin");
+        select.innerHTML = "";
+
+        data.forEach(n => {
+            const opt = document.createElement("option");
+            opt.value = n.id;
+            opt.textContent = n.naziv;
+            select.appendChild(opt);
+        });
+    }
+
+    async function prikaziZivotinje() {
+        const res = await fetch(API_Z);
+        const data = await res.json();
+        const container = document.getElementById("trenutne-zivotinje");
+        container.innerHTML = "";
+
+        data.forEach(z => {
+            const div = document.createElement("div");
+            div.className = "zivotinja-card";
+
+            let html = `<strong>Ime:</strong> ${z.ime}<br>`;
+            html += `<strong>Identifikator:</strong> ${z.identifikator}<br>`;
+            html += `<strong>Vrsta:</strong> ${z.hrvatskiNaziv} (${z.latinskiNaziv})<br>`;
+            html += `<strong>Nastamba:</strong> ${z.nastamba ? z.nastamba.oznaka : "N/A"}<br>`;
+            html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.naziv : "N/A"}`;
+
+            div.innerHTML = html;
+
+            const btn = document.createElement("button");
+            btn.className = "delete-zivotinja";
+            btn.innerHTML = "Obriši";
+            btn.onclick = async () => {
+                await fetch(`${API_Z}/${z.id}`, { method: "DELETE" });
+                prikaziZivotinje();
+            };
+            div.appendChild(btn);
+            container.appendChild(div);
+        });
+    }
+
+    async function dodajZivotinju() {
+        const ime = document.getElementById("input-ime").value.trim();
+        const ident = document.getElementById("input-identifikator").value.trim();
+        const lat = document.getElementById("input-latinski").value.trim();
+        const hrv = document.getElementById("input-hrvatski").value.trim();
+        const link = document.getElementById("input-link").value.trim();
+        const nacinId = document.getElementById("input-nacin").value;
+        const nastId = document.querySelector("input[name='nastamba']:checked");
+
+        if (!ime || !ident || !lat || !hrv || !nastId) {
+            alert("Sva polja osim linka su obavezna!");
+            return;
+        }
+
+        await fetch(API_Z, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
