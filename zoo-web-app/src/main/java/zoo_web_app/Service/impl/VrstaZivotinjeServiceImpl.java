@@ -49,3 +49,4 @@ public class VrstaZivotinjeServiceImpl implements VrstaZivotinjeService {
         repository.delete(v);
     }
 }
+
