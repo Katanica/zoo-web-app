@@ -8,7 +8,7 @@ import zoo_web_app.Service.VrstaIncidentaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("vrsta-incidenta")
+@RequestMapping("/api/vrsta-incidenta")
 public class VrstaIncidentaController {
 
     private final VrstaIncidentaService vrstaIncidentaService;

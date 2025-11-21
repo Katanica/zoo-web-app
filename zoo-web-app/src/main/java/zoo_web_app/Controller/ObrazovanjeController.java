@@ -8,7 +8,7 @@ import zoo_web_app.Service.ObrazovanjeService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/obrazovanje")
+@RequestMapping("/api/obrazovanje")
 public class ObrazovanjeController {
 
     private final ObrazovanjeService obrazovanjeService;

@@ -8,7 +8,7 @@ import zoo_web_app.Service.RadnikService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/radnik")
+@RequestMapping("/api/radnik")
 public class RadnikController {
 
     private final RadnikService radnikService;

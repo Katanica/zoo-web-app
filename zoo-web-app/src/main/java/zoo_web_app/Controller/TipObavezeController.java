@@ -8,7 +8,7 @@ import zoo_web_app.Service.TipObavezeService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tipObaveza")
+@RequestMapping("/api/tipObaveza")
 public class TipObavezeController {
 
     private final TipObavezeService tipObavezeService;

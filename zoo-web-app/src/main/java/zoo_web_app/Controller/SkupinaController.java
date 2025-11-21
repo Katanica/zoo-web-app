@@ -8,7 +8,7 @@ import zoo_web_app.Service.SkupinaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/skupina")
+@RequestMapping("/api/skupina")
 public class SkupinaController {
 
     private final SkupinaService skupinaService;

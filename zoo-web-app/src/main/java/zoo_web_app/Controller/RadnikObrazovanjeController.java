@@ -8,7 +8,7 @@ import zoo_web_app.Service.RadnikObrazovanjeService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/radnikObrazovanje")
+@RequestMapping("/api/radnikObrazovanje")
 public class RadnikObrazovanjeController {
 
     private final RadnikObrazovanjeService radnikObrazovanjeService;

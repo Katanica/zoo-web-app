@@ -8,7 +8,7 @@ import zoo_web_app.Service.IncidentService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/incident")
+@RequestMapping("/api/incident")
 public class IncidentController {
 
     private final IncidentService incidentService;

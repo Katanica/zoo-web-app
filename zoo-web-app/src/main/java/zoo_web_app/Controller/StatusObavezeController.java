@@ -8,7 +8,7 @@ import zoo_web_app.Service.StatusObavezeService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/statusObaveza")
+@RequestMapping("/api/statusObaveza")
 public class StatusObavezeController {
 
     private final StatusObavezeService statusObavezeService;
