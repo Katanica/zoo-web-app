@@ -18,10 +18,10 @@ public class NacinNabave {
 
     @Column(name = "opis_nabave", nullable = false, unique = true)
     private String opisNabave;
-
+    /*
     @OneToMany(mappedBy = "nacinNabave")
     private List<Jedinka> jedinke;
 
     @OneToMany(mappedBy = "nacinNabave")
-    private List<Skupina> skupine;
+    private List<Skupina> skupine;*/
 }

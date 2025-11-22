@@ -32,9 +32,9 @@ public class NacinNabaveServiceImpl implements NacinNabaveService {
     public NacinNabave update(Long id, NacinNabave nacinNabave){
         NacinNabave nn = findById(id);
 
-        nn.setOpisNabave(nacinNabave.getOpisNabave());
+        nn.setOpisNabave(nacinNabave.getOpisNabave());/*
         nn.setJedinke(nacinNabave.getJedinke());
-        nn.setSkupine(nacinNabave.getSkupine());
+        nn.setSkupine(nacinNabave.getSkupine());*/
 
         return repository.save(nn);
     }
