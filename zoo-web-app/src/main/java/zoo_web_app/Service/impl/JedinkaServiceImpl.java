@@ -35,10 +35,13 @@ public class JedinkaServiceImpl implements JedinkaService {
     public Jedinka update(Long id, Jedinka updated) {
         Jedinka j = findById(id);
 
-        j.setVrsta(updated.getVrsta());
-        j.setNastamba(updated.getNastamba());
-        j.setNacinNabave(updated.getNacinNabave());
         j.setNadimak(updated.getNadimak());
+        j.setIdentifikator(updated.getIdentifikator());
+        j.setLatinskiNaziv(updated.getLatinskiNaziv());
+        j.setHrvatskiNaziv(updated.getHrvatskiNaziv());
+        j.setNastamba(updated.getNastamba());
+        j.setLink(updated.getLink());
+        j.setNacinNabave(updated.getNacinNabave());
         j.setAktivna(updated.isAktivna());
         j.setDatumNabave(updated.getDatumNabave());
         j.setDatumNeaktivnosti(updated.getDatumNeaktivnosti());

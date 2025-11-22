@@ -1,5 +1,6 @@
 package zoo_web_app.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -32,6 +33,7 @@ public class Nastamba {
     private List<NastambaInfrastruktura> infrastruktura;
 
     @OneToMany(mappedBy = "nastamba")
+    @JsonIgnore
     private List<Jedinka> jedinke;
 
     @OneToMany(mappedBy = "nastamba")

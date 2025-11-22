@@ -26,8 +26,5 @@ public class VrstaZivotinje {
     private String link;
 
     @OneToMany(mappedBy = "vrsta")
-    private List<Jedinka> jedinke;
-
-    @OneToMany(mappedBy = "vrsta")
     private List<Skupina> skupine;
 }

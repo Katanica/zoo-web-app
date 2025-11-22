@@ -165,7 +165,7 @@
         <h4>Poveznica za više informacija:</h4>
         <input id="input-link" class="manji-input" type="text" placeholder="URL članka o vrsti">
 
-        <button onclick="dodajZivotinju()" class="veci-button">Dodaj životinju</button>
+        <button onclick="dodajJedinku()" class="veci-button">Dodaj životinju</button>
     </div>
 
     <!-- LISTA ŽIVOTINJA -->
@@ -183,16 +183,17 @@
 <script>
     const API_J = "http://localhost:8080/jedinke";
     const API_NAST = "http://localhost:8080/nastambe";
-    const API_NACIN = "http://localhost:8080/nacinNabave";
+    const API_NACIN = "http://localhost:8080/nacin-nabave";
 
     const radioJedinka = document.getElementById("radio-jedinka");
+    const radioSkupina = document.getElementById("radio-skupina");
 
-    document.getElementById("radio-skupina").onclick =  () => {
+    radioSkupina.onclick =  () => {
         document.getElementById("input-ime").value = "";
         document.getElementById("input-ime").style.display = "none";
         document.getElementById("input-ime-naslov").style.display = "none";
     }
-    document.getElementById("radio-jedinka").onclick =  () => {
+    radioJedinka.onclick =  () => {
         document.getElementById("input-ime").value = "";
         document.getElementById("input-ime").style.display = "block";
         document.getElementById("input-ime-naslov").style.display = "block";
@@ -222,10 +223,18 @@
         const select = document.getElementById("input-nacin");
         select.innerHTML = "";
 
+        const optph = document.createElement("option");
+        optph.value = "";
+        optph.textContent = "Odaberi nacin nabave";
+        optph.disabled = true;
+        optph.selected = true;
+
+        select.appendChild(optph);
+
         data.forEach(n => {
             const opt = document.createElement("option");
             opt.value = n.id;
-            opt.textContent = n.naziv;
+            opt.textContent = n.opisNabave;
             select.appendChild(opt);
         });
     }
@@ -240,12 +249,12 @@
             const div = document.createElement("div");
             div.className = "zivotinja-card";
 
-            // NEDOVRSENO
+            // DOVRSIT OPIS NABAVE
             let html = `<strong>Ime:</strong> ${z.nadimak}<br>`;
             html += `<strong>Vrsta:</strong> ${z.hrvatskiNaziv} (${z.latinskiNaziv})<br>`;
-            html += `<strong>Nastamba:</strong> ${z.nastamba ? z.nastamba.oznaka : "N/A"}<br>`;
-            html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.naziv : "N/A"}`;
-            // NEDOVRSENO
+            // PROBLEM !!!! html += `<strong>Nastamba:</strong> ${z.nastamba ? z.nastamba.oznaka : "N/A"}<br>`;
+            // TAKODER VIDJET ZA IGNORE JSON!!! 
+            html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.opisNabave : "N/A"}`;
 
             div.innerHTML = html;
 
@@ -253,15 +262,15 @@
             btn.className = "delete-zivotinja";
             btn.innerHTML = "Obriši";
             btn.onclick = async () => {
-                await fetch(`${API_Z}/${z.id}`, { method: "DELETE" });
-                prikaziZivotinje();
+                await fetch(`${API_J}/${z.id}`, { method: "DELETE" });
+                await prikaziJedinke();
             };
             div.appendChild(btn);
             container.appendChild(div);
         });
     }
     //
-    async function dodajZivotinju() {
+    async function dodajJedinku() {
         const ime = document.getElementById("input-ime").value.trim();
         const ident = document.getElementById("input-identifikator").value.trim();
         const lat = document.getElementById("input-latinski").value.trim();
@@ -270,22 +279,22 @@
         const nacinId = document.getElementById("input-nacin").value;
         const nastId = document.querySelector("input[name='nastamba']:checked");
 
-        if (!ime/* || !ident || !lat || !hrv || !nastId*/) {
+        // NEDOVRSENO
+        if (!ime || !ident || !lat || !hrv || !nastId) {
             alert("Sva polja osim linka su obavezna!");
             return;
         }
-
-        await fetch(API_Z, {
+        await fetch(API_J, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
-                ime,
-                ident,
-                lat,
-                hrv,
-                link,
-                nacinId,
-                nastId,
+                nadimak: ime,
+                identifikator: ident,
+                latinskiNaziv: lat,
+                hrvatskiNaziv: hrv,
+                nastamba: {id: parseInt(nastId.value)},
+                nacinNabave: {id: parseInt(nacinId)},
+                link: link
             })
         });
         document.getElementById("input-ime").value = "";
@@ -294,10 +303,12 @@
         document.getElementById("input-hrvatski").value = "";
         document.getElementById("input-link").value = "";
         document.getElementById("input-nacin").value = "";
-        document.querySelector("input[name='nastamba']").forEach(r=>r.checked=false);
+        document.querySelectorAll("input[name='nastamba']").forEach(r=>r.checked=false);
+
+        await prikaziJedinke();
     }
-
-
+    prikaziNacinNabave();
+    prikaziJedinke();
     prikaziNastambe();
 </script>
 </body>
