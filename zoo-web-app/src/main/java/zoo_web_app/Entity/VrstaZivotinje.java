@@ -25,6 +25,6 @@ public class VrstaZivotinje {
     @Column(name = "link", length = 500)
     private String link;
 
-    @OneToMany(mappedBy = "vrsta")
-    private List<Skupina> skupine;
+    /*@OneToMany(mappedBy = "vrsta")
+    private List<Skupina> skupine;*/
 }

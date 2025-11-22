@@ -37,5 +37,6 @@ public class Nastamba {
     private List<Jedinka> jedinke;
 
     @OneToMany(mappedBy = "nastamba")
+    @JsonIgnore
     private List<Skupina> skupine;
 }

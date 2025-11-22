@@ -17,17 +17,25 @@ public class Skupina {
     @Column(name = "id_skupine")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_vrste", nullable = false)
-    private VrstaZivotinje vrsta;
+    @Column(name = "identifikator"/*, nullable = false*/)
+    private String identifikator;
+
+    @Column(name = "latinski_naziv"/*, nullable = false*/)
+    private String latinskiNaziv;
+
+    @Column(name = "hrvatski_naziv"/*, nullable = false*/)
+    private String hrvatskiNaziv;
 
     @ManyToOne
-    @JoinColumn(name = "id_nastambe", nullable = false)
+    @JoinColumn(name = "id_nastambe"/*, nullable = false*/)
     private Nastamba nastamba;
 
     @ManyToOne
-    @JoinColumn(name = "id_nabave", nullable = false)
+    @JoinColumn(name = "id_nabave"/*, nullable = false*/)
     private NacinNabave nacinNabave;
+
+    @Column(name="link")
+    private String link;
 
     @Column(name = "procijenjeni_broj")
     private Integer procijenjeniBroj;

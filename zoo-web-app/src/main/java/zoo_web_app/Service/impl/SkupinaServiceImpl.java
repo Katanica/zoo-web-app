@@ -37,9 +37,12 @@ public class SkupinaServiceImpl implements SkupinaService {
     public Skupina update(Long id, Skupina updated) {
         Skupina s = findById(id);
 
-        s.setVrsta(updated.getVrsta());
+        s.setIdentifikator(updated.getIdentifikator());
+        s.setLatinskiNaziv(updated.getLatinskiNaziv());
+        s.setHrvatskiNaziv(updated.getHrvatskiNaziv());
         s.setNastamba(updated.getNastamba());
         s.setNacinNabave(updated.getNacinNabave());
+        s.setLink(updated.getLink());
         s.setProcijenjeniBroj(updated.getProcijenjeniBroj());
         s.setDatumNabave(updated.getDatumNabave());
         s.setAktivna(updated.isAktivna());
