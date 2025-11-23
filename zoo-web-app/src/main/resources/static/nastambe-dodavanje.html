@@ -227,7 +227,8 @@
 <script>
     const API_URL_K = "http://localhost:8080/karakteristike";
     const API_URL_N = "http://localhost:8080/nastambe";
-    const API_URL_Z = "http://localhost:8080/api/zivotinje";
+    const API_URL_J = "http://localhost:8080/api/jedinke";
+    const API_URL_S = "http://localhost:8080/api/skupine"
 
     async function prikaziKarakteristike() {
         const res = await fetch(API_URL_K);
@@ -279,18 +280,30 @@
     }
 
     async function prikaziZivotinje() {
-        const res = await fetch(API_URL_Z);
-        const data = await res.json();
+        const resj = await fetch(API_URL_J);
+        const dataj = await resj.json();
+        const ress = await fetch(API_URL_S);
+        const datas = await ress.json();
+
         const ponuda = document.getElementById("ponuda-zivotinja");
         ponuda.innerHTML = "";
 
-        data.forEach(z => {
+        dataj.forEach(j => {
             const label = document.createElement("label");
             const cb = document.createElement("input");
             cb.type = "checkbox";
-            cb.value = z.id;
+            cb.value = j.id;
             label.appendChild(cb);
-            label.append(` ${z.ime}`);
+            label.append(` ${j.hrvatskiNaziv}  ${j.nadimak}`);
+            ponuda.appendChild(label);
+        });
+        datas.forEach(s => {
+            const label = document.createElement("label");
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.value = s.id;
+            label.appendChild(cb);
+            label.append(` ${s.hrvatskiNaziv}  ${s.identifikator}`);
             ponuda.appendChild(label);
         });
     }
