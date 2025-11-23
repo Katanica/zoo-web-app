@@ -40,6 +40,7 @@ public class RadnikServiceImpl implements RadnikService {
         r.setPrezime(updated.getPrezime());
         r.setTelefon(updated.getTelefon());
         r.setEmail(updated.getEmail());
+        r.setStatus(updated.getStatus());
 
         return radnikRepository.save(r);
     }
