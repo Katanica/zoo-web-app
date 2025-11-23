@@ -1,5 +1,6 @@
 package zoo_web_app.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -28,12 +29,18 @@ public class Radnik {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "status")
+    private String status;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "radnik")
     private List<RadnikObrazovanje> obrazovanja;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "radnik")
     private List<Obaveza> obaveze;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "vodic")
     private List<GrupaPosjetitelja> grupe;
 }
