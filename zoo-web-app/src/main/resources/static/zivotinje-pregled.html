@@ -258,21 +258,6 @@
 
             div.innerHTML = html;
 
-            let btn = document.createElement("button");
-            btn.className = "delete-zivotinja";
-            btn.innerHTML = "Obriši";
-            btn.onclick = async () => {
-                await fetch(`${API_J}/${z.id}`, {method: "DELETE"});
-                await prikaziJedinke();
-            };
-            div.appendChild(btn);
-
-            btn = document.createElement("button");
-            btn.className = "uredi-zivotinja";
-            btn.innerHTML = "Uredi";
-            btn.onclick = async () => uredi(1, z.id);
-            div.appendChild(btn);
-
             if(z.aktivna === true) containerAkt.appendChild(div);
             else containerNeakt.appendChild(div);
         });
@@ -298,24 +283,6 @@
             if(!s.aktivna) html += `<strong>Datum neaktivnosti:</strong> ${s.datumNeaktivnosti ? s.datumNeaktivnosti : "N/A"}&nbsp;&nbsp;&nbsp;<strong>Razlog neaktivnosti:</strong> ${s.razlogNeaktivnosti ? s.razlogNeaktivnosti : "N/A"}`;
 
             div.innerHTML = html;
-
-            let btn = document.createElement("button");
-            btn.className = "delete-zivotinja";
-            btn.innerHTML = "Obriši";
-            btn.onclick = async () => {
-                await fetch(`${API_S}/${s.id}`, {method: "DELETE"});
-                await prikaziSkupine();
-            };
-            div.appendChild(btn);
-
-            // UREDI BTN
-            btn = document.createElement("button");
-            btn.className = "uredi-zivotinja";
-            btn.innerHTML = "Uredi";
-            btn.onclick = () => uredi(0, s.id);
-            div.appendChild(btn);
-            if(s.aktivna === true) containerAkt.appendChild(div);
-            else containerNeakt.appendChild(div);
         });
     }
 
