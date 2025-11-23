@@ -40,8 +40,8 @@ public class JedinkaServiceImpl implements JedinkaService {
         j.setLatinskiNaziv(updated.getLatinskiNaziv());
         j.setHrvatskiNaziv(updated.getHrvatskiNaziv());
         j.setNastamba(updated.getNastamba());
-        j.setLink(updated.getLink());
         j.setNacinNabave(updated.getNacinNabave());
+        j.setLink(updated.getLink());
         j.setAktivna(updated.isAktivna());
         j.setDatumNabave(updated.getDatumNabave());
         j.setDatumNeaktivnosti(updated.getDatumNeaktivnosti());

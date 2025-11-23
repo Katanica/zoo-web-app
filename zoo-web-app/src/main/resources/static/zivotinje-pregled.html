@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>ZOO WEB APP - Životinje</title>
     <style>
@@ -15,7 +15,13 @@
             --gray: #95a5a6;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            text-decoration: none;
+        }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,24 +32,40 @@
             padding: 2rem 1rem;
         }
 
-        header { text-align: center; margin-bottom: 2rem; }
-        header h1 { font-size: 2.2rem; color: var(--primary); font-weight: 600; }
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
 
         .back-btn {
             display: inline-block;
             background: var(--secondary);
             color: white;
+            border: 0;
             padding: 0.7rem 1.5rem;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
             margin-bottom: 1.5rem;
             transition: 0.3s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
+
         .back-btn:hover {
             background: #2980b9;
             transform: translateY(-2px);
+            cursor: pointer;
+        }
+
+        #menu-btn-container {
+            margin-top: 50px;
+            margin-bottom: -40px;
         }
 
         .container {
@@ -58,7 +80,11 @@
             background: white;
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-cont:nth-child(2n-1) {
+            /*margin-left: 50px;*/
         }
 
         .card h3 {
@@ -78,6 +104,11 @@
             font-size: 1rem;
         }
 
+        .input-cont {
+            width: 45%;
+            display: inline-block;
+        }
+
         .veci-button {
             background: var(--success);
             color: white;
@@ -89,10 +120,15 @@
             margin-top: 0.5rem;
             transition: 0.3s;
         }
-        .veci-button:hover { background: #219a52; transform: translateY(-2px); }
+
+        .veci-button:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
 
         .checkbox-group label {
-            display: block;
+            width: 5%;
+            display: inline-block;
             margin: 0.4rem 0;
             font-size: 0.95rem;
         }
@@ -119,115 +155,172 @@
             cursor: pointer;
         }
 
-        .delete-zivotinja:hover { background: #c0392b; }
+        .uredi-zivotinja {
+            position: absolute;
+            top: 3.5rem;
+            right: 1rem;
+            background-color: orange;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
 
-        .full-width { grid-column: span 2; }
+        .uredi-zivotinja:hover {
+            background: #bd7900;
+        }
+
+        .delete-zivotinja:hover {
+            background: #c0392b;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
 
         @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
 <body>
-
 <header>
     <a href="index.html" class="back-btn">POČETNA</a>
     <h1>ZOO WEB APP - PODACI O ŽIVOTINJAMA</h1>
+    <div id="menu-btn-container">
+        <a href="#trenutne-jedinke-cont">
+            <button class="back-btn">Trenutne jedinke</button>
+        </a>
+        <a href="#trenutne-skupine-cont">
+            <button class="back-btn">Trenutne skupine</button>
+        </a>
+        <a href="#neaktivne-jedinke-cont">
+            <button class="back-btn">Neaktivne jedinke</button>
+        </a>
+        <a href="#neaktivne-skupine-cont">
+            <button class="back-btn">Neaktivne skupine</button>
+        </a>
+    </div>
 </header>
 
 <div class="container">
-
-
     <!-- LISTA ŽIVOTINJA -->
-    <div class="card full-width">
-        <h3>Trenutne životinje</h3>
-        <div id="trenutne-zivotinje"></div>
+    <div id="trenutne-jedinke-cont" class="card full-width">
+        <h3>Trenutne jednike:</h3>
+        <div id="trenutne-jedinke"></div>
     </div>
-
+    <div id="trenutne-skupine-cont" class="card full-width">
+        <h3>Trenutne skupine:</h3>
+        <div id="trenutne-skupine"></div>
+    </div>
+    <div id="neaktivne-jedinke-cont" class="card full-width">
+        <h3>Neaktivne jedinke:</h3>
+        <div id="neaktivne-jedinke"></div>
+    </div>
+    <div id="neaktivne-skupine-cont" class="card full-width">
+        <h3>Neaktivne skupine:</h3>
+        <div id="neaktivne-skupine"></div>
+    </div>
 </div>
 
 <script>
-    const API_Z = "http://localhost:8080/api/zivotinje";
-    const API_NAST = "http://localhost:8080/nastamba";
-    const API_NACIN = "http://localhost:8080/nacinNabave";
+    const API_J = "http://localhost:8080/api/jedinke";
+    const API_S = "http://localhost:8080/api/skupine";
 
-    async function prikaziNastambe() {
-        const res = await fetch(API_NAST);
+    async function prikaziJedinke() {
+        const res = await fetch(API_J);
         const data = await res.json();
-        const ponuda = document.getElementById("ponuda-nastambi");
-        ponuda.innerHTML = "";
-
-        data.forEach(n => {
-            const label = document.createElement("label");
-            const cb = document.createElement("input");
-            cb.type = "radio";
-            cb.name = "nastamba";
-            cb.value = n.id_nastambe;
-            label.appendChild(cb);
-            label.append(` ${n.oznaka}`);
-            ponuda.appendChild(label);
-        });
-    }
-
-    async function prikaziNacinNabave() {
-        const res = await fetch(API_NACIN);
-        const data = await res.json();
-        const select = document.getElementById("input-nacin");
-        select.innerHTML = "";
-
-        data.forEach(n => {
-            const opt = document.createElement("option");
-            opt.value = n.id;
-            opt.textContent = n.naziv;
-            select.appendChild(opt);
-        });
-    }
-
-    async function prikaziZivotinje() {
-        const res = await fetch(API_Z);
-        const data = await res.json();
-        const container = document.getElementById("trenutne-zivotinje");
-        container.innerHTML = "";
+        const containerAkt = document.getElementById("trenutne-jedinke");
+        const containerNeakt = document.getElementById("neaktivne-jedinke");
+        containerAkt.innerHTML = "";
+        containerNeakt.innerHTML = "";
 
         data.forEach(z => {
+
             const div = document.createElement("div");
             div.className = "zivotinja-card";
 
-            let html = `<strong>Ime:</strong> ${z.ime}<br>`;
-            html += `<strong>Identifikator:</strong> ${z.identifikator}<br>`;
+            // DOVRSIT OPIS NABAVE ???
+            let html = `<strong>Ime:</strong> ${z.nadimak}<br>`;
             html += `<strong>Vrsta:</strong> ${z.hrvatskiNaziv} (${z.latinskiNaziv})<br>`;
             html += `<strong>Nastamba:</strong> ${z.nastamba ? z.nastamba.oznaka : "N/A"}<br>`;
-            html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.naziv : "N/A"}`;
+            html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.opisNabave : "N/A"}<br>`;
+            html += `<strong>Datum nabave:</strong> ${z.datumNabave ? z.datumNabave : "N/A"}<br>`;
+            if(!z.aktivna) html += `<strong>Datum neaktivnosti:</strong> ${z.datumNeaktivnosti ? z.datumNeaktivnosti : "N/A"}&nbsp;&nbsp;&nbsp;<strong>Razlog neaktivnosti:</strong> ${z.razlogNeaktivnosti ? z.razlogNeaktivnosti : "N/A"}`;
+
 
             div.innerHTML = html;
 
-            const btn = document.createElement("button");
+            let btn = document.createElement("button");
             btn.className = "delete-zivotinja";
             btn.innerHTML = "Obriši";
             btn.onclick = async () => {
-                await fetch(`${API_Z}/${z.id}`, { method: "DELETE" });
-                prikaziZivotinje();
+                await fetch(`${API_J}/${z.id}`, {method: "DELETE"});
+                await prikaziJedinke();
             };
             div.appendChild(btn);
-            container.appendChild(div);
+
+            btn = document.createElement("button");
+            btn.className = "uredi-zivotinja";
+            btn.innerHTML = "Uredi";
+            btn.onclick = async () => uredi(1, z.id);
+            div.appendChild(btn);
+
+            if(z.aktivna === true) containerAkt.appendChild(div);
+            else containerNeakt.appendChild(div);
         });
     }
 
-    async function dodajZivotinju() {
-        const ime = document.getElementById("input-ime").value.trim();
-        const ident = document.getElementById("input-identifikator").value.trim();
-        const lat = document.getElementById("input-latinski").value.trim();
-        const hrv = document.getElementById("input-hrvatski").value.trim();
-        const link = document.getElementById("input-link").value.trim();
-        const nacinId = document.getElementById("input-nacin").value;
-        const nastId = document.querySelector("input[name='nastamba']:checked");
+    async function prikaziSkupine() {
+        const res = await fetch(API_S);
+        const data = await res.json();
+        const containerAkt = document.getElementById("trenutne-skupine");
+        containerAkt.innerHTML = "";
+        const containerNeakt = document.getElementById("neaktivne-skupine");
+        containerNeakt.innerHTML = "";
 
-        if (!ime || !ident || !lat || !hrv || !nastId) {
-            alert("Sva polja osim linka su obavezna!");
-            return;
-        }
+        data.forEach(s => {
+            const div = document.createElement("div");
+            div.className = "zivotinja-card";
+            let html = "";
 
-        await fetch(API_Z, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            html += `<strong>Vrsta:</strong> ${s.hrvatskiNaziv} (${s.latinskiNaziv})<br>`;
+            html += `<strong>Nastamba:</strong> ${s.nastamba ? s.nastamba.oznaka : "N/A"}<br>`;
+            html += `<strong>Način nabave:</strong> ${s.nacinNabave ? s.nacinNabave.opisNabave : "N/A"}<br>`;
+            html += `<strong>Procijenjeni broj:</strong> ${s.procijenjeniBroj ? s.procijenjeniBroj : "N/A"}<br>`;
+            if(!s.aktivna) html += `<strong>Datum neaktivnosti:</strong> ${s.datumNeaktivnosti ? s.datumNeaktivnosti : "N/A"}&nbsp;&nbsp;&nbsp;<strong>Razlog neaktivnosti:</strong> ${s.razlogNeaktivnosti ? s.razlogNeaktivnosti : "N/A"}`;
+
+            div.innerHTML = html;
+
+            let btn = document.createElement("button");
+            btn.className = "delete-zivotinja";
+            btn.innerHTML = "Obriši";
+            btn.onclick = async () => {
+                await fetch(`${API_S}/${s.id}`, {method: "DELETE"});
+                await prikaziSkupine();
+            };
+            div.appendChild(btn);
+
+            // UREDI BTN
+            btn = document.createElement("button");
+            btn.className = "uredi-zivotinja";
+            btn.innerHTML = "Uredi";
+            btn.onclick = () => uredi(0, s.id);
+            div.appendChild(btn);
+            if(s.aktivna === true) containerAkt.appendChild(div);
+            else containerNeakt.appendChild(div);
+        });
+    }
+
+    prikaziSkupine();
+    prikaziJedinke();
+</script>
+</body>
+</html>
