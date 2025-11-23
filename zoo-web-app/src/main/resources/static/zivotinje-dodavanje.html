@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>ZOO WEB APP - Životinje</title>
     <style>
@@ -15,7 +15,13 @@
             --gray: #95a5a6;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            text-decoration: none;
+        }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,24 +32,40 @@
             padding: 2rem 1rem;
         }
 
-        header { text-align: center; margin-bottom: 2rem; }
-        header h1 { font-size: 2.2rem; color: var(--primary); font-weight: 600; }
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
 
         .back-btn {
             display: inline-block;
             background: var(--secondary);
             color: white;
+            border: 0;
             padding: 0.7rem 1.5rem;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
             margin-bottom: 1.5rem;
             transition: 0.3s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
+
         .back-btn:hover {
             background: #2980b9;
             transform: translateY(-2px);
+            cursor: pointer;
+        }
+
+        #menu-btn-container {
+            margin-top: 50px;
+            margin-bottom: -40px;
         }
 
         .container {
@@ -58,7 +80,11 @@
             background: white;
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-cont:nth-child(2n-1) {
+            /*margin-left: 50px;*/
         }
 
         .card h3 {
@@ -78,6 +104,11 @@
             font-size: 1rem;
         }
 
+        .input-cont {
+            width: 45%;
+            display: inline-block;
+        }
+
         .veci-button {
             background: var(--success);
             color: white;
@@ -89,10 +120,15 @@
             margin-top: 0.5rem;
             transition: 0.3s;
         }
-        .veci-button:hover { background: #219a52; transform: translateY(-2px); }
+
+        .veci-button:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
 
         .checkbox-group label {
-            display: block;
+            width: 5%;
+            display: inline-block;
             margin: 0.4rem 0;
             font-size: 0.95rem;
         }
@@ -119,21 +155,59 @@
             cursor: pointer;
         }
 
-        .delete-zivotinja:hover { background: #c0392b; }
+        .uredi-zivotinja {
+            position: absolute;
+            top: 3.5rem;
+            right: 1rem;
+            background-color: orange;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
 
-        .full-width { grid-column: span 2; }
+        .uredi-zivotinja:hover {
+            background: #bd7900;
+        }
+
+        .delete-zivotinja:hover {
+            background: #c0392b;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
 
         @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
 <body>
-
 <header>
     <a href="index.html" class="back-btn">POČETNA</a>
     <h1>ZOO WEB APP - PODACI O ŽIVOTINJAMA</h1>
+    <div id="menu-btn-container">
+        <a href="#trenutne-jedinke-cont">
+            <button class="back-btn">Trenutne jedinke</button>
+        </a>
+        <a href="#trenutne-skupine-cont">
+            <button class="back-btn">Trenutne skupine</button>
+        </a>
+        <a href="#neaktivne-jedinke-cont">
+            <button class="back-btn">Neaktivne jedinke</button>
+        </a>
+        <a href="#neaktivne-skupine-cont">
+            <button class="back-btn">Neaktivne skupine</button>
+        </a>
+    </div>
 </header>
 
 <div class="container">
@@ -141,58 +215,127 @@
     <!-- DODAJ ŽIVOTINJU -->
     <div class="card full-width">
         <h3>Dodaj životinju</h3>
-        <h4>Jedinka ili skupina:</h4>
-        <input type="radio" id="radio-jedinka" name="kolicina">&nbsp;Jedinka&nbsp;
-        <input type="radio" id="radio-skupina" name="kolicina">&nbsp;Skupina
-        <h4 id="input-ime-naslov">Nadimak / ime:</h4>
-        <input id="input-ime" class="manji-input" type="text" placeholder="npr. Boris, Leo...">
 
-        <h4>Identifikator:</h4>
-        <input id="input-identifikator" class="manji-input" type="text" placeholder="npr. M12, Z47...">
+        <div class="input-cont" id="input-jedinka-skupina">
+            <h4>Jedinka ili skupina:</h4>
+            <input type="radio" id="radio-jedinka" name="kolicina">&nbsp;Jedinka&nbsp;
+            <input type="radio" id="radio-skupina" name="kolicina">&nbsp;Skupina
+        </div>
 
-        <h4>Latinski naziv:</h4>
-        <input id="input-latinski" class="manji-input" type="text" placeholder="npr. Panthera leo">
+        <div class="input-cont" id="input-aktivnost">
+            <h4>Aktivna:</h4>
+            <select class="manji-input" id="select-aktivnosti">
+                <option value="da">DA</option>
+                <option value="ne">NE</option>
+            </select>
+        </div>
 
-        <h4>Hrvatski naziv:</h4>
-        <input id="input-hrvatski" class="manji-input" type="text" placeholder="npr. Lav">
+        <div class="input-cont" id="datum-neaktivnosti-cont">
+            <h4 id="input-datum-neaktivnosti-naslov">Datum Neaktivnosti:</h4>
+            <input id="input-datum-neaktivnosti" class="manji-input" type="date" placeholder="">
+        </div>
+
+        <div class="input-cont" id="razlog-neaktivnosti-cont">
+            <h4 id="input-razlog-neaktivnosti-naslov">Razlog neaktivnosti:</h4>
+            <input id="input-razlog-neaktivnosti" class="manji-input" value="" type="text" placeholder="npr. Uginuće, posudba...">
+        </div>
+
+        <div class="input-cont">
+            <h4 id="input-ime-naslov">Nadimak / ime:</h4>
+            <input id="input-ime" class="manji-input" value="" type="text" placeholder="npr. Boris, Leo...">
+        </div>
+
+        <div class="input-cont">
+            <h4>Identifikator:</h4>
+            <input id="input-identifikator" class="manji-input" type="text" placeholder="npr. M12, Z47...">
+        </div>
+
+        <div class="input-cont">
+            <h4>Hrvatski naziv:</h4>
+            <input id="input-hrvatski" class="manji-input" type="text" placeholder="npr. Lav">
+        </div>
+
+        <div class="input-cont">
+            <h4>Latinski naziv:</h4>
+            <input id="input-latinski" class="manji-input" type="text" placeholder="npr. Panthera leo">
+        </div>
+
+        <div class="input-cont">
+            <h4>Poveznica za više informacija:</h4>
+            <input id="input-link" class="manji-input" type="text" placeholder="URL članka o vrsti">
+        </div>
+
+        <div class="input-cont">
+            <h4 id="input-broj-naslov">Procijenjeni broj:</h4>
+            <input id="input-broj" class="manji-input" type="number" placeholder="Procijenjeni broj">
+        </div>
+
+        <div class="input-cont">
+            <h4 id="input-datum-nabave-naslov">Datum nabave:</h4>
+            <input id="input-datum-nabave" class="manji-input" type="date" placeholder="">
+        </div>
+
+        <div class="input-cont">
+            <h4>Način nabave:</h4>
+            <select id="input-nacin" class="manji-input"></select>
+        </div>
 
         <h4>Nastamba:</h4>
         <div id="ponuda-nastambi" class="checkbox-group"></div>
 
-        <h4>Način nabave:</h4>
-        <select id="input-nacin" class="manji-input"></select>
-
-        <h4>Poveznica za više informacija:</h4>
-        <input id="input-link" class="manji-input" type="text" placeholder="URL članka o vrsti">
-
-        <h4 id="input-broj-naslov">Procijenjeni broj:</h4>
-        <input id="input-broj" class="manji-input" type="number" placeholder="Procijenjeni broj">
-
-        <button onclick="dodajZivotinju()" class="veci-button">Dodaj životinju</button>
+        <br>
+        <button onclick="dodajZivotinju()" id="dodaj-btn" class="veci-button">Dodaj životinju</button>
+        <button id="zavrsi-btn" class="veci-button">Zavrsi uređivanje</button>
+        <button style="background-color: orange;" id="natrag-btn" onclick="window.location.reload()" class="veci-button">Natrag</button>
     </div>
 
     <!-- LISTA ŽIVOTINJA -->
-    <div class="card full-width">
+    <div id="trenutne-jedinke-cont" class="card full-width">
         <h3>Trenutne jednike:</h3>
         <div id="trenutne-jedinke"></div>
     </div>
-    <div class="card full-width">
+    <div id="trenutne-skupine-cont" class="card full-width">
         <h3>Trenutne skupine:</h3>
         <div id="trenutne-skupine"></div>
     </div>
-
+    <div id="neaktivne-jedinke-cont" class="card full-width">
+        <h3>Neaktivne jedinke:</h3>
+        <div id="neaktivne-jedinke"></div>
+    </div>
+    <div id="neaktivne-skupine-cont" class="card full-width">
+        <h3>Neaktivne skupine:</h3>
+        <div id="neaktivne-skupine"></div>
+    </div>
 </div>
 
 <script>
-    const API_J = "http://localhost:8080/jedinke";
-    const API_S = "http://localhost:8080/skupine";
+    const API_J = "http://localhost:8080/api/jedinke";
+    const API_S = "http://localhost:8080/api/skupine";
     const API_NAST = "http://localhost:8080/nastambe";
     const API_NACIN = "http://localhost:8080/nacin-nabave";
 
     const radioJedinka = document.getElementById("radio-jedinka");
     const radioSkupina = document.getElementById("radio-skupina");
 
-    radioSkupina.onclick =  () => {
+    const btnNatrag = document.getElementById("natrag-btn");
+    btnNatrag.style.display = "none";
+    document.getElementById("zavrsi-btn").style.display = "none";
+    const inputAktivnost = document.getElementById("input-aktivnost");
+    inputAktivnost.style.display = "none"
+
+
+    const datumNeaktivnostiCont = document.getElementById("datum-neaktivnosti-cont");
+    const razlogNeaktivnostiCont = document.getElementById("razlog-neaktivnosti-cont");
+    datumNeaktivnostiCont.style.display = "none";
+    razlogNeaktivnostiCont.style.display = "none";
+    let datumNeaktivnosti = document.getElementById("input-datum-neaktivnosti");
+    let razlogNeaktivnosti = document.getElementById("input-razlog-neaktivnosti");
+
+    selectAktivnosti = document.getElementById("select-aktivnosti");
+
+    radioSkupina.onclick = () => pripremiZaSkupinu();
+
+    function pripremiZaSkupinu() {
         document.getElementById("input-ime").value = "";
         document.getElementById("input-ime").style.display = "none";
         document.getElementById("input-ime-naslov").style.display = "none";
@@ -201,7 +344,10 @@
         document.getElementById("input-broj").style.display = "block";
         document.getElementById("input-broj-naslov").style.display = "block";
     }
-    radioJedinka.onclick =  () => {
+
+    radioJedinka.onclick = () => pripremiZaJedinku();
+
+    function pripremiZaJedinku() {
         document.getElementById("input-ime").value = "";
         document.getElementById("input-ime").style.display = "block";
         document.getElementById("input-ime-naslov").style.display = "block";
@@ -211,9 +357,12 @@
         document.getElementById("input-broj-naslov").style.display = "none";
     }
 
-    async function dodajZivotinju(){
-        if(radioSkupina.checked){await dodajSkupinu();}
-        else if(radioJedinka.checked){await dodajJedinku();}
+    async function dodajZivotinju() {
+        if (radioSkupina.checked) {
+            await dodajSkupinu();
+        } else if (radioJedinka.checked) {
+            await dodajJedinku();
+        }
     }
 
     async function prikaziNastambe() {
@@ -229,7 +378,7 @@
             cb.name = "nastamba";
             cb.value = n.id;
             label.appendChild(cb);
-            label.append(` ${n.oznaka}`);
+            label.append(` ${n.oznaka} `);
             ponuda.appendChild(label);
         });
     }
@@ -259,10 +408,13 @@
     async function prikaziJedinke() {
         const res = await fetch(API_J);
         const data = await res.json();
-        const container = document.getElementById("trenutne-jedinke");
-        container.innerHTML = "";
+        const containerAkt = document.getElementById("trenutne-jedinke");
+        const containerNeakt = document.getElementById("neaktivne-jedinke");
+        containerAkt.innerHTML = "";
+        containerNeakt.innerHTML = "";
 
         data.forEach(z => {
+
             const div = document.createElement("div");
             div.className = "zivotinja-card";
 
@@ -270,27 +422,40 @@
             let html = `<strong>Ime:</strong> ${z.nadimak}<br>`;
             html += `<strong>Vrsta:</strong> ${z.hrvatskiNaziv} (${z.latinskiNaziv})<br>`;
             html += `<strong>Nastamba:</strong> ${z.nastamba ? z.nastamba.oznaka : "N/A"}<br>`;
-            html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.opisNabave : "N/A"}`;
+            html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.opisNabave : "N/A"}<br>`;
+            html += `<strong>Datum nabave:</strong> ${z.datumNabave ? z.datumNabave : "N/A"}<br>`;
+            if(!z.aktivna) html += `<strong>Datum neaktivnosti:</strong> ${z.datumNeaktivnosti ? z.datumNeaktivnosti : "N/A"}&nbsp;&nbsp;&nbsp;<strong>Razlog neaktivnosti:</strong> ${z.razlogNeaktivnosti ? z.razlogNeaktivnosti : "N/A"}`;
+
 
             div.innerHTML = html;
 
-            const btn = document.createElement("button");
+            let btn = document.createElement("button");
             btn.className = "delete-zivotinja";
             btn.innerHTML = "Obriši";
             btn.onclick = async () => {
-                await fetch(`${API_J}/${z.id}`, { method: "DELETE" });
+                await fetch(`${API_J}/${z.id}`, {method: "DELETE"});
                 await prikaziJedinke();
             };
             div.appendChild(btn);
-            container.appendChild(div);
+
+            btn = document.createElement("button");
+            btn.className = "uredi-zivotinja";
+            btn.innerHTML = "Uredi";
+            btn.onclick = async () => uredi(1, z.id);
+            div.appendChild(btn);
+
+            if(z.aktivna === true) containerAkt.appendChild(div);
+            else containerNeakt.appendChild(div);
         });
     }
 
-    async function prikaziSkupine(){
+    async function prikaziSkupine() {
         const res = await fetch(API_S);
         const data = await res.json();
-        const container = document.getElementById("trenutne-skupine");
-        container.innerHTML = "";
+        const containerAkt = document.getElementById("trenutne-skupine");
+        containerAkt.innerHTML = "";
+        const containerNeakt = document.getElementById("neaktivne-skupine");
+        containerNeakt.innerHTML = "";
 
         data.forEach(s => {
             const div = document.createElement("div");
@@ -300,21 +465,216 @@
             html += `<strong>Vrsta:</strong> ${s.hrvatskiNaziv} (${s.latinskiNaziv})<br>`;
             html += `<strong>Nastamba:</strong> ${s.nastamba ? s.nastamba.oznaka : "N/A"}<br>`;
             html += `<strong>Način nabave:</strong> ${s.nacinNabave ? s.nacinNabave.opisNabave : "N/A"}<br>`;
-            html += `<strong>Procijenjeni broj:</strong> ${s.procijenjeniBroj ? s.procijenjeniBroj : "N/A"}`;
+            html += `<strong>Procijenjeni broj:</strong> ${s.procijenjeniBroj ? s.procijenjeniBroj : "N/A"}<br>`;
+            if(!s.aktivna) html += `<strong>Datum neaktivnosti:</strong> ${s.datumNeaktivnosti ? s.datumNeaktivnosti : "N/A"}&nbsp;&nbsp;&nbsp;<strong>Razlog neaktivnosti:</strong> ${s.razlogNeaktivnosti ? s.razlogNeaktivnosti : "N/A"}`;
 
             div.innerHTML = html;
 
-            const btn = document.createElement("button");
+            let btn = document.createElement("button");
             btn.className = "delete-zivotinja";
             btn.innerHTML = "Obriši";
             btn.onclick = async () => {
-                await fetch(`${API_S}/${s.id}`, { method: "DELETE" });
+                await fetch(`${API_S}/${s.id}`, {method: "DELETE"});
                 await prikaziSkupine();
             };
             div.appendChild(btn);
-            container.appendChild(div);
+
+            // UREDI BTN
+            btn = document.createElement("button");
+            btn.className = "uredi-zivotinja";
+            btn.innerHTML = "Uredi";
+            btn.onclick = () => uredi(0, s.id);
+            div.appendChild(btn);
+            if(s.aktivna === true) containerAkt.appendChild(div);
+            else containerNeakt.appendChild(div);
         });
     }
+    // UREDIVANJE ZIVOTINJA
+
+    const inputJedinkaSkupina = document.getElementById("input-jedinka-skupina");
+
+    async function uredi(jedinkaBool, id) {
+        document.getElementById("dodaj-btn").style.display = "none";
+        const zavrsiBtn = document.getElementById("zavrsi-btn");
+        zavrsiBtn.style.display = "inline-block";
+        document.querySelector("h3").innerHTML = "Uredi podatke o životinji";
+        inputAktivnost.style.display = "inline-block";
+
+        // POSTAVLJANJE AKTIVNOSTI ZA POCETNO UCITAVANJE STRANICE
+        datumNeaktivnostiCont.style.display = "none";
+        razlogNeaktivnostiCont.style.display = "none";
+
+        btnNatrag.style.display = "inline-block";
+
+        if (jedinkaBool === 1){
+            await urediJedinku(id);
+            zavrsiBtn.onclick = () => azurirajJedinku(id);
+        }
+        else{
+            await urediSkupinu(id);
+            zavrsiBtn.onclick = () => azurirajSkupinu(id);
+        }
+    }
+
+    async function urediJedinku(id) {
+        const res = await fetch(`${API_J}/${id}`);
+        const data = await res.json();
+        console.log(data);
+
+        const ime = document.getElementById("input-ime");
+        const ident = document.getElementById("input-identifikator");
+        const lat = document.getElementById("input-latinski");
+        const hrv = document.getElementById("input-hrvatski");
+        const link = document.getElementById("input-link");
+        const nacinId = document.getElementById("input-nacin");
+        document.querySelector(`input[name='nastamba'][value="${data.nastamba.id}"]`).checked = true;
+        const datumNabave = document.getElementById("input-datum-nabave");
+
+        pripremiZaJedinku();
+        inputJedinkaSkupina.style.display = "none";
+
+        ime.value = data.nadimak;
+        ime.placeholder = data.nadimak;
+        ident.value = data.identifikator;
+        ident.placeholder = data.identifikator;
+        lat.value = data.latinskiNaziv;
+        lat.placeholder = data.latinskiNaziv;
+        hrv.value = data.hrvatskiNaziv;
+        hrv.placeholder = data.hrvatskiNaziv;
+        nacinId.value = data.nacinNabave.id;
+        link.value = data.link;
+        link.placeholder = data.link;
+        datumNabave.value = data.datumNabave;
+    }
+
+    async function azurirajJedinku(id){
+        const ime = document.getElementById("input-ime").value.trim();
+        const ident = document.getElementById("input-identifikator").value.trim();
+        const lat = document.getElementById("input-latinski").value.trim();
+        const hrv = document.getElementById("input-hrvatski").value.trim();
+        const link = document.getElementById("input-link").value.trim();
+        const aktivnost = selectAktivnosti.value;
+
+        let datumNeaktivnostiV = null;
+        let razlogNeaktivnostiV = null;
+        if(aktivnost === "ne"){
+            datumNeaktivnostiV = datumNeaktivnosti.value;
+            razlogNeaktivnostiV = razlogNeaktivnosti.value;
+        }
+        else if(aktivnost === "da"){
+
+        }
+        const nacinId = document.getElementById("input-nacin").value;
+        const nastId = document.querySelector("input[name='nastamba']:checked");
+        const datumNabave = document.getElementById("input-datum-nabave").value;
+
+        await fetch(`${API_J}/${id}`, {
+            method: "PUT",
+            headers: {"Content-Type" : "application/json"},
+            body: JSON.stringify({
+                nadimak: ime,
+                identifikator: ident,
+                latinskiNaziv: lat,
+                hrvatskiNaziv: hrv,
+                link: link,
+                aktivna: aktivnost === "da" ? true : aktivnost === "ne" ? false : null,
+                datumNeaktivnosti: datumNeaktivnostiV,
+                razlogNeaktivnosti: razlogNeaktivnostiV,
+                nacinNabave: {id: parseInt(nacinId)},
+                nastamba: {id: parseInt(nastId.value)},
+                datumNabave: datumNabave
+
+            })
+        });
+        window.location.reload();
+    }
+
+    async function urediSkupinu(id) {
+        const res = await fetch(`${API_S}/${id}`, );
+        const data = await res.json();
+        console.log(data);
+
+        const ident = document.getElementById("input-identifikator");
+        const lat = document.getElementById("input-latinski");
+        const hrv = document.getElementById("input-hrvatski");
+        const link = document.getElementById("input-link");
+        const nacinId = document.getElementById("input-nacin");
+        const broj = document.getElementById("input-broj");
+        document.querySelector(`input[name='nastamba'][value="${data.nastamba.id}"]`).checked = true;
+        const datumNabave = document.getElementById("input-datum-nabave");
+
+        pripremiZaSkupinu();
+        inputJedinkaSkupina.style.display = "none";
+
+        console.log(ident, hrv);
+
+        ident.value = data.identifikator;
+        ident.placeholder = data.identifikator;
+        lat.value = data.latinskiNaziv;
+        lat.placeholder = data.latinskiNaziv;
+        hrv.value = data.hrvatskiNaziv;
+        hrv.placeholder = data.hrvatskiNaziv;
+        broj.value = data.procijenjeniBroj;
+        broj.placeholder = data.procijenjeniBroj;
+        nacinId.value = data.nacinNabave.id;
+        link.value = data.link;
+        link.placeholder = data.link;
+        datumNabave.value = data.datumNabave;
+
+    }
+
+    async function azurirajSkupinu(id){
+        const ident = document.getElementById("input-identifikator").value.trim();
+        const lat = document.getElementById("input-latinski").value.trim();
+        const hrv = document.getElementById("input-hrvatski").value.trim();
+        const link = document.getElementById("input-link").value.trim();
+        const broj = document.getElementById("input-broj").value;
+        const aktivnost = selectAktivnosti.value;
+
+        let datumNeaktivnostiV = null;
+        let razlogNeaktivnostiV = null;
+        if(aktivnost === "ne"){
+            datumNeaktivnostiV = datumNeaktivnosti.value;
+            razlogNeaktivnostiV = razlogNeaktivnosti.value;
+        }
+        else if(aktivnost === "da"){
+
+        }
+        const nacinId = document.getElementById("input-nacin").value;
+        const nastId = document.querySelector("input[name='nastamba']:checked");
+        const datumNabave = document.getElementById("input-datum-nabave").value;
+
+        await fetch(`${API_S}/${id}`, {
+            method: "PUT",
+            headers: {"Content-Type" : "application/json"},
+            body: JSON.stringify({
+                identifikator: ident,
+                latinskiNaziv: lat,
+                hrvatskiNaziv: hrv,
+                link: link,
+                procijenjeniBroj: broj,
+                aktivna: aktivnost === "da" ? true : aktivnost === "ne" ? false : null,
+                datumNeaktivnosti: datumNeaktivnostiV,
+                razlogNeaktivnosti: razlogNeaktivnostiV,
+                nacinNabave: {id: parseInt(nacinId)},
+                nastamba: {id: parseInt(nastId.value)},
+                datumNabave: datumNabave
+
+            })
+        });
+        window.location.reload();
+    }
+
+    selectAktivnosti.addEventListener("change", () => {
+        if(selectAktivnosti.value === "ne"){
+            datumNeaktivnostiCont.style.display = "inline-block";
+            razlogNeaktivnostiCont.style.display = "inline-block";
+        }
+        else if(selectAktivnosti.value === "da"){
+            datumNeaktivnostiCont.style.display = "none";
+            razlogNeaktivnostiCont.style.display = "none";
+        }
+    });
 
     async function dodajSkupinu() {
         const ident = document.getElementById("input-identifikator").value.trim();
@@ -324,6 +684,7 @@
         const nacinId = document.getElementById("input-nacin").value;
         const nastId = document.querySelector("input[name='nastamba']:checked");
         const procijenjeniBroj = document.getElementById("input-broj").value;
+        const datumNabave = document.getElementById("input-datum-nabave").value;
 
         // NEDOVRSENO
         if (!ident || !lat || !hrv || !nastId) {
@@ -339,6 +700,7 @@
                 hrvatskiNaziv: hrv,
                 nastamba: {id: parseInt(nastId.value)},
                 nacinNabave: {id: parseInt(nacinId)},
+                datumNabave: datumNabave,
                 link: link,
                 procijenjeniBroj: procijenjeniBroj
             })
@@ -349,8 +711,8 @@
         document.getElementById("input-hrvatski").value = "";
         document.getElementById("input-link").value = "";
         document.getElementById("input-nacin").value = "";
-        document.querySelectorAll("input[name='nastamba']").forEach(r=>r.checked=false);
-        document.getElementById("input-broj").value= "";
+        document.querySelectorAll("input[name='nastamba']").forEach(r => r.checked = false);
+        document.getElementById("input-broj").value = "";
 
         await prikaziSkupine();
     }
@@ -363,6 +725,7 @@
         const link = document.getElementById("input-link").value.trim();
         const nacinId = document.getElementById("input-nacin").value;
         const nastId = document.querySelector("input[name='nastamba']:checked");
+        const datumNabave = document.getElementById("input-datum-nabave").value;
 
         // NEDOVRSENO!!!
         if (!ime || !ident || !lat || !hrv || !nastId) {
@@ -377,6 +740,7 @@
                 identifikator: ident,
                 latinskiNaziv: lat,
                 hrvatskiNaziv: hrv,
+                datumNabave: datumNabave,
                 nastamba: {id: parseInt(nastId.value)},
                 nacinNabave: {id: parseInt(nacinId)},
                 link: link
@@ -388,7 +752,7 @@
         document.getElementById("input-hrvatski").value = "";
         document.getElementById("input-link").value = "";
         document.getElementById("input-nacin").value = "";
-        document.querySelectorAll("input[name='nastamba']").forEach(r=>r.checked=false);
+        document.querySelectorAll("input[name='nastamba']").forEach(r => r.checked = false);
 
         await prikaziJedinke();
     }

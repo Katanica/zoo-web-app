@@ -43,6 +43,9 @@ public class Skupina {
     @Column(name = "datum_nabave")
     private LocalDate datumNabave;
 
+    @Column(name = "datum_neaktivnosti")
+    private LocalDate datumNeaktivnosti;
+
     @Column(name = "aktivna", nullable = false)
     private boolean aktivna = true;
 

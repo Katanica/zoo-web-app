@@ -45,6 +45,7 @@ public class SkupinaServiceImpl implements SkupinaService {
         s.setLink(updated.getLink());
         s.setProcijenjeniBroj(updated.getProcijenjeniBroj());
         s.setDatumNabave(updated.getDatumNabave());
+        s.setDatumNeaktivnosti(updated.getDatumNeaktivnosti());
         s.setAktivna(updated.isAktivna());
         s.setRazlogNeaktivnosti(updated.getRazlogNeaktivnosti());
         s.setObaveze(updated.getObaveze());
