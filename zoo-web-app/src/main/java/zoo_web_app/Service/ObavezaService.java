@@ -14,4 +14,6 @@ public interface ObavezaService {
     Obaveza update(Long id, Obaveza obaveza);
 
     void delete(Long id);
+
+    long brojObaveza();
 }

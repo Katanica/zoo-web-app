@@ -15,4 +15,6 @@ public interface RadnikService {
     Radnik update(Long id, Radnik radnik);
 
     void delete(Long id);
+
+    long brojRadnika();
 }

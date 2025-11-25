@@ -55,4 +55,9 @@ public class JedinkaServiceImpl implements JedinkaService {
         Jedinka j = findById(id);
         jedinkaRepository.delete(j);
     }
+
+   @Override
+    public long brojJedinki(){
+        return jedinkaRepository.count();
+   }
 }

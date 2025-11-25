@@ -15,4 +15,6 @@ public interface NastambaService {
     Nastamba update(Long id, Nastamba nastamba);
 
     void delete(Long id);
+
+    long brojNastambi();
 }

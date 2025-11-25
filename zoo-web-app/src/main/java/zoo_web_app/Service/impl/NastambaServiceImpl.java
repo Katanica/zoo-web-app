@@ -11,8 +11,15 @@ import java.util.List;
 public class NastambaServiceImpl implements NastambaService {
     private final NastambaRepository nastambaRepository;
 
+
     public NastambaServiceImpl(NastambaRepository nastambaRepository) {
         this.nastambaRepository = nastambaRepository;
+
+    }
+
+    @Override
+    public long brojNastambi(){
+        return  nastambaRepository.count();
     }
 
     @Override

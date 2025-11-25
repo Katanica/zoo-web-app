@@ -23,6 +23,11 @@ public class ObavezaController {
         return ResponseEntity.ok(obavezaService.findAll());
     }
 
+    @GetMapping("/broj")
+    public long brojObaveza(){
+        return obavezaService.brojObaveza();
+    }
+
     // GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<Obaveza> getById(@PathVariable Long id) {

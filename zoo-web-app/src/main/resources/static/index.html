@@ -218,6 +218,70 @@
         }
     </style>
 </head>
+<script>
+    //----------  JEDINKE-------------
+    async function ucitajBrojJedinki(){
+    try{
+        const resp = await fetch("http://localhost:8080/api/jedinke/broj");
+        const broj = await resp.json();
+        document.getElementById("broj-zivotinja").textContent = broj;
+    }
+    catch (err) {
+    console.error("Greska broj jedinki: ", err);
+    }
+    }
+    //---------- NASTAMBE ------------
+    async function ucitajBrojNastambi() {
+    try {
+        const resp = await fetch("http://localhost:8080/api/nastambe/broj");
+        const broj = await resp.json();
+        document.getElementById("broj-nastambi").textContent = broj;
+    } catch (err) {
+        console.error("Greška broj nastambi:", err);
+    }
+}
+
+// ------------- OBAVEZE ----------
+async function ucitajBrojObaveza() {
+    try {
+        const resp = await fetch("http://localhost:8080/api/obaveze/broj");
+        let data = await resp.json();
+
+        // Ako backend vrati samo broj:
+        if (typeof data === "number") {
+            document.getElementById("broj-obaveza").textContent = data;
+            return;
+        }
+
+        // Ako backend vrati { "broj": 8 }
+        if (typeof data === "object" && data.broj !== undefined) {
+            document.getElementById("broj-obaveza").textContent = data.broj;
+            return;
+        }
+
+        // Ako dođe nešto neočekivano
+        document.getElementById("broj-obaveza").textContent = "--";
+
+    } catch (err) {
+        console.error("Greška broj obaveza:", err);
+        document.getElementById("broj-obaveza").textContent = "--";
+    }
+}
+//---------------RADNICI-------------------------
+async function ucitajBrojRadnika() {
+    try {
+        const resp = await fetch("http://localhost:8080/api/radnik/broj");
+        const broj = await resp.json();
+        document.getElementById("broj-radnika").textContent = broj;
+    } catch (err) {
+        console.error("Greška broj radnika:", err);
+    }
+}
+    ucitajBrojRadnika();
+    ucitajBrojObaveza();
+    ucitajBrojNastambi();
+    ucitajBrojJedinki();
+</script>
 <body>
 
 <div class="container">
@@ -234,19 +298,19 @@
     <!-- Brze statistike -->
     <div class="stats">
         <div class="stat-box">
-            <h3 id="total-animals">47</h3>
+            <h3 id="broj-zivotinja">--</h3>
             <p>Životinja</p>
         </div>
         <div class="stat-box">
-            <h3 id="total-enclosures">23</h3>
+            <h3 id="broj-nastambi">--</h3>
             <p>Nastambi</p>
         </div>
         <div class="stat-box">
-            <h3 id="active-tasks">8</h3>
+            <h3 id="broj-obaveza">--</h3>
             <p>Aktivnih obaveza</p>
         </div>
         <div class="stat-box">
-            <h3 id="total-workers">18</h3>
+            <h3 id="broj-radnika">--</h3>
             <p>Radnika</p>
         </div>
     </div>

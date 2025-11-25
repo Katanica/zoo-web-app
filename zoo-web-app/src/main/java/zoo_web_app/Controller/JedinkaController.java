@@ -1,5 +1,6 @@
 package zoo_web_app.Controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zoo_web_app.Entity.Jedinka;
@@ -14,8 +15,16 @@ public class JedinkaController {
 
     private final JedinkaServiceImpl jedinkaServiceImpl;
 
-    public JedinkaController(JedinkaServiceImpl jedinkaServiceImpl) {
+    private final JedinkaService jedinkaService;
+
+    @GetMapping("/broj")
+    public long brojJedinki(){
+        return jedinkaService.brojJedinki();
+    }
+
+    public JedinkaController(JedinkaServiceImpl jedinkaServiceImpl, JedinkaService jedinkaService) {
         this.jedinkaServiceImpl = jedinkaServiceImpl;
+        this.jedinkaService = jedinkaService;
     }
 
     // GET ALL – vrati sve jedinke

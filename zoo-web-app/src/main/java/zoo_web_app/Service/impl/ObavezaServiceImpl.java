@@ -27,6 +27,11 @@ public class ObavezaServiceImpl implements ObavezaService {
     }
 
     @Override
+    public long brojObaveza(){
+        return obavezaRepository.count();
+    }
+
+    @Override
     public Obaveza create(Obaveza obaveza) {
         return obavezaRepository.save(obaveza);
     }

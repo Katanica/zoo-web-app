@@ -17,6 +17,11 @@ public class RadnikController {
         this.radnikService = radnikService;
     }
 
+    @GetMapping("/broj")
+    public long brojRadnika(){
+        return radnikService.brojRadnika();
+    }
+
     // GET ALL
     @GetMapping
     public ResponseEntity<List<Radnik>> getAll() {

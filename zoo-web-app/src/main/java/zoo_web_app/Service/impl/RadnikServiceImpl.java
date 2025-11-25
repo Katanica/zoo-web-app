@@ -17,6 +17,11 @@ public class RadnikServiceImpl implements RadnikService {
     }
 
     @Override
+    public long brojRadnika(){
+        return radnikRepository.count();
+    }
+
+    @Override
     public List<Radnik> findAll() {
         return radnikRepository.findAll();
     }

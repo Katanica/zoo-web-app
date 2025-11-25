@@ -1,6 +1,9 @@
 package zoo_web_app.Service;
 
+
+import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Jedinka;
+
 
 import java.util.List;
 
@@ -15,4 +18,10 @@ public interface JedinkaService {
     Jedinka update(Long id, Jedinka jedinka);
 
     void delete(Long id);
+
+    long brojJedinki();
+
+
+
+
 }
