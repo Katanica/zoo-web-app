@@ -17,6 +17,8 @@ public interface JedinkaService {
 
     Jedinka update(Long id, Jedinka jedinka);
 
+    List<Jedinka> findAllAktivne();
+
     void delete(Long id);
 
     long brojJedinki();

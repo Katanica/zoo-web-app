@@ -5,6 +5,7 @@ import zoo_web_app.Entity.Jedinka;
 import zoo_web_app.Repository.JedinkaRepository;
 import zoo_web_app.Service.JedinkaService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -51,9 +52,19 @@ public class JedinkaServiceImpl implements JedinkaService {
     }
 
     @Override
+    public List<Jedinka> findAllAktivne(){
+        return jedinkaRepository.findAllAktivne();
+    }
+
+    @Override
     public void delete(Long id) {
-        Jedinka j = findById(id);
-        jedinkaRepository.delete(j);
+        Jedinka j = jedinkaRepository.findById(id).orElseThrow(() -> new RuntimeException("Jedinka ne postoji."));
+
+        j.setAktivna(false);
+        j.setDatumNeaktivnosti(LocalDate.now());
+        j.setRazlogNeaktivnosti("Uklonjena");
+
+        jedinkaRepository.save(j);
     }
 
    @Override

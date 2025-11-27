@@ -3,6 +3,7 @@ package zoo_web_app.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zoo_web_app.Entity.Skupina;
+import zoo_web_app.Repository.SkupinaRepository;
 import zoo_web_app.Service.SkupinaService;
 
 import java.util.List;
@@ -13,8 +14,12 @@ public class SkupinaController {
 
     private final SkupinaService skupinaService;
 
-    public SkupinaController(SkupinaService skupinaService) {
+    private final SkupinaRepository skupinaRepository;
+
+    public SkupinaController(SkupinaService skupinaService,  SkupinaRepository skupinaRepository)  {
+
         this.skupinaService = skupinaService;
+        this.skupinaRepository = skupinaRepository;
     }
 
     // GET ALL
@@ -42,6 +47,11 @@ public class SkupinaController {
             @RequestBody Skupina skupina
     ) {
         return ResponseEntity.ok(skupinaService.update(id, skupina));
+    }
+
+    @GetMapping("/aktivne")
+    public List<Skupina> aktivne(){
+        return skupinaRepository.findAllAktivne();
     }
 
     // DELETE

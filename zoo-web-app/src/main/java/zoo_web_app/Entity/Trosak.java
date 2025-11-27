@@ -36,4 +36,10 @@ public class Trosak {
 
     @Column(name = "datum")
     private LocalDate datum;
+
+    @Column(name = "broj_sati")
+    private Integer brojSati;
+
+    @Column(name = "satnica")
+    private Double satnica;
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zoo_web_app.Entity.Jedinka;
+import zoo_web_app.Repository.JedinkaRepository;
 import zoo_web_app.Service.JedinkaService;
 import zoo_web_app.Service.impl.JedinkaServiceImpl;
 
@@ -17,14 +18,16 @@ public class JedinkaController {
 
     private final JedinkaService jedinkaService;
 
+    private final JedinkaRepository jedinkaRepository;
     @GetMapping("/broj")
     public long brojJedinki(){
         return jedinkaService.brojJedinki();
     }
 
-    public JedinkaController(JedinkaServiceImpl jedinkaServiceImpl, JedinkaService jedinkaService) {
+    public JedinkaController(JedinkaServiceImpl jedinkaServiceImpl, JedinkaService jedinkaService, JedinkaRepository jedinkaRepository) {
         this.jedinkaServiceImpl = jedinkaServiceImpl;
         this.jedinkaService = jedinkaService;
+        this.jedinkaRepository = jedinkaRepository;
     }
 
     // GET ALL – vrati sve jedinke
@@ -51,6 +54,10 @@ public class JedinkaController {
             @PathVariable Long id,
             @RequestBody Jedinka jedinka) {
         return ResponseEntity.ok(jedinkaServiceImpl.update(id, jedinka));
+    }
+    @GetMapping("/aktivne")
+    public List<Jedinka> aktivneJedinke(){
+        return jedinkaRepository.findAllAktivne();
     }
 
     // DELETE – brisanje jedinke

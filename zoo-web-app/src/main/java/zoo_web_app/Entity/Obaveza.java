@@ -2,7 +2,9 @@ package zoo_web_app.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "OBAVEZA")
@@ -37,10 +39,10 @@ public class Obaveza {
     private Skupina skupina;
 
     @Column(name = "datum_od")
-    private LocalDateTime datumOd;
+    private LocalDate datumOd;
 
     @Column(name = "datum_do")
-    private LocalDateTime datumDo;
+    private LocalDate datumDo;
 
     @Column(name = "komentar")
     private String komentar;

@@ -18,6 +18,8 @@ public class Jedinka {
     @Column(name = "id_jedinke")
     private Long id;
 
+
+
     @Column(name = "nadimak")
     private String nadimak;
 

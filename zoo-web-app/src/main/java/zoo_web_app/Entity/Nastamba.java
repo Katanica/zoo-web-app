@@ -23,6 +23,13 @@ public class Nastamba {
     @Column(name = "opis")
     private String opis;
 
+    @Column(name = "adresa", nullable = false)
+    private String adresa;
+
+    @Column(name = "broj", nullable = false)
+    private String broj;
+
+
     @Column(name = "geometrija")
     private String geometrija;
 

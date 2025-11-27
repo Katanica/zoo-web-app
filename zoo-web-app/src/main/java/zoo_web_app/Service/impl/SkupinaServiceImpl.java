@@ -5,6 +5,7 @@ import zoo_web_app.Entity.Skupina;
 import zoo_web_app.Repository.SkupinaRepository;
 import zoo_web_app.Service.SkupinaService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -57,7 +58,12 @@ public class SkupinaServiceImpl implements SkupinaService {
 
     @Override
     public void delete(Long id) {
-        Skupina s = findById(id);
-        skupinaRepository.delete(s);
+        Skupina s = skupinaRepository.findById(id).orElseThrow(() -> new RuntimeException("Skupina ne postoji."));
+
+        s.setAktivna(false);
+        s.setDatumNeaktivnosti(LocalDate.now());
+        s.setRazlogNeaktivnosti("Uklonjena.");
+
+        skupinaRepository.save(s);
     }
 }
