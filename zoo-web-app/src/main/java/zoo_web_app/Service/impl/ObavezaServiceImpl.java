@@ -56,6 +56,10 @@ public class ObavezaServiceImpl implements ObavezaService {
             }
         }
 
+
+        provjeriLicencu(obaveza);
+
+        provjeriIstekLicence(obaveza);
         return obavezaRepository.save(obaveza);
     }
 
@@ -88,6 +92,10 @@ public class ObavezaServiceImpl implements ObavezaService {
         o.setDatumDo(updated.getDatumDo());
         o.setKomentar(updated.getKomentar());
 
+
+        provjeriLicencu(o);
+        provjeriIstekLicence(o);
+
         return obavezaRepository.save(o);
     }
 
@@ -103,5 +111,41 @@ public class ObavezaServiceImpl implements ObavezaService {
         o.setStatus(status);
         obavezaRepository.save(o);
     }
+
+    // Provjera licence
+
+    private void provjeriLicencu(Obaveza obaveza) {
+        if(obaveza.getRadnik() == null) return;
+
+
+        if(!obaveza.getTip().isZahtjevaLicencu()) return;
+
+
+        boolean imaLicencu = obaveza.getRadnik()
+                .getObrazovanja()
+                .stream()
+                .anyMatch(o ->o.getObrazovanje().getNaziv().equalsIgnoreCase("VODIC"));
+
+        if(!imaLicencu){
+            throw new RuntimeException("Radnik nema potrebnu licnencu za ovu obavezu.");
+        }
+    }
+
+    private void provjeriIstekLicence(Obaveza obaveza){
+        if(obaveza.getRadnik() == null) return;
+
+        if(!obaveza.getTip().isZahtjevaLicencu()) return;
+
+
+        boolean isteklaLicenca = obaveza.getRadnik()
+                .getObrazovanja()
+                .stream()
+                .anyMatch(o -> o.getObrazovanje().getNaziv().equalsIgnoreCase("VODIC") && o.getDatumIsteka() != null && o.getDatumIsteka().isBefore(LocalDate.now()));
+
+        if(!isteklaLicenca){
+            throw new RuntimeException("Licenca VODIC je istekla - radnik ne smije voditi turu.");
+        }
+    }
+
 
 }

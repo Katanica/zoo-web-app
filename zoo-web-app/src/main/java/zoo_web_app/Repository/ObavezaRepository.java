@@ -15,7 +15,7 @@ public interface ObavezaRepository extends JpaRepository<Obaveza, Long> {
 @Query("""
 SELECT o FROM Obaveza o 
 WHERE o.radnik.id = :idRadnika
-AND o.statusObaveze <> 'OTKAZANA'
+AND o.status.nazivStatusa <> 'OTKAZANA'
 AND (
 (o.datumOd <= :datumDo AND o.datumDo >= :datumOd)
 )

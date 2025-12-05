@@ -21,4 +21,8 @@ public class TipObaveze {
 
     @OneToMany(mappedBy = "tip")
     private List<Obaveza> obaveze;
+
+    @Column(name = "zahtjeva_licencu")
+    private boolean zahtjevaLicencu = false;
+
 }

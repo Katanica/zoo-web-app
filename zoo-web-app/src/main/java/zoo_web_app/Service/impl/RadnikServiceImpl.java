@@ -56,6 +56,7 @@ public class RadnikServiceImpl implements RadnikService {
         radnikRepository.delete(r);
     }
 
+
 }
 
 

@@ -29,4 +29,6 @@ public class RadnikObrazovanje {
 
     @Column(name = "datum_isteka")
     private LocalDate datumIsteka;
+
+
 }

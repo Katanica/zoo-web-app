@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 @Entity
 @Table(name = "RADNIK")
@@ -43,4 +44,7 @@ public class Radnik {
     @JsonIgnore
     @OneToMany(mappedBy = "vodic")
     private List<GrupaPosjetitelja> grupe;
+
+
+
 }
