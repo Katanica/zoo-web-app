@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/nacin-nabave")
+@RequestMapping("/api/nacin_nabave")
 public class NacinNabaveController {
 
     public final NacinNabaveRepository repository;

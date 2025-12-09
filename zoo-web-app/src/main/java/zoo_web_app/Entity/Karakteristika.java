@@ -1,11 +1,12 @@
 package zoo_web_app.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "KARAKTERISTIKA")
+@Table(name = "karakteristika")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +20,7 @@ public class Karakteristika {
     @Column(name = "naziv", nullable = false, unique = true)
     private String naziv;
 
-    @OneToMany(mappedBy = "karakteristika")
-    private List<NastambaKarakteristika> nastambe;
+    @ManyToMany(mappedBy = "karakteristike")
+    @JsonIgnore
+    private List<Nastamba> nastambe;
 }

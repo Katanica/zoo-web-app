@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "NASTAMBA")
+@Table(name = "nastamba")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,27 +23,17 @@ public class Nastamba {
     @Column(name = "opis")
     private String opis;
 
-    @Column(name = "adresa", nullable = false)
-    private String adresa;
-
-    @Column(name = "broj", nullable = false)
-    private String broj;
-
-
     @Column(name = "geometrija")
     private String geometrija;
 
-    @OneToMany(mappedBy = "nastamba")
-    private List<NastambaKarakteristika> karakteristike;
+    @ManyToMany
+    @JoinTable(
+            name="nastamba_karakteristika",
+            joinColumns = @JoinColumn(name = "id_nastambe"),
+            inverseJoinColumns = @JoinColumn(name = "id_karakteristike")
+    )
+    private List<Karakteristika> karakteristike;
 
     @OneToMany(mappedBy = "nastamba")
     private List<NastambaInfrastruktura> infrastruktura;
-
-    @OneToMany(mappedBy = "nastamba")
-    @JsonIgnore
-    private List<Jedinka> jedinke;
-
-    @OneToMany(mappedBy = "nastamba")
-    @JsonIgnore
-    private List<Skupina> skupine;
 }
