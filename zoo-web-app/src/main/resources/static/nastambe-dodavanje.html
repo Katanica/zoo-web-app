@@ -210,8 +210,8 @@
         <input type="text" id="input-geometrije" class="manji-input" placeholder="npr. 10x15m">
         <h4>Karakteristike:</h4>
         <div id="ponuda-karakteristika" class="checkbox-group"></div>
-        <h4>Životinje:</h4>
-        <div id="ponuda-zivotinja" class="checkbox-group"></div>
+        <h4>Opis:</h4>
+        <input type="text" id="input-opis" class="manji-input" placeholder="...">
         <br>
         <button onclick="dodajNastambu()" class="veci-button">Dodaj nastambu</button>
     </div>
@@ -225,10 +225,8 @@
 </div>
 
 <script>
-    const API_URL_K = "http://localhost:8080/karakteristike";
-    const API_URL_N = "http://localhost:8080/nastambe";
-    const API_URL_J = "http://localhost:8080/api/jedinke";
-    const API_URL_S = "http://localhost:8080/api/skupine"
+    const API_URL_K = "http://localhost:8080/api/karakteristike";
+    const API_URL_N = "http://localhost:8080/api/nastambe";
 
     async function prikaziKarakteristike() {
         const res = await fetch(API_URL_K);
@@ -242,14 +240,14 @@
         data.forEach(k => {
             const span = document.createElement("span");
             span.className = "karakteristika";
-            span.innerHTML = `${k.naziv_karakteristike} `;
+            span.innerHTML = `${k.naziv} `;
 
             const btn = document.createElement("button");
             btn.className = "x-button";
             btn.innerHTML = "×";
             btn.onclick = async () => {
                 await fetch(`${API_URL_K}/${k.id}`, { method: "DELETE" });
-                prikaziKarakteristike();
+                await prikaziKarakteristike();
             };
             span.appendChild(btn);
             lista.appendChild(span);
@@ -259,7 +257,9 @@
             cb.type = "checkbox";
             cb.value = k.id;
             label.appendChild(cb);
-            label.append(` ${k.naziv_karakteristike}`);
+            label.append(`${k.naziv}`);
+            label.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;";
+            label.style.display = "inline-block";
             ponuda.appendChild(label);
         });
     }
@@ -272,13 +272,13 @@
         await fetch(API_URL_K, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ naziv_karakteristike: naziv })
+            body: JSON.stringify({ naziv: naziv })
         });
 
         input.value = "";
-        prikaziKarakteristike();
+        await prikaziKarakteristike();
     }
-
+    /*
     async function prikaziZivotinje() {
         const resj = await fetch(API_URL_J);
         const dataj = await resj.json();
@@ -307,7 +307,7 @@
             ponuda.appendChild(label);
         });
     }
-
+    */
     async function prikaziNastambe() {
         const res = await fetch(API_URL_N);
         const data = await res.json();
@@ -326,8 +326,8 @@
             let html = `
             <strong>Oznaka:</strong> ${n.oznaka}<br>
             <strong>Geometrija:</strong> ${n.geometrija}<br>
-            <strong>Karakteristike:</strong> ${n.karakteristike?.map(k => k.naziv_karakteristike).join(", ") || "Nema"}<br>
-            <strong>Životinje:</strong> ${n.zivotinje?.map(z => z.ime).join(", ") || "Nema"}
+            <strong>Karakteristike:</strong> ${n.karakteristike?.map(k => k.naziv).join(", ") || "Nema"}<br>
+            <strong>Opis:</strong> ${n.opis ? n.opis : "Nema opisa."}<br>
         `;
 
             div.innerHTML = html;
@@ -338,7 +338,7 @@
             btn.onclick = async () => {
                 if (confirm("Sigurno želiš obrisati ovu nastambu?")) {
                     await fetch(`${API_URL_N}/${n.id}`, { method: "DELETE" });
-                    prikaziNastambe();
+                    await prikaziNastambe();
                 }
             };
 
@@ -350,13 +350,10 @@
     async function dodajNastambu() {
         const oznaka = document.getElementById("input-oznake").value.trim();
         const geometrija = document.getElementById("input-geometrije").value.trim();
+        const opis = document.getElementById("input-opis").value.trim();
 
         const karakIds = Array.from(
             document.querySelectorAll('#ponuda-karakteristika input:checked')
-        ).map(cb => parseInt(cb.value));
-
-        const zivIds = Array.from(
-            document.querySelectorAll('#ponuda-zivotinja input:checked')
         ).map(cb => parseInt(cb.value));
 
         if (!oznaka || !geometrija) {
@@ -364,14 +361,16 @@
             return;
         }
 
+        console.log(karakIds);
+
         await fetch(API_URL_N, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                oznaka,
-                geometrija,
-                karakteristikeIds: karakIds,
-                zivotinjeIds: zivIds
+                oznaka: oznaka,
+                geometrija: geometrija,
+                opis: opis,
+                karakteristike: karakIds.map(id => ({ id }))// skraceni zapis
             })
         });
 
@@ -379,12 +378,11 @@
         document.getElementById("input-geometrije").value = "";
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
 
-        prikaziNastambe();
+        await prikaziNastambe();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
         prikaziKarakteristike();
-        prikaziZivotinje();
         prikaziNastambe();
     });
 </script>
