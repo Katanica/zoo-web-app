@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.GrupaPosjetitelja;
 import zoo_web_app.Repository.GrupaPosjetiteljaRepository;
 import zoo_web_app.Service.GrupaPosjetiteljaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -24,8 +25,9 @@ public class GrupaPosjetiteljaServiceImpl implements GrupaPosjetiteljaService {
     @Override
     public GrupaPosjetitelja findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Grupa posjetitelja nije pronađena: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Grupa posjetitelja nije pronađena: " + id));
     }
+
 
     @Override
     public GrupaPosjetitelja create(GrupaPosjetitelja grupa) {

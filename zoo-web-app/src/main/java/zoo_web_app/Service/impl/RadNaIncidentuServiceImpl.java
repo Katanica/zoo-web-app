@@ -7,6 +7,7 @@ import zoo_web_app.Entity.RadNaIncidentu;
 import zoo_web_app.Repository.IncidentRepository;
 import zoo_web_app.Repository.RadNaIncidentuRepository;
 import zoo_web_app.Service.RadNaIncidentuService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +28,7 @@ public class RadNaIncidentuServiceImpl implements RadNaIncidentuService {
         rad.setUkupniTrosak(ukupno);
 
         Incident incident = incidentRepository.findById(rad.getIncident().getId())
-                .orElseThrow(() -> new RuntimeException("Incident ne postoji!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Incident ne postoji!"));
 
         rad.setIncident(incident);
 
@@ -52,14 +53,13 @@ public class RadNaIncidentuServiceImpl implements RadNaIncidentuService {
 
     @Override
     public void delete(Long id) {
-        RadNaIncidentu rad = findById(id);
-        radRepo.delete(rad);
+        radRepo.delete(findById(id));
     }
 
     @Override
     public RadNaIncidentu findById(Long id) {
         return radRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rad na incidentu ne postoji: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Rad na incidentu ne postoji: " + id));
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Skupina;
 import zoo_web_app.Repository.SkupinaRepository;
 import zoo_web_app.Service.SkupinaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,7 +15,6 @@ public class SkupinaServiceImpl implements SkupinaService {
     private final SkupinaRepository skupinaRepository;
 
     public SkupinaServiceImpl(SkupinaRepository skupinaRepository) {
-
         this.skupinaRepository = skupinaRepository;
     }
 
@@ -26,7 +26,7 @@ public class SkupinaServiceImpl implements SkupinaService {
     @Override
     public Skupina findById(Long id) {
         return skupinaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Skupina nije pronađena: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Skupina nije pronađena: " + id));
     }
 
     @Override
@@ -58,7 +58,8 @@ public class SkupinaServiceImpl implements SkupinaService {
 
     @Override
     public void delete(Long id) {
-        Skupina s = skupinaRepository.findById(id).orElseThrow(() -> new RuntimeException("Skupina ne postoji."));
+        Skupina s = skupinaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Skupina ne postoji: " + id));
 
         s.setAktivna(false);
         s.setDatumNeaktivnosti(LocalDate.now());

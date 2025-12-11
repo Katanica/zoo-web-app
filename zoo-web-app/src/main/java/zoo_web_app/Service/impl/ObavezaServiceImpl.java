@@ -6,6 +6,7 @@ import zoo_web_app.Entity.StatusObaveze;
 import zoo_web_app.Repository.ObavezaRepository;
 import zoo_web_app.Repository.StatusObavezeRepository;
 import zoo_web_app.Service.ObavezaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.List;
 public class ObavezaServiceImpl implements ObavezaService {
 
     private final ObavezaRepository obavezaRepository;
-
     private final StatusObavezeRepository statusObavezeRepository;
 
     public ObavezaServiceImpl(ObavezaRepository obavezaRepository, StatusObavezeRepository statusObavezeRepository) {
@@ -30,7 +30,7 @@ public class ObavezaServiceImpl implements ObavezaService {
     @Override
     public Obaveza findById(Long id) {
         return obavezaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(" Obaveza ne postoji: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Obaveza ne postoji: " + id));
     }
 
     @Override
@@ -38,11 +38,9 @@ public class ObavezaServiceImpl implements ObavezaService {
         return obavezaRepository.count();
     }
 
-    // CREATE – sa validacijom konflikta
     @Override
     public Obaveza create(Obaveza obaveza) {
 
-        // provjera konflikta termina
         if (obaveza.getRadnik() != null && obaveza.getDatumOd() != null && obaveza.getDatumDo() != null) {
 
             List<Obaveza> konflikt = obavezaRepository.provjeriPreklapanje(
@@ -52,25 +50,23 @@ public class ObavezaServiceImpl implements ObavezaService {
             );
 
             if (!konflikt.isEmpty()) {
-                throw new RuntimeException(" Radnik već ima obavezu u tom periodu!");
+                throw new ResourceNotFoundException("Radnik već ima obavezu u tom periodu!");
             }
         }
 
-
         provjeriLicencu(obaveza);
-
         provjeriIstekLicence(obaveza);
+
         return obavezaRepository.save(obaveza);
     }
 
-    // UPDATE – ponovno radi validaciju pri promjeni termina ili radnika
     @Override
     public Obaveza update(Long id, Obaveza updated) {
 
         Obaveza o = findById(id);
 
-        // samo ako je setovan radnik i datumi – validacija
         if (updated.getRadnik() != null && updated.getDatumOd() != null && updated.getDatumDo() != null) {
+
             List<Obaveza> konflikt = obavezaRepository.provjeriPreklapanje(
                     updated.getRadnik().getId(),
                     updated.getDatumOd(),
@@ -78,11 +74,10 @@ public class ObavezaServiceImpl implements ObavezaService {
             );
 
             if (!konflikt.isEmpty()) {
-                throw new RuntimeException(" Radnik već ima obavezu u tom periodu!");
+                throw new ResourceNotFoundException("Radnik već ima obavezu u tom periodu!");
             }
         }
 
-        // UPDATE polja
         o.setTip(updated.getTip());
         o.setStatus(updated.getStatus());
         o.setRadnik(updated.getRadnik());
@@ -92,60 +87,53 @@ public class ObavezaServiceImpl implements ObavezaService {
         o.setDatumDo(updated.getDatumDo());
         o.setKomentar(updated.getKomentar());
 
-
         provjeriLicencu(o);
         provjeriIstekLicence(o);
 
         return obavezaRepository.save(o);
     }
 
-    // DELETE → soft akcija = postavi status na OTKAZANA, ne briši iz baze
     @Override
     public void delete(Long id) {
         Obaveza o = findById(id);
 
         StatusObaveze status = statusObavezeRepository
                 .findByNazivStatusa("OTKAZANA")
-                .orElseThrow(() -> new RuntimeException("Status OTKAZANA ne postoji u bazi!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Status OTKAZANA ne postoji u bazi!"));
 
         o.setStatus(status);
         obavezaRepository.save(o);
     }
 
-    // Provjera licence
-
     private void provjeriLicencu(Obaveza obaveza) {
-        if(obaveza.getRadnik() == null) return;
-
-
-        if(!obaveza.getTip().isZahtjevaLicencu()) return;
-
+        if (obaveza.getRadnik() == null) return;
+        if (!obaveza.getTip().isZahtjevaLicencu()) return;
 
         boolean imaLicencu = obaveza.getRadnik()
                 .getObrazovanja()
                 .stream()
-                .anyMatch(o ->o.getObrazovanje().getNaziv().equalsIgnoreCase("VODIC"));
+                .anyMatch(o -> o.getObrazovanje().getNaziv().equalsIgnoreCase("VODIC"));
 
-        if(!imaLicencu){
-            throw new RuntimeException("Radnik nema potrebnu licnencu za ovu obavezu.");
+        if (!imaLicencu) {
+            throw new ResourceNotFoundException("Radnik nema potrebnu licencu za ovu obavezu.");
         }
     }
 
-    private void provjeriIstekLicence(Obaveza obaveza){
-        if(obaveza.getRadnik() == null) return;
-
-        if(!obaveza.getTip().isZahtjevaLicencu()) return;
-
+    private void provjeriIstekLicence(Obaveza obaveza) {
+        if (obaveza.getRadnik() == null) return;
+        if (!obaveza.getTip().isZahtjevaLicencu()) return;
 
         boolean isteklaLicenca = obaveza.getRadnik()
                 .getObrazovanja()
                 .stream()
-                .anyMatch(o -> o.getObrazovanje().getNaziv().equalsIgnoreCase("VODIC") && o.getDatumIsteka() != null && o.getDatumIsteka().isBefore(LocalDate.now()));
+                .anyMatch(o ->
+                        o.getObrazovanje().getNaziv().equalsIgnoreCase("VODIC")
+                                && o.getDatumIsteka() != null
+                                && o.getDatumIsteka().isBefore(LocalDate.now())
+                );
 
-        if(!isteklaLicenca){
-            throw new RuntimeException("Licenca VODIC je istekla - radnik ne smije voditi turu.");
+        if (isteklaLicenca) {
+            throw new ResourceNotFoundException("Licenca VODIC je istekla - radnik ne smije voditi turu.");
         }
     }
-
-
 }

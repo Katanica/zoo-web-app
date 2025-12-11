@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Incident;
 import zoo_web_app.Repository.IncidentRepository;
 import zoo_web_app.Service.IncidentService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class IncidentServiceImpl implements IncidentService {
     @Override
     public Incident findById(Long id) {
         return incidentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Incident nije pronađen: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Incident nije pronađen: " + id));
     }
 
     @Override
