@@ -213,7 +213,7 @@
             btn.textContent = "Obriši";
             btn.onclick = async () => {
                 await fetch(`${API_O}/${o.id}`, { method: "DELETE" });
-                prikaziObaveze();
+                await prikaziObaveze();
             };
 
             d.appendChild(btn);
@@ -242,7 +242,7 @@
             body: JSON.stringify(payload)
         });
 
-        prikaziObaveze();
+        await prikaziObaveze();
         alert("Obaveza dodana!");
     }
 
