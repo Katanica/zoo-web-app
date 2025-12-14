@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZOO WEB APP - Raspored</title>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 { color: var(--primary); }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 1rem;
+            background: var(--secondary);
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .input {
+            width: 100%;
+            padding: 0.6rem;
+            margin: 0.4rem 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .btn {
+            margin-top: 0.7rem;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            background: var(--success);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .week-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .week-nav button {
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.6rem;
+            vertical-align: top;
+        }
+
+        th {
+            width: 30%;
+            background: var(--light);
+            text-align: left;
+        }
+
+        .stavka {
+            background: var(--light);
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+            position: relative;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 999px;
+            display: inline-block;
+        }
+
+        .RAD { background: #e8f7ef; color: #1e7f4c; }
+        .SLOBODNO { background: #eef3ff; color: #2c58b8; }
+        .BOLOVANJE { background: #ffecec; color: #b32424; }
+
+        .delete {
+            position: absolute;
+            top: 0.4rem;
+            right: 0.4rem;
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <a class="back-btn" href="index.html">POČETNA</a>
+    <h1>ZOO WEB APP – RASPORED</h1>
+</header>
+
+<div class="container">
+
+    <!-- UNOS -->
+    <div class="card">
+        <h3>Unos rasporeda</h3>
+
+        <label>Radnik</label>
+        <select id="radnik" class="input"></select>
+
+        <label>Vrsta</label>
+        <select id="vrsta" class="input" onchange="toggleSmjena()">
+            <option value="RAD">Rad</option>
+            <option value="SLOBODNO">Slobodno</option>
+            <option value="BOLOVANJE">Bolovanje</option>
+        </select>
+
+        <div id="smjena-blok">
+            <label>Smjena</label>
+            <select id="smjena" class="input">
+                <option value="PRVA">Prva</option>
+                <option value="DRUGA">Druga</option>
+            </select>
+        </div>
+
+        <label>Način unosa</label>
+        <div>
+            <label><input type="radio" name="tip" value="JEDAN" checked onclick="toggleDatumi()"> Jedan dan</label>
+            <label style="margin-left:1rem"><input type="radio" name="tip" value="RASPON" onclick="toggleDatumi()"> Raspon</label>
+        </div>
+
+        <div id="jedan">
+            <input type="date" id="datum" class="input">
+        </div>
+
+        <div id="raspon" style="display:none">
+            <input type="date" id="od" class="input">
+            <input type="date" id="do" class="input">
+        </div>
+
+        <button class="btn" onclick="spremi()">Spremi</button>
+    </div>
+
+    <!-- PRIKAZ -->
+    <div class="card">
+        <div class="week-header">
+            <h3 style="border:none;margin:0">Raspored</h3>
+            <div class="week-nav">
+                <button onclick="promijeniTjedan(-1)">←</button>
+                <span id="week-range" style="margin:0 0.6rem"></span>
+                <button onclick="promijeniTjedan(1)">→</button>
+            </div>
+        </div>
+
+        <div id="prikaz"></div>
+    </div>
+
+</div>
+
+<script>
+    const API_RADNICI = "http://localhost:8080/api/radnik";
+    const API_RASPORED = "http://localhost:8080/api/raspored";
+
+    let pomakTjedna = 0;
+
+    function toggleSmjena() {
+        document.getElementById("smjena-blok").style.display =
+            document.getElementById("vrsta").value === "RAD" ? "block" : "none";
+    }
+
+    function toggleDatumi() {
+        const tip = document.querySelector('input[name="tip"]:checked').value;
+        document.getElementById("jedan").style.display = tip === "JEDAN" ? "block" : "none";
+        document.getElementById("raspon").style.display = tip === "RASPON" ? "block" : "none";
+    }
+
+    function promijeniTjedan(delta) {
+        pomakTjedna += delta;
+        ucitajTjedan();
+    }
+
+    function ponedjeljak(ref = new Date()) {
+        const d = new Date(ref);
+        d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+        d.setHours(0,0,0,0);
+        return d;
+    }
+
+    function iso(d) {
+        return d.toISOString().split("T")[0];
+    }
+
+    async function ucitajRadnike() {
+        const res = await fetch(API_RADNICI);
+        const data = await res.json();
+        const sel = document.getElementById("radnik");
+        sel.innerHTML = "";
+        data.forEach(r => {
+            const o = document.createElement("option");
+            o.value = r.id;
+            o.textContent = r.ime + " " + r.prezime;
+            sel.appendChild(o);
+        });
+        sel.onchange = () => ucitajTjedan();
+    }
+
+    async function ucitajTjedan() {
+        const radnikId = document.getElementById("radnik").value;
+        if (!radnikId) return;
+
+        // nadi ponedjeljak trenutnog tjedna
+        const start = ponedjeljak(new Date());
+        start.setDate(start.getDate() + pomakTjedna * 7);
+        // nadi nedjelju trenutnog tjedna
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+
+        document.getElementById("week-range").textContent =
+            start.toLocaleDateString() + " – " + end.toLocaleDateString();
+
+        const res = await fetch(API_RASPORED);
+        const data = await res.json();
+
+        // napravi objekt sa kljucevima (npr. "2025-12-23"...)
+        const map = {};
+        for (let i = 1; i <= 7; i++) {
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            map[iso(d)] = [];
+        }
+
+        // iz dobavljenih radnika ostavi samo onog koji nama treba
+        data.filter(z => z.radnik.id == radnikId)
+            .forEach(z => {
+                const d = z.datum;
+                if (map[d]) map[d].push(z);
+            });
+
+        const prikaz = document.getElementById("prikaz");
+        prikaz.innerHTML = "";
+
+        const table = document.createElement("table");
+
+        const dani = ["ponedjeljak", "utorak", "srijeda", "četvrtak", "petak", "subota", "nedjelja"];
+        let biracDana = 0;
+
+        for (const d in map) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<th>${new Date(d).toLocaleDateString()} ${dani[biracDana++]}</th>`;
+            const td = document.createElement("td");
+            if (map[d].length === 0) {
+                td.textContent = "—";
+            } else {
+                map[d].forEach(z => {
+                    const div = document.createElement("div");
+                    div.className = "stavka";
+                    div.innerHTML = `
+                        <span class="badge ${z.vrstaUnosa}">${z.vrstaUnosa}</span>
+                        ${z.smjena ? " - " + z.smjena : ""}
+                        <button class="delete" onclick="obrisi(${z.id})">X</button>
+                    `;
+                    td.appendChild(div);
+                });
+            }
+
+            tr.appendChild(td);
+            table.appendChild(tr);
+        }
+
+        prikaz.appendChild(table);
+    }
+
+    async function obrisi(id) {
+        await fetch(API_RASPORED + "/" + id, { method: "DELETE" });
+        await ucitajTjedan();
+    }
+
+    async function spremi() {
+        const radnikId = document.getElementById("radnik").value;
+        const vrsta = document.getElementById("vrsta").value;
+        const smjena = document.getElementById("smjena").value;
+        const tip = document.querySelector('input[name="tip"]:checked').value;
+
+        let od, doD;
+        if (tip === "JEDAN") {
+            od = doD = document.getElementById("datum").value;
+        } else {
+            od = document.getElementById("od").value;
+            doD = document.getElementById("do").value;
+        }
+
+        const body = { radnikId, vrstaUnosa: vrsta, datumOd: od, datumDo: doD };
+        if (vrsta === "RAD") body.smjena = smjena;
+
+        await fetch(API_RASPORED + "/raspon", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        await ucitajTjedan();
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        toggleSmjena();
+        toggleDatumi();
+        await ucitajRadnike();
+        await ucitajTjedan();
+    });
+</script>
+
+</body>
+</html>
