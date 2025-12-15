@@ -12,4 +12,6 @@ public interface RasporedRepository extends JpaRepository<Raspored, Long> {
     Optional<Raspored> findByRadnikIdAndDatum(Long radnikId, LocalDate datum);
 
     List<Raspored> findByRadnikIdAndDatumBetween(Long radnikId, LocalDate datumOd, LocalDate datumDo);
+
+    List<Raspored> findByDatumBetween(LocalDate ponedjeljak, LocalDate nedjelja);
 }
