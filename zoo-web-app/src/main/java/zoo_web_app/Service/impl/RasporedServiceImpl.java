@@ -65,6 +65,13 @@ public class RasporedServiceImpl implements RasporedService {
     }
 
     @Override
+    public List<Raspored> dohvatiPoPonedjeljku(LocalDate ponedjeljak){
+        LocalDate nedjelja = ponedjeljak.plusDays(6);
+
+        return rasporedRepository.findByDatumBetween(ponedjeljak, nedjelja);
+    }
+
+    @Override
     public List<Raspored> dohvatiRasporedZaRadnikaUTjednu(Long radnikId,
                                                           LocalDate ponedjeljak) {
 

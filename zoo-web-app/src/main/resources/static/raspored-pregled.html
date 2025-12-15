@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZOO WEB APP - Raspored (Svi radnici)</title>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        header { text-align: center; margin-bottom: 2rem; }
+        h1 { color: var(--primary); }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 1rem;
+            background: var(--secondary);
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .week-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .week-nav button {
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .week-range {
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--light);
+            padding: 0.35rem 0.6rem;
+            border-radius: 8px;
+        }
+
+        .filters {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .input {
+            padding: 0.6rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            min-width: 220px;
+        }
+
+        .btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            background: var(--success);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* GRID: redovi = radnici, stupci = dani u tjednu */
+        .schedule-grid {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .schedule-grid th, .schedule-grid td {
+            border: 1px solid #ddd;
+            padding: 0.6rem;
+            vertical-align: top;
+        }
+
+        .schedule-grid thead th {
+            background: var(--light);
+            color: var(--primary);
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .schedule-grid .worker-col {
+            width: 220px;
+        }
+
+        .day-title {
+            gap: 0.15rem;
+        }
+
+        .day-title small {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .cell {
+            min-height: 64px;
+        }
+
+        .stavka {
+            background: var(--light);
+            padding: 0.45rem 0.55rem;
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 999px;
+            display: inline-block;
+            margin-right: 0.4rem;
+        }
+
+        .RAD { background: #e8f7ef; color: #1e7f4c; }
+        .SLOBODNO { background: #eef3ff; color: #2c58b8; }
+        .BOLOVANJE { background: #ffecec; color: #b32424; }
+
+        .muted {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1100px) {
+            body { padding: 1.2rem 0.6rem; }
+            .schedule-grid { display: block; overflow-x: auto; white-space: nowrap; }
+            .schedule-grid table { min-width: 1050px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <a class="back-btn" href="index.html">POČETNA</a>
+    <h1>ZOO WEB APP – RASPORED (SVI RADNICI)</h1>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <div class="toolbar">
+            <div>
+                <h3 style="border:none;margin:0">Pregled rasporeda (šira slika)</h3>
+                <div class="muted">Trenutni tjedan (pon–ned) za sve radnike</div>
+            </div>
+
+            <div class="week-nav">
+                <!-- JS će povezati ove gumbe na promjenu tjedna -->
+                <button id="btn-prev-week" onclick="pomakniTjedan(-1)" type="button">←</button>
+                <span id="week-range" class="week-range"></span>
+                <button id="btn-next-week" onclick="pomakniTjedan(1)" type="button">→</button>
+            </div>
+        </div>
+
+        <div class="toolbar" style="margin-top:0.2rem">
+            <div class="filters">
+                <!-- (Opcionalno) filter pretrage radnika -->
+                <input id="search-worker" class="input" type="text" placeholder="Pretraži radnika (ime/prezime)">
+
+                <!-- (Opcionalno) filter vrste zapisa -->
+                <select id="filter-vrsta" class="input" style="min-width:220px">
+                    <option value="">Sve vrste</option>
+                    <option value="RAD">Rad</option>
+                    <option value="SLOBODNO">Slobodno</option>
+                    <option value="BOLOVANJE">Bolovanje</option>
+                </select>
+
+                <button id="btn-refresh" class="btn" type="button">Osvježi</button>
+            </div>
+
+            <div class="muted">
+                Klik na polje možeš iskoristiti za detalje (ako želiš).
+            </div>
+        </div>
+
+        <!-- TABLICA: SVI RADNICI x DANI -->
+        <!-- JS će ovdje ubaciti stvarne radnike i stavke -->
+        <div style="margin-top:1rem;">
+            <table class="schedule-grid" id="schedule-table">
+                <thead>
+                <tr id="row-day">
+                    <th class="worker-col">Radnik</th>
+                </tr>
+                </thead>
+
+                <tbody id="schedule-body">
+                <!-- PRIMJER REDA (placeholder) -->
+                <tr>
+                    <th class="worker-col">
+                        <div><strong>Ime Prezime</strong></div>
+                        <div class="muted">#ID</div>
+                    </th>
+                    <td class="cell">
+                        <div class="stavka">
+                            <span class="badge RAD">RAD</span>
+                            PRVA
+                        </div>
+                    </td>
+
+                    <td class="cell">
+                        <div class="stavka">
+                            <span class="badge SLOBODNO">SLOBODNO</span>
+                        </div>
+                    </td>
+
+                    <td class="cell">—</td>
+
+                    <td class="cell">
+                        <div class="stavka">
+                            <span class="badge BOLOVANJE">BOLOVANJE</span>
+                        </div>
+                    </td>
+
+                    <td class="cell">—</td>
+                    <td class="cell">—</td>
+                    <td class="cell">—</td>
+                </tr>
+                <!-- KRAJ PRIMJERA -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script>
+    const API_RADNICI = "http://localhost:8080/api/radnik";
+    const API_RASPORED = "http://localhost:8080/api/raspored";
+
+    const redRadnik = document.getElementById("schedule-body");
+    const weekRange = document.getElementById("week-range");
+
+    let pomakTjedna = 0;
+
+    function ponedjeljak(ref = new Date()){
+        const d = new Date(ref);
+        d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+        d.setHours(0,0,0,0);
+        return d;
+    }
+
+    function iso(ref = new Date()){
+        let d = new Date(ref);
+        d = d.toISOString().split("T")[0];
+        return d;
+    }
+
+    function pomakniTjedan(broj){
+        pomakTjedna += broj;
+        ucitajTjedan();
+    }
+
+    async function ucitajTjedan(){
+        redRadnik.innerHTML = "";
+        const start = ponedjeljak(new Date());
+        start.setDate(start.getDate() + pomakTjedna * 7);
+        const kraj = new Date(start);
+        kraj.setDate(start.getDate() + 6);
+
+        const startCopy = new Date(start);
+        startCopy.setDate(startCopy.getDate() + 1);
+
+        const tjedanRes = await fetch(`${API_RASPORED}/tjedan?ponedjeljak=${iso(startCopy)}`);
+        const tjedanData = await tjedanRes.json();
+
+        console.log(tjedanData);
+
+        weekRange.innerHTML = start.toLocaleDateString() + "-" + kraj.toLocaleDateString();
+
+        const dani = ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"];
+        const rowDay = document.getElementById("row-day");
+
+        rowDay.innerHTML = '<th class="worker-col">Radnik</th>';
+
+        for(let i = 0; i < 7; i++){
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            const th = document.createElement("th");
+            th.className = "day-title";
+            th.innerHTML += dani[i] + "<br><small>" + d.toLocaleDateString() + "</small>";
+            rowDay.append(th);
+        }
+
+        const radnikRes = await fetch(API_RADNICI);
+        const radnikData = await radnikRes.json();
+
+        for (const r of radnikData) {
+            const red = document.createElement("tr");
+                const radnikCelija = document.createElement("th");
+                radnikCelija.className = "worker-col";
+                radnikCelija.innerHTML += "<div><strong>"+ r.ime + " " + r.prezime + "</strong></div>";
+                radnikCelija.innerHTML += "<div class='muted'>ID: " + r.id + "</div>";
+            red.append(radnikCelija);
+
+            let dan = new Date(start);
+            dan.setDate(dan.getDate() + 1);
+
+            for(let i = 0; i < 7; i++){
+                let kontrola = 0;
+                const smjena = document.createElement("td");
+                smjena.className = "cell";
+
+                for(const t of tjedanData){
+                    console.log(iso(dan));
+
+                    if((iso(dan) == t.datum) && (r.id == t.radnik.id)){
+                        const stavka = document.createElement("div");
+                        stavka.className = "stavka";
+                        const span = document.createElement("span");
+                        const vrstaUnosa = t.vrstaUnosa;
+
+                        span.className = "badge " + vrstaUnosa;
+                        span.textContent = vrstaUnosa;
+                        stavka.append(span);
+                        if (vrstaUnosa === "RAD")
+                            stavka.innerHTML += "<br><span style='font-size: .75em;'>" + t.smjena + " SMJENA</span>";
+                        smjena.append(stavka);
+                        kontrola = 1;
+                    }
+                    red.append(smjena);
+                }
+                if(kontrola === 0){
+                    smjena.innerHTML = "—";
+                    red.append(smjena);
+                }
+            redRadnik.append(red);
+                dan.setDate(dan.getDate() + 1);
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () =>{
+        await ucitajTjedan();
+    });
+</script>
+</body>
+</html>

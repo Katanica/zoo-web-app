@@ -26,8 +26,13 @@ public class RasporedController {
         return rasporedService.findAll();
     }
 
-    // DOHVAT rasporeda za radnika u tjednu
     @GetMapping("/tjedan")
+    public List<Raspored> dohvatiPoPonedjeljku(@RequestParam LocalDate ponedjeljak){
+        return rasporedService.dohvatiPoPonedjeljku(ponedjeljak);
+    }
+
+    // DOHVAT rasporeda za radnika u tjednu
+    @GetMapping("/radnik")
     public List<Raspored> dohvatiZaTjedan(@RequestParam Long radnikId,
                                           @RequestParam LocalDate ponedjeljak) {
 

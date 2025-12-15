@@ -28,5 +28,7 @@ public interface RasporedService {
     void obrisi(Long rasporedId);
 
     List<Raspored> findAll();
+
+    List<Raspored> dohvatiPoPonedjeljku(LocalDate ponedjeljak);
 }
 
