@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.IncidentNastamba;
 import zoo_web_app.Repository.IncidentNastambaRepository;
 import zoo_web_app.Service.IncidentNastambaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class IncidentNastambaServiceImpl implements IncidentNastambaService {
     @Override
     public IncidentNastamba findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("IncidentNastamba nije pronađen: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("IncidentNastamba nije pronađen: " + id));
     }
 
     @Override

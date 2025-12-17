@@ -1,15 +1,16 @@
 package zoo_web_app.Service.impl;
 
 import org.springframework.stereotype.Service;
-import zoo_web_app.Entity.Nastamba;
 import zoo_web_app.Entity.NastambaInfrastruktura;
 import zoo_web_app.Repository.NastambaInfrastrukturaRepository;
 import zoo_web_app.Service.NastambaInfrastrukturaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
 @Service
 public class NastambaInfrastrukturaServiceImpl implements NastambaInfrastrukturaService {
+
     private final NastambaInfrastrukturaRepository repository;
 
     public NastambaInfrastrukturaServiceImpl(NastambaInfrastrukturaRepository repository) {
@@ -24,7 +25,7 @@ public class NastambaInfrastrukturaServiceImpl implements NastambaInfrastruktura
     @Override
     public NastambaInfrastruktura findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("NastambaInfrastruktura nije pronađena: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("NastambaInfrastruktura nije pronađena: " + id));
     }
 
     @Override
@@ -45,7 +46,6 @@ public class NastambaInfrastrukturaServiceImpl implements NastambaInfrastruktura
 
     @Override
     public void delete(Long id) {
-        NastambaInfrastruktura ni = findById(id);
-        repository.delete(ni);
+        repository.delete(findById(id));
     }
 }

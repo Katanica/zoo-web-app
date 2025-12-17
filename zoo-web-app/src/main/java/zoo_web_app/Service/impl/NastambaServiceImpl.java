@@ -4,22 +4,22 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Nastamba;
 import zoo_web_app.Repository.NastambaRepository;
 import zoo_web_app.Service.NastambaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
 @Service
 public class NastambaServiceImpl implements NastambaService {
-    private final NastambaRepository nastambaRepository;
 
+    private final NastambaRepository nastambaRepository;
 
     public NastambaServiceImpl(NastambaRepository nastambaRepository) {
         this.nastambaRepository = nastambaRepository;
-
     }
 
     @Override
     public long brojNastambi(){
-        return  nastambaRepository.count();
+        return nastambaRepository.count();
     }
 
     @Override
@@ -30,7 +30,7 @@ public class NastambaServiceImpl implements NastambaService {
     @Override
     public Nastamba findById(Long id) {
         return nastambaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nastamba nije pronađena: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nastamba nije pronađena: " + id));
     }
 
     @Override
@@ -51,7 +51,6 @@ public class NastambaServiceImpl implements NastambaService {
 
     @Override
     public void delete(Long id) {
-        Nastamba n = findById(id);
-        nastambaRepository.delete(n);
+        nastambaRepository.delete(findById(id));
     }
 }

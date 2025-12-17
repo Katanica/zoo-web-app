@@ -4,11 +4,13 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.NastambaKarakteristika;
 import zoo_web_app.Repository.NastambaKarakteristikaRepository;
 import zoo_web_app.Service.NastambaKarakteristikaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
 @Service
 public class NastambaKarakteristikaServiceImpl implements NastambaKarakteristikaService {
+
     private final NastambaKarakteristikaRepository repository;
 
     public NastambaKarakteristikaServiceImpl(NastambaKarakteristikaRepository repository) {
@@ -23,7 +25,7 @@ public class NastambaKarakteristikaServiceImpl implements NastambaKarakteristika
     @Override
     public NastambaKarakteristika findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("NastambaKarakteristika nije pronađena: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("NastambaKarakteristika nije pronađena: " + id));
     }
 
     @Override
@@ -43,7 +45,6 @@ public class NastambaKarakteristikaServiceImpl implements NastambaKarakteristika
 
     @Override
     public void delete(Long id) {
-        NastambaKarakteristika nk = findById(id);
-        repository.delete(nk);
+        repository.delete(findById(id));
     }
 }

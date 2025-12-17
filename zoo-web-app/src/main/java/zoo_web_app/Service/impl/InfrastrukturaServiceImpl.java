@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Infrastruktura;
 import zoo_web_app.Repository.InfrastrukturaRepository;
 import zoo_web_app.Service.InfrastrukturaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class InfrastrukturaServiceImpl implements InfrastrukturaService {
     @Override
     public Infrastruktura findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Infrastruktura nije pronadena: " + id));
+                .orElseThrow(()-> new ResourceNotFoundException("Infrastruktura nije pronadena: " + id));
     }
 
     @Override

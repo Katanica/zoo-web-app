@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.IncidentSkupina;
 import zoo_web_app.Repository.IncidentSkupinaRepository;
 import zoo_web_app.Service.IncidentSkupinaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class IncidentSkupinaServiceImpl implements IncidentSkupinaService {
     @Override
     public IncidentSkupina findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("IncidentSkupina nije pronađena: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("IncidentSkupina nije pronađena: " + id));
     }
 
     @Override

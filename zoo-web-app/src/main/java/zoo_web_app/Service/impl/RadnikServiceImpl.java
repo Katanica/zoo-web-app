@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Radnik;
 import zoo_web_app.Repository.RadnikRepository;
 import zoo_web_app.Service.RadnikService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -29,8 +30,9 @@ public class RadnikServiceImpl implements RadnikService {
     @Override
     public Radnik findById(Long id) {
         return radnikRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Radnik nije pronađen: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Radnik nije pronađen: " + id));
     }
+
 
     @Override
     public Radnik create(Radnik radnik) {

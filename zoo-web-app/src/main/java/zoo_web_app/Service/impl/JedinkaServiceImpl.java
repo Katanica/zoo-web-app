@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Jedinka;
 import zoo_web_app.Repository.JedinkaRepository;
 import zoo_web_app.Service.JedinkaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,7 +25,8 @@ public class JedinkaServiceImpl implements JedinkaService {
 
     @Override
     public Jedinka findById(Long id) {
-        return jedinkaRepository.findById(id).orElseThrow(() -> new RuntimeException("Jedinka nije pronađena: " + id));
+        return jedinkaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Jedinka nije pronađena: " + id));
     }
 
     @Override
@@ -52,13 +54,14 @@ public class JedinkaServiceImpl implements JedinkaService {
     }
 
     @Override
-    public List<Jedinka> findAllAktivne(){
+    public List<Jedinka> findAllAktivne() {
         return jedinkaRepository.findAllAktivne();
     }
 
     @Override
     public void delete(Long id) {
-        Jedinka j = jedinkaRepository.findById(id).orElseThrow(() -> new RuntimeException("Jedinka ne postoji."));
+        Jedinka j = jedinkaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Jedinka ne postoji: " + id));
 
         j.setAktivna(false);
         j.setDatumNeaktivnosti(LocalDate.now());
@@ -67,8 +70,8 @@ public class JedinkaServiceImpl implements JedinkaService {
         jedinkaRepository.save(j);
     }
 
-   @Override
-    public long brojJedinki(){
+    @Override
+    public long brojJedinki() {
         return jedinkaRepository.count();
-   }
+    }
 }

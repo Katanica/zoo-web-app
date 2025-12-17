@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Obrazovanje;
 import zoo_web_app.Repository.ObrazovanjeRepository;
 import zoo_web_app.Service.ObrazovanjeService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class ObrazovanjeServiceImpl implements ObrazovanjeService {
     @Override
     public Obrazovanje findById(Long id) {
         return obrazovanjeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Obrazovanje nije pronađeno: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Obrazovanje nije pronađeno: " + id));
     }
 
     @Override
@@ -36,13 +37,11 @@ public class ObrazovanjeServiceImpl implements ObrazovanjeService {
     public Obrazovanje update(Long id, Obrazovanje updated) {
         Obrazovanje o = findById(id);
         o.setNaziv(updated.getNaziv());
-
         return obrazovanjeRepository.save(o);
     }
 
     @Override
     public void delete(Long id) {
-        Obrazovanje o = findById(id);
-        obrazovanjeRepository.delete(o);
+        obrazovanjeRepository.delete(findById(id));
     }
 }

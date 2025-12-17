@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.Trosak;
 import zoo_web_app.Repository.TrosakRepository;
 import zoo_web_app.Service.TrosakService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class TrosakServiceImpl implements TrosakService {
     @Override
     public Trosak findById(Long id) {
         return trosakRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Trosak nije pronađen: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Trosak nije pronađen: " + id));
     }
 
     @Override
@@ -48,7 +49,6 @@ public class TrosakServiceImpl implements TrosakService {
 
     @Override
     public void delete(Long id) {
-        Trosak t = findById(id);
-        trosakRepository.delete(t);
+        trosakRepository.delete(findById(id));
     }
 }

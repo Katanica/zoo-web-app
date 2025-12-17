@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.VrstaIncidenta;
 import zoo_web_app.Repository.VrstaIncidentaRepository;
 import zoo_web_app.Service.VrstaIncidentaService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class VrstaIncidentaServiceImpl implements VrstaIncidentaService {
     @Override
     public VrstaIncidenta findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("VrstaIncidenta nije pronađena: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("VrstaIncidenta nije pronađena: " + id));
     }
 
     @Override
@@ -44,7 +45,6 @@ public class VrstaIncidentaServiceImpl implements VrstaIncidentaService {
 
     @Override
     public void delete(Long id) {
-        VrstaIncidenta vi = findById(id);
-        repository.delete(vi);
+        repository.delete(findById(id));
     }
 }

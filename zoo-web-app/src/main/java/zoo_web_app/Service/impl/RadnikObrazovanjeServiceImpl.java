@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import zoo_web_app.Entity.RadnikObrazovanje;
 import zoo_web_app.Repository.RadnikObrazovanjeRepository;
 import zoo_web_app.Service.RadnikObrazovanjeService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class RadnikObrazovanjeServiceImpl implements RadnikObrazovanjeService {
     @Override
     public RadnikObrazovanje findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("RadnikObrazovanje nije pronađeno: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("RadnikObrazovanje nije pronađeno: " + id));
     }
 
     @Override
@@ -45,7 +46,6 @@ public class RadnikObrazovanjeServiceImpl implements RadnikObrazovanjeService {
 
     @Override
     public void delete(Long id) {
-        RadnikObrazovanje ro = findById(id);
-        repository.delete(ro);
+        repository.delete(findById(id));
     }
 }

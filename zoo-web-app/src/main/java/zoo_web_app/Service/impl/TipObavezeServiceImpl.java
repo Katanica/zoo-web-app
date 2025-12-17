@@ -1,10 +1,10 @@
 package zoo_web_app.Service.impl;
 
 import org.springframework.stereotype.Service;
-import zoo_web_app.Entity.Obaveza;
 import zoo_web_app.Entity.TipObaveze;
 import zoo_web_app.Repository.TipObavezeRepository;
 import zoo_web_app.Service.TipObavezeService;
+import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class TipObavezeServiceImpl implements TipObavezeService {
     @Override
     public TipObaveze findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Obaveza nije pronađena: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Tip obaveze nije pronađen: " + id));
     }
 
     @Override
@@ -45,7 +45,6 @@ public class TipObavezeServiceImpl implements TipObavezeService {
 
     @Override
     public void delete(Long id) {
-        TipObaveze to = findById(id);
-        repository.delete(to);
+        repository.delete(findById(id));
     }
 }
