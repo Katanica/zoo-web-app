@@ -3,17 +3,16 @@ package zoo_web_app.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zoo_web_app.Entity.NacinNabave;
-import zoo_web_app.Entity.Radnik;
+import zoo_web_app.Exception.ResourceNotFoundException;
 import zoo_web_app.Repository.NacinNabaveRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/nacin_nabave")
 public class NacinNabaveController {
 
-    public final NacinNabaveRepository repository;
+    private final NacinNabaveRepository repository;
 
     public NacinNabaveController(NacinNabaveRepository repository) {
         this.repository = repository;
@@ -27,8 +26,10 @@ public class NacinNabaveController {
 
     // GET BY ID
     @GetMapping("/{id}")
-    public Optional<NacinNabave> getById(@PathVariable Long id) {
-        return repository.findById(id);
+    public ResponseEntity<NacinNabave> getById(@PathVariable Long id) {
+        NacinNabave nacin = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Način nabave ne postoji: " + id));
+        return ResponseEntity.ok(nacin);
     }
 
     // CREATE
@@ -36,22 +37,25 @@ public class NacinNabaveController {
     public ResponseEntity<NacinNabave> create(@RequestBody NacinNabave nacinNabave) {
         return ResponseEntity.ok(repository.save(nacinNabave));
     }
-    /* DOVRŠIT!!!
+
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<NacinNabave> update(
-            @PathVariable Long id,
-            @RequestBody Radnik radnik
-    ) {
-        return ResponseEntity.ok(radnikService.update(id, radnik));
+    public ResponseEntity<NacinNabave> update(@PathVariable Long id, @RequestBody NacinNabave updated) {
+        return repository.findById(id)
+                .map(existing -> {
+                    existing.setOpisNabave(updated.getOpisNabave()); // prilagodi polja po potrebi
+                    return ResponseEntity.ok(repository.save(existing));
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Način nabave ne postoji: " + id));
     }
 
     // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        radnikService.delete(id);
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Način nabave ne postoji: " + id);
+        }
+        repository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-    */
-
 }

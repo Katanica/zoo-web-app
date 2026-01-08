@@ -4,4 +4,5 @@ public enum VrstaUnosaRasporeda {
     RAD,
     SLOBODNO,
     BOLOVANJE
+
 }
