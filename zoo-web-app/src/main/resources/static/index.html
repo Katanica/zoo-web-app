@@ -13,275 +13,285 @@
 
     <style>
         :root {
-          --primary: #1a5d57;
-          --primary-light: #2c8a6b;
-          --gray: #555;
-          --light-gray: #f5f5f5;
-          --border: #ddd;
-          --text: #333;
-          --bg: #fafafa;
+            --primary: #1a5d57;
+            --primary-light: #2c8a6b;
+            --gray: #555;
+            --light-gray: #f5f5f5;
+            --border: #ddd;
+            --text: #333;
+            --bg: #fafafa;
         }
 
         * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-          font-family: 'Roboto', sans-serif;
-          background: var(--bg);
-          color: var(--text);
-          line-height: 1.6;
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
         }
 
         .container {
-          max-width: 1300px;
-          margin: 0 auto;
-          padding: 15px;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 15px;
         }
 
         /* Header */
         header {
-          background: white;
-          border-bottom: 1px solid var(--border);
-          padding: 15px 0;
-          margin-bottom: 25px;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .header-content {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .logo {
-          font-size: 1.6rem;
-          font-weight: 700;
-          color: var(--primary);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
         }
 
         .logo i {
-          margin-right: 8px;
+            margin-right: 8px;
         }
 
-        .user-info {
-          font-size: 0.95rem;
-          color: var(--gray);
-        }
-
-        .user-info i {
-          margin-right: 5px;
-          color: var(--primary);
-        }
-
-        /* Stats */
+        /* Stats – 5 kolona u jednom redu na desktopu */
         .stats {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 15px;
-          margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
         .stat-box {
-          background: white;
-          padding: 18px;
-          border: 1px solid var(--border);
-          border-radius: 6px;
-          text-align: center;
+            background: white;
+            padding: 18px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
         }
 
         .stat-box h3 {
-          font-size: 2rem;
-          font-weight: 700;
-          color: var(--primary);
-          margin-bottom: 5px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
         }
 
         .stat-box p {
-          font-size: 0.9rem;
-          color: var(--gray);
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Menu Grid */
         .menu-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 18px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 18px;
         }
 
         .menu-card {
-          background: white;
-          border: 1px solid var(--border);
-          border-radius: 6px;
-          overflow: hidden;
-          transition: all 0.2s ease;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: all 0.2s ease;
         }
 
         .menu-card:hover {
-          border-color: var(--primary);
-          box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            border-color: var(--primary);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
         }
 
         .menu-header {
-          background: var(--primary);
-          color: white;
-          padding: 14px 18px;
-          font-weight: 500;
-          font-size: 1.1rem;
-          display: flex;
-          align-items: center;
-          gap: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 14px 18px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .menu-header i {
-          font-size: 1.2rem;
+            font-size: 1.2rem;
         }
 
         .menu-body {
-          padding: 18px;
+            padding: 18px;
         }
 
         .menu-body p {
-          font-size: 0.95rem;
-          color: var(--gray);
-          margin-bottom: 15px;
-          line-height: 1.5;
+            font-size: 0.95rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
 
         .menu-actions {
-          display: flex;
-          gap: 10px;
-          flex-wrap: wrap;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
-          padding: 8px 14px;
-          border: none;
-          border-radius: 4px;
-          font-size: 0.9rem;
-          font-weight: 500;
-          cursor: pointer;
-          text-decoration: none;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          transition: all 0.2s;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
         }
 
         .btn-primary {
-          background: var(--primary);
-          color: white;
+            background: var(--primary);
+            color: white;
         }
 
         .btn-primary:hover {
-          background: #144a45;
+            background: #144a45;
         }
 
         .btn-outline {
-          background: transparent;
-          color: var(--primary);
-          border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
 
         .btn-outline:hover {
-          background: var(--primary-light);
-          color: white;
+            background: var(--primary-light);
+            color: white;
         }
 
         /* Footer */
         footer {
-          text-align: center;
-          padding: 20px 0;
-          margin-top: 50px;
-          color: var(--gray);
-          font-size: 0.85rem;
-          border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+            color: var(--gray);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-          .header-content {
-            flex-direction: column;
-            text-align: center;
-            gap: 10px;
-          }
-          .menu-grid {
-            grid-template-columns: 1fr;
-          }
-          .menu-actions {
-            justify-content: center;
-          }
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            .menu-actions {
+                justify-content: center;
+            }
+            .stats {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            }
         }
     </style>
 </head>
+
 <script>
     //----------  JEDINKE-------------
     async function ucitajBrojJedinki(){
-    try{
-        const resp = await fetch("http://localhost:8080/api/jedinke/broj");
-        const broj = await resp.json();
-        document.getElementById("broj-zivotinja").textContent = broj;
+        try{
+            const resp = await fetch("http://localhost:8080/api/jedinke/broj");
+            const broj = await resp.json();
+            document.getElementById("broj-zivotinja").textContent = broj;
+        }
+        catch (err) {
+            console.error("Greska broj jedinki: ", err);
+        }
     }
-    catch (err) {
-    console.error("Greska broj jedinki: ", err);
+
+    //---------- SKUPINE -------------
+    async function ucitajBrojSkupina(){
+        try{
+            // PROMIJENI endpoint ako vam se drugačije zove
+            const resp = await fetch("http://localhost:8080/api/skupine/broj");
+            const broj = await resp.json();
+            document.getElementById("broj-skupina").textContent = broj;
+        }
+        catch(err){
+            console.error("Greska broj skupina: ", err);
+        }
     }
-    }
+
     //---------- NASTAMBE ------------
     async function ucitajBrojNastambi() {
-    try {
-        const resp = await fetch("http://localhost:8080/api/nastambe/broj");
-        const broj = await resp.json();
-        document.getElementById("broj-nastambi").textContent = broj;
-    } catch (err) {
-        console.error("Greška broj nastambi:", err);
-    }
-}
-
-// ------------- OBAVEZE ----------
-async function ucitajBrojObaveza() {
-    try {
-        const resp = await fetch("http://localhost:8080/api/obaveze/broj");
-        let data = await resp.json();
-
-        // Ako backend vrati samo broj:
-        if (typeof data === "number") {
-            document.getElementById("broj-obaveza").textContent = data;
-            return;
+        try {
+            const resp = await fetch("http://localhost:8080/api/nastambe/broj");
+            const broj = await resp.json();
+            document.getElementById("broj-nastambi").textContent = broj;
+        } catch (err) {
+            console.error("Greška broj nastambi:", err);
         }
+    }
 
-        // Ako backend vrati { "broj": 8 }
-        if (typeof data === "object" && data.broj !== undefined) {
-            document.getElementById("broj-obaveza").textContent = data.broj;
-            return;
+    // ------------- OBAVEZE ----------
+    async function ucitajBrojObaveza() {
+        try {
+            const resp = await fetch("http://localhost:8080/api/obaveze/broj");
+            let data = await resp.json();
+
+            if (typeof data === "number") {
+                document.getElementById("broj-obaveza").textContent = data;
+                return;
+            }
+
+            if (typeof data === "object" && data.broj !== undefined) {
+                document.getElementById("broj-obaveza").textContent = data.broj;
+                return;
+            }
+
+            document.getElementById("broj-obaveza").textContent = "--";
+
+        } catch (err) {
+            console.error("Greška broj obaveza:", err);
+            document.getElementById("broj-obaveza").textContent = "--";
         }
-
-        // Ako dođe nešto neočekivano
-        document.getElementById("broj-obaveza").textContent = "--";
-
-    } catch (err) {
-        console.error("Greška broj obaveza:", err);
-        document.getElementById("broj-obaveza").textContent = "--";
     }
-}
-//---------------RADNICI-------------------------
-async function ucitajBrojRadnika() {
-    try {
-        const resp = await fetch("http://localhost:8080/api/radnik/broj");
-        const broj = await resp.json();
-        document.getElementById("broj-radnika").textContent = broj;
-    } catch (err) {
-        console.error("Greška broj radnika:", err);
+
+    //---------------RADNICI-------------------------
+    async function ucitajBrojRadnika() {
+        try {
+            const resp = await fetch("http://localhost:8080/api/radnik/broj");
+            const broj = await resp.json();
+            document.getElementById("broj-radnika").textContent = broj;
+        } catch (err) {
+            console.error("Greška broj radnika:", err);
+        }
     }
-}
+
+    // poziv funkcija
     ucitajBrojRadnika();
     ucitajBrojObaveza();
     ucitajBrojNastambi();
     ucitajBrojJedinki();
+    ucitajBrojSkupina();
 </script>
+
 <body>
 
 <div class="container">
@@ -299,19 +309,27 @@ async function ucitajBrojRadnika() {
     <div class="stats">
         <div class="stat-box">
             <h3 id="broj-zivotinja">--</h3>
-            <p>Životinja</p>
+            <p>ŽIVOTINJA</p>
         </div>
+
+        <div class="stat-box">
+            <h3 id="broj-skupina">--</h3>
+            <p>SKUPINA</p>
+        </div>
+
         <div class="stat-box">
             <h3 id="broj-nastambi">--</h3>
-            <p>Nastambi</p>
+            <p>NASTAMBI</p>
         </div>
+
         <div class="stat-box">
             <h3 id="broj-obaveza">--</h3>
-            <p>Aktivnih obaveza</p>
+            <p>AKTIVNIH OBAVEZA</p>
         </div>
+
         <div class="stat-box">
             <h3 id="broj-radnika">--</h3>
-            <p>Radnika</p>
+            <p>RADNIKA</p>
         </div>
     </div>
 
@@ -330,6 +348,24 @@ async function ucitajBrojRadnika() {
                         <i class="fas fa-list"></i> Pregled
                     </a>
                     <a href="nastambe-dodavanje.html" class="btn btn-outline">
+                        <i class="fas fa-plus"></i> Nova
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skupine -->
+        <div class="menu-card">
+            <div class="menu-header">
+                <i class="fas fa-layer-group"></i> Skupine
+            </div>
+            <div class="menu-body">
+                <p>Grupe životinja, broj jedinki po skupini, pripadajuće nastambe i status.</p>
+                <div class="menu-actions">
+                    <a href="skupine-pregled.html" class="btn btn-primary">
+                        <i class="fas fa-list"></i> Pregled
+                    </a>
+                    <a href="skupine-dodavanje.html" class="btn btn-outline">
                         <i class="fas fa-plus"></i> Nova
                     </a>
                 </div>
@@ -371,6 +407,7 @@ async function ucitajBrojRadnika() {
                 </div>
             </div>
         </div>
+
         <!-- Obaveze -->
         <div class="menu-card">
             <div class="menu-header">
@@ -483,22 +520,6 @@ async function ucitajBrojRadnika() {
     </footer>
 
 </div>
-
-<!-- Demo podaci (kasnije zameni sa localStorage / API) -->
-<script>
-    // Primer ažuriranja statistike
-    const stats = {
-      animals: 47,
-      enclosures: 23,
-      tasks: 8,
-      workers: 18
-    };
-
-    document.getElementById('total-animals').textContent = stats.animals;
-    document.getElementById('total-enclosures').textContent = stats.enclosures;
-    document.getElementById('active-tasks').textContent = stats.tasks;
-    document.getElementById('total-workers').textContent = stats.workers;
-</script>
 
 </body>
 </html>

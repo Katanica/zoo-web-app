@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Pregled skupina | Zoo Web App</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background: #fafafa;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #1a5d57;
+        }
+        a.back-link {
+            text-decoration: none;
+            color: #1a5d57;
+            font-size: 0.9rem;
+        }
+        a.back-link i {
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+        }
+        th {
+            background: #1a5d57;
+            color: white;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background: #f7f7f7;
+        }
+
+        .status-active {
+            color: #1a5d57;
+            font-weight: 500;
+        }
+        .status-inactive {
+            color: #b00020;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Nazad na početnu
+    </a>
+
+    <h1>Pregled skupina</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Identifikator</th>
+            <th>Hrvatski naziv</th>
+            <th>Latinski naziv</th>
+            <th>Nastamba (oznaka)</th>
+            <th>Procijenjeni broj</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="skupine-tbody">
+        <!-- JS će ovdje ubaciti redove -->
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+    async function ucitajSkupine() {
+        try {
+            // relativni URL - ide na http://localhost:8080/api/skupine
+            const resp = await fetch("/api/skupine");
+            if (!resp.ok) {
+                throw new Error("Greška pri dohvaćanju skupina: " + resp.status);
+            }
+
+            const data = await resp.json(); // List<SkupinaDTO>
+
+            const tbody = document.getElementById("skupine-tbody");
+            tbody.innerHTML = "";
+
+            data.forEach(s => {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td>${s.id ?? ""}</td>
+                    <td>${s.identifikator ?? ""}</td>
+                    <td>${s.hrvatskiNaziv ?? ""}</td>
+                    <td>${s.latinskiNaziv ?? ""}</td>
+                    <td>${s.nastambaOznaka ?? ""}</td>
+                    <td>${s.procijenjeniBroj ?? ""}</td>
+                    <td>
+                        <span class="${s.aktivna ? 'status-active' : 'status-inactive'}">
+                            ${s.aktivna ? 'Aktivna' : 'Neaktivna'}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if (data.length === 0) {
+                tbody.innerHTML =
+                    `<tr><td colspan="7">Nema evidentiranih skupina.</td></tr>`;
+            }
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById("skupine-tbody").innerHTML =
+                `<tr><td colspan="7">Greška pri učitavanju skupina.</td></tr>`;
+        }
+    }
+
+    ucitajSkupine();
+</script>
+
+</body>
+</html>

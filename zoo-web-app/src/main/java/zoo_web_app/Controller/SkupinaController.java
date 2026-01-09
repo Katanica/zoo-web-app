@@ -2,6 +2,7 @@ package zoo_web_app.Controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zoo_web_app.DTO.SkupinaDTO;
 import zoo_web_app.Entity.Skupina;
 import zoo_web_app.Repository.SkupinaRepository;
 import zoo_web_app.Service.SkupinaService;
@@ -13,19 +14,23 @@ import java.util.List;
 public class SkupinaController {
 
     private final SkupinaService skupinaService;
-
     private final SkupinaRepository skupinaRepository;
 
-    public SkupinaController(SkupinaService skupinaService,  SkupinaRepository skupinaRepository)  {
-
+    public SkupinaController(SkupinaService skupinaService, SkupinaRepository skupinaRepository) {
         this.skupinaService = skupinaService;
         this.skupinaRepository = skupinaRepository;
     }
 
-    // GET ALL
+    // ✔ GLAVNI GET — VRAĆA DTO (za frontend pregled)
     @GetMapping
-    public ResponseEntity<List<Skupina>> getAll() {
-        return ResponseEntity.ok(skupinaService.findAll());
+    public List<SkupinaDTO> getAll() {
+        return skupinaService.getSveSkupine();
+    }
+
+    // ✔ broj aktivnih (samo jedna verzija)
+    @GetMapping("/broj")
+    public long getBrojAktivnihSkupina() {
+        return skupinaService.getBrojAktivnihSkupina();
     }
 
     // GET BY ID
@@ -49,8 +54,9 @@ public class SkupinaController {
         return ResponseEntity.ok(skupinaService.update(id, skupina));
     }
 
+    // GET ALL AKTIVNE (entiteti)
     @GetMapping("/aktivne")
-    public List<Skupina> aktivne(){
+    public List<Skupina> aktivne() {
         return skupinaRepository.findAllAktivne();
     }
 

@@ -1,6 +1,7 @@
 package zoo_web_app.Service.impl;
 
 import org.springframework.stereotype.Service;
+import zoo_web_app.DTO.SkupinaDTO;
 import zoo_web_app.Entity.Skupina;
 import zoo_web_app.Repository.SkupinaRepository;
 import zoo_web_app.Service.SkupinaService;
@@ -66,5 +67,36 @@ public class SkupinaServiceImpl implements SkupinaService {
         s.setRazlogNeaktivnosti("Uklonjena.");
 
         skupinaRepository.save(s);
+    }
+
+    @Override
+    public long brojSkupina(){
+        return skupinaRepository.count();
+    }
+
+
+    @Override
+    public List<SkupinaDTO> getSveSkupine() {
+        return skupinaRepository.findAll()
+                .stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    @Override
+    public long getBrojAktivnihSkupina() {
+        return skupinaRepository.countByAktivnaTrue();
+    }
+
+    private SkupinaDTO mapToDto(Skupina s) {
+        return new SkupinaDTO(
+                s.getId(),
+                s.getIdentifikator(),
+                s.getLatinskiNaziv(),
+                s.getHrvatskiNaziv(),
+                s.getNastamba() != null ? s.getNastamba().getOznaka() : null,
+                s.getProcijenjeniBroj(),
+                s.isAktivna()
+        );
     }
 }

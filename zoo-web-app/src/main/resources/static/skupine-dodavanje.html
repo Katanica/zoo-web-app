@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodavanje skupine | Zoo Web App</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <style>
+        :root {
+            --primary: #1a5d57;
+            --primary-light: #2c8a6b;
+            --gray: #555;
+            --bg: #fafafa;
+            --border: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Roboto", sans-serif;
+            background: var(--bg);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        a.back-link {
+            text-decoration: none;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        a.back-link i {
+            margin-right: 5px;
+        }
+
+        h1 {
+            margin: 15px 0 20px;
+            color: var(--primary);
+        }
+
+        form {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--gray);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .form-group-inline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .form-group-inline label {
+            margin-bottom: 0;
+        }
+
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #144a45;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+            color: #fff;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .message.success {
+            color: #1b7a26;
+        }
+
+        .message.error {
+            color: #b00020;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Nazad na početnu
+    </a>
+
+    <h1>Dodavanje nove skupine</h1>
+
+    <form id="skupina-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="identifikator">Identifikator</label>
+                <input type="text" id="identifikator" name="identifikator"
+                       placeholder="npr. GRP-001">
+            </div>
+
+            <div class="form-group">
+                <label for="hrvatskiNaziv">Hrvatski naziv *</label>
+                <input type="text" id="hrvatskiNaziv" name="hrvatskiNaziv" required>
+            </div>
+
+            <div class="form-group">
+                <label for="latinskiNaziv">Latinski naziv</label>
+                <input type="text" id="latinskiNaziv" name="latinskiNaziv">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="nastamba">Nastamba *</label>
+                <select id="nastamba" name="nastamba" required>
+                    <option value="">-- odaberi nastambu --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nacinNabave">Način nabave</label>
+                <select id="nacinNabave" name="nacinNabave">
+                    <option value="">-- odaberi način nabave --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="procijenjeniBroj">Procijenjeni broj jedinki</label>
+                <input type="number" id="procijenjeniBroj" name="procijenjeniBroj" min="0">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="datumNabave">Datum nabave</label>
+                <input type="date" id="datumNabave" name="datumNabave">
+            </div>
+
+            <div class="form-group">
+                <label for="link">Link (npr. Wikipedia, interni dokument)</label>
+                <input type="text" id="link" name="link" placeholder="https://...">
+            </div>
+        </div>
+
+        <div class="form-group-inline">
+            <input type="checkbox" id="aktivna" name="aktivna" checked>
+            <label for="aktivna">Skupina je aktivna</label>
+        </div>
+
+        <div class="form-group">
+            <label for="razlogNeaktivnosti">Razlog neaktivnosti (ako nije aktivna)</label>
+            <textarea id="razlogNeaktivnosti" name="razlogNeaktivnosti"></textarea>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Spremi
+            </button>
+            <button type="button" class="btn btn-outline" onclick="window.location.href='skupine-pregled.html'">
+                <i class="fas fa-list"></i> Natrag na pregled
+            </button>
+        </div>
+
+        <div id="form-message" class="message" style="display:none;"></div>
+    </form>
+
+</div>
+
+<script>
+    // ------------------ PODESI OVE URL-ove PO POTREBI ------------------
+    // Pretpostavke (promijeni ako imaš druge rute):
+    //  - GET  /api/nastambe/aktivne   -> lista nastambi (id, oznaka)
+    //  - GET  /api/nacinNabave        -> lista načina nabave (id, naziv)
+    //  - POST /api/skupine            -> kreiranje skupine (Skupina entity)
+    const NASTAMBE_URL = "/api/nastambe";
+    const NACIN_NABAVE_URL = "/api/nacin_nabave";
+    const SKUPINE_URL = "/api/skupine";
+    // -------------------------------------------------------------------
+
+    async function ucitajNastambe() {
+        try {
+            const resp = await fetch(NASTAMBE_URL);
+            if (!resp.ok) throw new Error("Greška kod dohvaćanja nastambi: " + resp.status);
+            const data = await resp.json();
+
+            const select = document.getElementById("nastamba");
+            data.forEach(n => {
+                // prilagodi ako su ti polja drugačija
+                const opt = document.createElement("option");
+                opt.value = n.id;
+                opt.textContent = n.oznaka || ("Nastamba " + n.id);
+                select.appendChild(opt);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function ucitajNacineNabave() {
+        try {
+            const resp = await fetch(NACIN_NABAVE_URL);
+            if (!resp.ok) return; // nije kritično ako ne postoji
+            const data = await resp.json();
+
+            const select = document.getElementById("nacinNabave");
+            data.forEach(nn => {
+                const opt = document.createElement("option");
+                opt.value = nn.id;
+                opt.textContent = nn.naziv || ("Način " + nn.id);
+                select.appendChild(opt);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    document.getElementById("skupina-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const msgEl = document.getElementById("form-message");
+        msgEl.style.display = "none";
+        msgEl.className = "message";
+
+        const identifikator = document.getElementById("identifikator").value.trim();
+        const hrvatskiNaziv = document.getElementById("hrvatskiNaziv").value.trim();
+        const latinskiNaziv = document.getElementById("latinskiNaziv").value.trim();
+        const nastambaId = document.getElementById("nastamba").value;
+        const nacinNabaveId = document.getElementById("nacinNabave").value;
+        const procijenjeniBroj = document.getElementById("procijenjeniBroj").value;
+        const datumNabave = document.getElementById("datumNabave").value;
+        const link = document.getElementById("link").value.trim();
+        const aktivna = document.getElementById("aktivna").checked;
+        const razlogNeaktivnosti = document.getElementById("razlogNeaktivnosti").value.trim();
+
+        if (!hrvatskiNaziv || !nastambaId) {
+            msgEl.textContent = "Hrvatski naziv i nastamba su obavezni.";
+            msgEl.classList.add("error");
+            msgEl.style.display = "block";
+            return;
+        }
+
+        const body = {
+            identifikator: identifikator || null,
+            hrvatskiNaziv: hrvatskiNaziv,
+            latinskiNaziv: latinskiNaziv || null,
+            procijenjeniBroj: procijenjeniBroj ? Number(procijenjeniBroj) : null,
+            datumNabave: datumNabave || null,
+            link: link || null,
+            aktivna: aktivna,
+            razlogNeaktivnosti: aktivna ? null : (razlogNeaktivnosti || null),
+            nastamba: nastambaId ? { id: Number(nastambaId) } : null,
+            nacinNabave: nacinNabaveId ? { id: Number(nacinNabaveId) } : null
+        };
+
+        try {
+            const resp = await fetch(SKUPINE_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (!resp.ok) {
+                const text = await resp.text();
+                throw new Error("Greška pri spremanju skupine: " + resp.status + " " + text);
+            }
+
+            msgEl.textContent = "Skupina je uspješno spremljena.";
+            msgEl.classList.add("success");
+            msgEl.style.display = "block";
+
+            // po želji redirect nakon par sekundi:
+            // setTimeout(() => window.location.href = "skupine-pregled.html", 1200);
+
+            // očisti formu
+            this.reset();
+            document.getElementById("aktivna").checked = true;
+
+        } catch (err) {
+            console.error(err);
+            msgEl.textContent = "Dogodila se greška pri spremanju skupine.";
+            msgEl.classList.add("error");
+            msgEl.style.display = "block";
+        }
+    });
+
+    // inicijalno učitavanje podataka za selectove
+    ucitajNastambe();
+    ucitajNacineNabave();
+</script>
+
+</body>
+</html>

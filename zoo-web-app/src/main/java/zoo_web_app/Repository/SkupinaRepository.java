@@ -12,4 +12,6 @@ public interface SkupinaRepository extends JpaRepository<Skupina, Long> {
 
     @Query("SELECT s FROM Skupina s WHERE s.aktivna = true")
     List<Skupina> findAllAktivne();
+
+    long countByAktivnaTrue();
 }
