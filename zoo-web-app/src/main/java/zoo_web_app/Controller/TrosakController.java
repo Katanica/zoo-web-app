@@ -1,8 +1,10 @@
 package zoo_web_app.Controller;
 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zoo_web_app.Entity.Trosak;
+import zoo_web_app.Repository.TrosakRepository;
 import zoo_web_app.Service.TrosakService;
 
 import java.util.List;
@@ -13,8 +15,11 @@ public class TrosakController {
     private final TrosakService trosakService;
 
 
+
     public TrosakController(TrosakService trosakService) {
         this.trosakService = trosakService;
+
+
     }
 
     @GetMapping
@@ -42,4 +47,7 @@ public class TrosakController {
         trosakService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+
+
 }

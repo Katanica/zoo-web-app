@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Unos troškova</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 6px;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-group label {
+            font-weight: 400;
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 18px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #1a5d57;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .message.success {
+            color: #1a7f3c;
+        }
+
+        .message.error {
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Unos troška</h1>
+
+    <form id="trosakForm">
+        <div class="form-group">
+            <label for="opis">Opis troška</label>
+            <textarea id="opis" name="opis" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="iznos">Iznos (€)</label>
+            <input type="number" id="iznos" name="iznos" step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="datum">Datum troška</label>
+            <input type="date" id="datum" name="datum" required>
+        </div>
+
+        <div class="form-group">
+            <label for="vrsta">Vrsta troška</label>
+            <select id="vrsta" name="vrsta">
+                <option value="HRANA">Hrana</option>
+                <option value="LIJEKOVI">Lijekovi / veterinar</option>
+                <option value="ODRZAVANJE">Održavanje</option>
+                <option value="OSTALO">Ostalo</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Povezano s</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="povezano" value="SKUPINA" checked>
+                    Skupinom
+                </label>
+                <label>
+                    <input type="radio" name="povezano" value="ZIVOTINJA">
+                    Pojedinačnom životinjom
+                </label>
+                <label>
+                    <input type="radio" name="povezano" value="OSTALO">
+                    Ostalo
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group" id="skupinaGroup">
+            <label for="idSkupine">ID skupine</label>
+            <input type="number" id="idSkupine" name="idSkupine" min="1">
+        </div>
+
+        <div class="form-group" id="zivotinjaGroup" style="display:none">
+            <label for="idZivotinje">ID životinje</label>
+            <input type="number" id="idZivotinje" name="idZivotinje" min="1">
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn-primary">Spremi trošak</button>
+            <button type="button" class="btn-secondary" onclick="window.location.href='troskovi.html'">
+                Natrag na pregled
+            </button>
+        </div>
+
+        <div id="message" class="message"></div>
+    </form>
+</div>
+
+<script>
+    // Prikaz/skrivanje polja ovisno o odabiru "Povezano s"
+    const radioInputs = document.querySelectorAll("input[name='povezano']");
+    const skupinaGroup = document.getElementById("skupinaGroup");
+    const zivotinjaGroup = document.getElementById("zivotinjaGroup");
+
+    radioInputs.forEach(r => {
+        r.addEventListener("change", () => {
+            if (r.value === "SKUPINA" && r.checked) {
+                skupinaGroup.style.display = "block";
+                zivotinjaGroup.style.display = "none";
+            } else if (r.value === "ZIVOTINJA" && r.checked) {
+                skupinaGroup.style.display = "none";
+                zivotinjaGroup.style.display = "block";
+            } else if (r.value === "OSTALO" && r.checked) {
+                skupinaGroup.style.display = "none";
+                zivotinjaGroup.style.display = "none";
+            }
+        });
+    });
+
+    const form = document.getElementById("trosakForm");
+    const messageDiv = document.getElementById("message");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const opis = document.getElementById("opis").value;
+        const iznos = parseFloat(document.getElementById("iznos").value);
+        const datum = document.getElementById("datum").value;
+        const vrsta = document.getElementById("vrsta").value;
+        const povezan = document.querySelector("input[name='povezano']:checked").value;
+        const idSkupine = document.getElementById("idSkupine").value || null;
+        const idZivotinje = document.getElementById("idZivotinje").value || null;
+
+        const payload = {
+            opis: opis,
+            iznos: iznos,
+            datum: datum,              // LocalDate u entitetu
+            tipTroska: vrsta,          // HRANA / LIJEKOVI / ...
+            brojSati: null,            // za sada ne koristimo
+            satnica: null,             // za sada ne koristimo
+
+            // povezano s JEDINKOM ili SKUPINOM
+            jedinka: povezan === "ZIVOTINJA" && idZivotinje
+                ? { id: Number(idZivotinje) }
+                : null,
+
+            skupina: povezan === "SKUPINA" && idSkupine
+                ? { id: Number(idSkupine) }
+                : null
+        };
+
+
+        try {
+            const resp = await fetch("/api/troskovi", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(payload)
+            });
+
+            if (!resp.ok) {
+                throw new Error("Greška pri spremanju troška");
+            }
+
+            messageDiv.textContent = "Trošak je uspješno spremljen.";
+            messageDiv.className = "message success";
+            form.reset();
+        } catch (err) {
+            console.error(err);
+            messageDiv.textContent = "Dogodila se greška pri spremanju troška.";
+            messageDiv.className = "message error";
+        }
+    });
+</script>
+
+</body>
+</html>

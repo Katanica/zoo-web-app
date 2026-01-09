@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Pregled troškova</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+    <h1>Pregled troškova</h1>
+
+    <table id="troskoviTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Opis</th>
+            <th>Iznos (€)</th>
+            <th>Datum</th>
+            <th>Skupina / Životinja</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    fetch("/api/troskovi")
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.querySelector("#troskoviTable tbody");
+
+            data.forEach(t => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${t.id}</td>
+                    <td>${t.opis ?? "/"}</td>
+                    <td>${t.iznos ?? "/"}</td>
+                    <td>${t.datum ?? "/"}</td>
+                    <td>${t.nazivSkupine ?? t.nazivZivotinje ?? "/"}</td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        })
+        .catch(err => {
+            console.error("Greška kod dohvaćanja troškova:", err);
+        });
+</script>
+
+</body>
+</html>
