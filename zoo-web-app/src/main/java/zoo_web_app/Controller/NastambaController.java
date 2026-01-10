@@ -42,12 +42,12 @@ public class NastambaController {
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<Nastamba> update(
-            @PathVariable Long id,
-            @RequestBody Nastamba updated
-    ) {
-        return ResponseEntity.ok(nastambaService.update(id, updated));
-    }
+        public ResponseEntity<Nastamba> update(
+                @PathVariable Long id,
+                @RequestBody Nastamba updated
+        ) {
+            return ResponseEntity.ok(nastambaService.update(id, updated));
+        }
 
     // DELETE
     @DeleteMapping("/{id}")

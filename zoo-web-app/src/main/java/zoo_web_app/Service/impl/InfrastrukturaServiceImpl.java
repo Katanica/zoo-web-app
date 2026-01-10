@@ -38,7 +38,6 @@ public class InfrastrukturaServiceImpl implements InfrastrukturaService {
 
         i.setId(id);
         i.setNaziv(infrastruktura.getNaziv());
-        i.setKategorija(infrastruktura.getKategorija());
         i.setNastambe(infrastruktura.getNastambe());
 
         return repository.save(i);

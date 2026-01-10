@@ -45,6 +45,9 @@ public class NastambaServiceImpl implements NastambaService {
         n.setOznaka(updated.getOznaka());
         n.setOpis(updated.getOpis());
         n.setGeometrija(updated.getGeometrija());
+        n.setAktivna(updated.isAktivna());
+        n.setKarakteristike(updated.getKarakteristike());
+        n.setInfrastruktura(updated.getInfrastruktura());
 
         return nastambaRepository.save(n);
     }
