@@ -107,6 +107,15 @@
             background: #219a52;
             transform: translateY(-2px);
         }
+        #uredivanje-button {
+            display: none;
+            background-color: orange;
+        }
+
+        #uredivanje-button:hover {
+            background-color: #e39200;
+            transform: translateY(-2px);
+        }
 
         .x-button {
             background: var(--danger);
@@ -143,6 +152,12 @@
         .checkbox-group input[type="checkbox"] {
             margin-right: 0.5rem;
         }
+        #field-grid{
+            display:grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+        .field{ display:block; }
 
         .nastamba-card {
             background: var(--light);
@@ -164,6 +179,22 @@
             border-radius: 6px;
             font-size: 0.8rem;
             cursor: pointer;
+        }
+
+        .uredi-nastamba {
+            position: absolute;
+            top: 3.5rem;
+            right: 1rem;
+            background-color: orange;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .uredi-nastamba:hover {
+            background: #bd7900;
         }
 
         .delete-nastamba:hover {
@@ -201,31 +232,67 @@
         <div id="lista-karakteristika" style="margin-top: 1rem;"></div>
     </div>
 
-    <!-- DODAJ NASTAMBU -->
+    <!-- DODAJ INFRASTRUKTURU -->
     <div class="card">
-        <h3>Dodaj nastambu</h3>
-        <h4>Oznaka:</h4>
-        <input type="text" id="input-oznake" class="manji-input" placeholder="npr. A1">
-        <h4>Geometrija:</h4>
-        <input type="text" id="input-geometrije" class="manji-input" placeholder="npr. 10x15m">
-        <h4>Karakteristike:</h4>
-        <div id="ponuda-karakteristika" class="checkbox-group"></div>
-        <h4>Opis:</h4>
-        <input type="text" id="input-opis" class="manji-input" placeholder="...">
-        <br>
-        <button onclick="dodajNastambu()" class="veci-button">Dodaj nastambu</button>
+        <h3>Dodaj infrastrukturu</h3>
+        <input id="input-infrastruktura" class="manji-input" type="text" placeholder="npr. Kamen, drvo...">
+        <button onclick="dodajInfrastrukturu()" class="veci-button">Dodaj</button>
+        <div id="lista-infrastruktura" style="margin-top: 1rem;"></div>
     </div>
 
-    <!-- TRENUTNE NASTAMBE -->
+    <!-- DODAJ NASTAMBU -->
     <div class="card full-width">
-        <h3>Trenutne nastambe</h3>
-        <div id="trenutne-nastambe"></div>
+        <h3>Dodaj nastambu</h3>
+
+        <h4 id="select-aktivnost-naslov" style="display:none;">Aktivna:</h4>
+        <select style = "display: none;" id="select-aktivnost" class="manji-input">
+            <option value="true">DA</option>
+            <option value="false">NE</option>
+        </select>
+        <div id="field-grid">
+            <div class="field">
+                <h4>Oznaka:</h4>
+                <input type="text" id="input-oznake" class="manji-input" placeholder="npr. A1">
+            </div>
+            <div class="field">
+                <h4>Geometrija:</h4>
+                <input type="text" id="input-geometrije" class="manji-input" placeholder="npr. 10x15m">
+            </div>
+            <div class="field">
+                <h4>Opis:</h4>
+                <input type="text" id="input-opis" class="manji-input" placeholder="...">
+            </div>
+        </div>
+        <h4>Karakteristike:</h4>
+        <div id="ponuda-karakteristika" class="checkbox-group"></div>
+
+        <h4>Infrastrukture:</h4>
+        <div id="ponuda-infrastruktura" class="checkbox-group"></div>
+
+
+        <br>
+        <button id="main-button" onclick="dodajNastambu()" class="veci-button">Dodaj nastambu</button>
+        <button id="uredivanje-button" onclick="dodajNastambu()" class="veci-button">Završi uređivanje</button>
+        <button id="nazad-button" class="veci-button" style="background-color: red; display: none;!important">Nazad</button>
+    </div>
+
+    <!-- AKTIVNE NASTAMBE -->
+    <div class="card full-width">
+        <h3>Aktivne nastambe</h3>
+        <div id="aktivne-nastambe"></div>
+    </div>
+
+    <!-- NEAKTIVNE NASTAMBE -->
+    <div class="card full-width">
+        <h3>Neaktivne nastambe</h3>
+        <div id="neaktivne-nastambe"></div>
     </div>
 
 </div>
 
 <script>
     const API_URL_K = "http://localhost:8080/api/karakteristike";
+    const API_URL_I = "http://localhost:8080/api/infrastruktura";
     const API_URL_N = "http://localhost:8080/api/nastambe";
 
     async function prikaziKarakteristike() {
@@ -246,7 +313,7 @@
             btn.className = "x-button";
             btn.innerHTML = "×";
             btn.onclick = async () => {
-                await fetch(`${API_URL_K}/${k.id}`, { method: "DELETE" });
+                await fetch(`${API_URL_K}/${k.id}`, {method: "DELETE"});
                 await prikaziKarakteristike();
             };
             span.appendChild(btn);
@@ -264,6 +331,43 @@
         });
     }
 
+        async function prikaziInfrastrukture() {
+            const res = await fetch(API_URL_I);
+            if (!res.ok) { console.log(await res.text()); return; }
+            const data = await res.json();
+
+            const lista = document.getElementById("lista-infrastruktura");
+            const ponuda = document.getElementById("ponuda-infrastruktura");
+            lista.innerHTML = "";
+            ponuda.innerHTML = "";
+
+            data.forEach(i => {
+                const span = document.createElement("span");
+                span.className = "karakteristika";
+                span.innerHTML = `${i.naziv} `;
+
+                const btn = document.createElement("button");
+                btn.className = "x-button";
+                btn.innerHTML = "×";
+                btn.onclick = async () => {
+                    await fetch(`${API_URL_I}/${i.id}`, { method: "DELETE" });
+                    await prikaziInfrastrukture();
+                };
+                span.appendChild(btn);
+                lista.appendChild(span);
+
+                const label = document.createElement("label");
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.value = i.id;
+                label.appendChild(cb);
+                label.append(`${i.naziv}`);
+                label.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;";
+                label.style.display = "inline-block";
+                ponuda.appendChild(label);
+            });
+    }
+
     async function dodajKarakteristiku() {
         const input = document.getElementById("input-karakteristike");
         const naziv = input.value.trim();
@@ -277,6 +381,21 @@
 
         input.value = "";
         await prikaziKarakteristike();
+    }
+
+    async function dodajInfrastrukturu() {
+        const input = document.getElementById("input-infrastruktura");
+        const naziv = input.value.trim();
+        if (!naziv) return;
+
+        await fetch(API_URL_I, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ naziv: naziv })
+        });
+
+        input.value = "";
+        await prikaziInfrastrukture();
     }
     /*
     async function prikaziZivotinje() {
@@ -311,13 +430,10 @@
     async function prikaziNastambe() {
         const res = await fetch(API_URL_N);
         const data = await res.json();
-        const container = document.getElementById("trenutne-nastambe");
-        container.innerHTML = "";
-
-        if (data.length === 0) {
-            container.innerHTML = "<p style='color:#777;text-align:center;'>Nema dodanih nastambi.</p>";
-            return;
-        }
+        const aktivneContainer = document.getElementById("aktivne-nastambe");
+        const neaktivneContainer = document.getElementById("neaktivne-nastambe");
+        neaktivneContainer.innerHTML = "";
+        aktivneContainer.innerHTML = "";
 
         data.forEach(n => {
             const div = document.createElement("div");
@@ -327,6 +443,7 @@
             <strong>Oznaka:</strong> ${n.oznaka}<br>
             <strong>Geometrija:</strong> ${n.geometrija}<br>
             <strong>Karakteristike:</strong> ${n.karakteristike?.map(k => k.naziv).join(", ") || "Nema"}<br>
+            <strong>Infrastruktura:</strong> ${n.infrastruktura?.map(i => i.naziv).join(", ") || "Nema"}<br>
             <strong>Opis:</strong> ${n.opis ? n.opis : "Nema opisa."}<br>
         `;
 
@@ -343,8 +460,108 @@
             };
 
             div.appendChild(btn);
-            container.appendChild(div);
+
+            const btn2 = document.createElement("button");
+            btn2.className = "uredi-nastamba";
+            btn2.innerHTML = "Uredi";
+            btn2.onclick = () => urediNastambu(n.id);
+
+            div.appendChild(btn2);
+
+            if(n.aktivna === true)
+                aktivneContainer.appendChild(div);
+            else
+                neaktivneContainer.appendChild(div);
         });
+    }
+
+    async function urediNastambu(id) {
+        const res = await fetch(`${API_URL_N}/${id}`);
+        const data = await res.json();
+
+        const oznaka = document.getElementById("input-oznake");
+        const geometrija = document.getElementById("input-geometrije");
+        const opis = document.getElementById("input-opis");
+        const karakIds = data.karakteristike.map(k => k.id);
+        const infraIds = data.infrastruktura.map(i => i.id);
+
+        document.querySelectorAll('#ponuda-infrastruktura input[type="checkbox"]')
+            .forEach(i => {
+                i.checked = infraIds.includes(parseInt(i.value));
+            });
+
+        document.querySelectorAll('#ponuda-karakteristika input[type="checkbox"]')
+            .forEach(k => {
+                k.checked = karakIds.includes(parseInt(k.value));
+            });
+
+        const mainBtn = document.getElementById("main-button");
+        const urediBtn = document.getElementById("uredivanje-button");
+        const nazadBtn = document.getElementById("nazad-button");
+        const selectAktNaslov = document.getElementById("select-aktivnost-naslov");
+        const selectAktivnost = document.getElementById("select-aktivnost");
+
+        mainBtn.style.display="none";
+        urediBtn.style.display="inline-block"
+        nazadBtn.style.display="inline-block";
+        selectAktivnost.style.display="inline-block";
+        selectAktNaslov.style.display="inline-block";
+
+        console.log(data);
+
+        // postavljanje pocetne vrijednosti SELECT-a
+        if(data.aktivna === true)
+            selectAktivnost.selectedIndex = 0;
+        else
+            selectAktivnost.selectedIndex = 1;
+
+        urediBtn.onclick = async () => {
+
+            const checkedKarakIds = Array.from(
+                document.querySelectorAll('#ponuda-karakteristika input:checked')
+            ).map(cb => parseInt(cb.value));
+
+            const checkedInfraIds = Array.from(
+                document.querySelectorAll('#ponuda-infrastruktura input:checked')
+            ).map(cb => parseInt(cb.value));
+
+            await fetch(`${API_URL_N}/${id}`,{
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    oznaka: oznaka.value.trim(),
+                    geometrija: geometrija.value.trim(),
+                    opis: opis.value.trim(),
+                    aktivna: selectAktivnost.value === "true",
+                    karakteristike: checkedKarakIds.map(id => ({id})),
+                    infrastruktura: checkedInfraIds.map(id => ({id})),
+                })
+            })
+
+            pocetniIzgled();
+            await prikaziNastambe();
+        }
+
+        function pocetniIzgled(){
+            oznaka.value = "";
+            geometrija.value = "";
+            opis.value = "";
+            document.querySelectorAll('input[type="checkbox"]')
+                .forEach(i => {
+                    i.checked = false;
+                });
+            urediBtn.style.display ="none";
+            nazadBtn.style.display="none";
+            selectAktivnost.style.display="none";
+            selectAktNaslov.style.display="none";
+            mainBtn.style.display = "inline-block";
+        }
+
+        nazadBtn.onclick = () => pocetniIzgled();
+
+        oznaka.value = data.oznaka;
+        geometrija.value = data.geometrija;
+        opis.value = data.opis;
     }
 
     async function dodajNastambu() {
@@ -356,12 +573,14 @@
             document.querySelectorAll('#ponuda-karakteristika input:checked')
         ).map(cb => parseInt(cb.value));
 
+        const infraIds = Array.from(
+            document.querySelectorAll('#ponuda-infrastruktura input:checked')
+        ).map(cb => parseInt(cb.value));console.log(infraIds);
+
         if (!oznaka || !geometrija) {
             alert("Oznaka i geometrija su obavezni!");
             return;
         }
-
-        console.log(karakIds);
 
         await fetch(API_URL_N, {
             method: "POST",
@@ -370,7 +589,8 @@
                 oznaka: oznaka,
                 geometrija: geometrija,
                 opis: opis,
-                karakteristike: karakIds.map(id => ({ id }))// skraceni zapis
+                karakteristike: karakIds.map(id => ({ id })),// skraceni zapis
+                infrastruktura: infraIds.map(id => ({id}))
             })
         });
 
@@ -384,6 +604,7 @@
     document.addEventListener("DOMContentLoaded", () => {
         prikaziKarakteristike();
         prikaziNastambe();
+        prikaziInfrastrukture();
     });
 </script>
 </body>

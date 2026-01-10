@@ -245,18 +245,6 @@
         `;
 
             div.innerHTML = html;
-
-            const btn = document.createElement("button");
-            btn.className = "delete-nastamba";
-            btn.innerHTML = "Obriši";
-            btn.onclick = async () => {
-                if (confirm("Sigurno želiš obrisati ovu nastambu?")) {
-                    await fetch(`${API_URL_N}/${n.id}`, { method: "DELETE" });
-                    await prikaziNastambe();
-                }
-            };
-
-            div.appendChild(btn);
             container.appendChild(div);
         });
     }

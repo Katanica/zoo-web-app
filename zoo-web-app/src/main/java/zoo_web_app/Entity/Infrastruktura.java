@@ -1,5 +1,6 @@
 package zoo_web_app.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -19,9 +20,7 @@ public class Infrastruktura {
     @Column(name = "naziv", nullable = false)
     private String naziv;
 
-    @Column(name = "kategorija")
-    private String kategorija; // npr. PREDMET, BILJKA...
-
-    @OneToMany(mappedBy = "infrastruktura")
-    private List<NastambaInfrastruktura> nastambe;
+    @ManyToMany(mappedBy = "infrastruktura")
+    @JsonIgnore
+    private List<Nastamba> nastambe;
 }

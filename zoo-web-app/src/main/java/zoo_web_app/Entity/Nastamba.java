@@ -26,6 +26,9 @@ public class Nastamba {
     @Column(name = "geometrija")
     private String geometrija;
 
+    @Column(name = "aktivna")
+    private boolean aktivna = true;
+
     @ManyToMany
     @JoinTable(
             name="nastamba_karakteristika",
@@ -34,6 +37,11 @@ public class Nastamba {
     )
     private List<Karakteristika> karakteristike;
 
-    @OneToMany(mappedBy = "nastamba")
-    private List<NastambaInfrastruktura> infrastruktura;
+    @ManyToMany
+    @JoinTable(
+            name="nastamba_infrastruktura",
+            joinColumns= @JoinColumn(name="id_nastambe"),
+            inverseJoinColumns = @JoinColumn(name="id_infrastrukture")
+    )
+    private List<Infrastruktura> infrastruktura;
 }
