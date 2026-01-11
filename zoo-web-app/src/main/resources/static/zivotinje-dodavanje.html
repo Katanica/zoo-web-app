@@ -188,6 +188,52 @@
                 grid-column: span 1;
             }
         }
+        /* ==== KARTICE ZA NASTAMBE ==== */
+
+        .nastamba-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .nastamba-card {
+            position: relative;
+        }
+
+        /* sakrij radio gumb */
+        .nastamba-card input[type="radio"] {
+            display: none;
+        }
+
+        /* izgled kartice */
+        .nastamba-card-label {
+            display: block;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.3;
+            transition: all 0.15s ease;
+        }
+
+        .nastamba-kod {
+            font-weight: 600;
+        }
+
+        .nastamba-opis {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* odabrana kartica */
+        .nastamba-card input[type="radio"]:checked + .nastamba-card-label {
+            border-color: #1a5d57;
+            background-color: #e3f3ef;
+            box-shadow: 0 0 0 2px rgba(26, 93, 87, 0.15);
+        }
     </style>
 </head>
 <body>
@@ -281,7 +327,7 @@
         </div>
 
         <h4>Nastamba:</h4>
-        <div id="ponuda-nastambi" class="checkbox-group"></div>
+        <div id="ponuda-nastambi" class="nastamba-grid"></div>
 
         <br>
         <button onclick="dodajZivotinju()" id="dodaj-btn" class="veci-button">Dodaj životinju</button>
@@ -366,22 +412,48 @@
     }
 
     async function prikaziNastambe() {
-        const res = await fetch(API_NAST);
-        const data = await res.json();
-        const ponuda = document.getElementById("ponuda-nastambi");
-        ponuda.innerHTML = "";
+        try {
+            const res = await fetch(API_NAST);
+            if (!res.ok) {
+                throw new Error("Greška pri dohvatu nastambi");
+            }
 
-        data.forEach(n => {
-            const label = document.createElement("label");
-            const cb = document.createElement("input");
-            cb.type = "radio";
-            cb.name = "nastamba";
-            cb.value = n.id;
-            label.appendChild(cb);
-            label.append(` ${n.oznaka} `);
-            ponuda.appendChild(label);
-        });
+            const data = await res.json();
+            const ponuda = document.getElementById("ponuda-nastambi");
+            ponuda.innerHTML = "";
+
+            data.forEach(n => {
+                // kartica
+                const card = document.createElement("div");
+                card.className = "nastamba-card";
+
+                // radio input
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.name = "nastamba";
+                input.id = `nastamba-${n.id}`;
+                input.value = n.id;
+
+                // labela = vizualna kartica
+                const label = document.createElement("label");
+                label.className = "nastamba-card-label";
+                label.htmlFor = input.id;
+                label.innerHTML = `
+                <div class="nastamba-kod">${n.oznaka}</div>
+                <div class="nastamba-opis">${n.opis || ""}</div>
+            `;
+
+                card.appendChild(input);
+                card.appendChild(label);
+                ponuda.appendChild(card);
+            });
+
+        } catch (err) {
+            console.error(err);
+        }
     }
+
+
 
     async function prikaziNacinNabave() {
         const res = await fetch(API_NACIN);
