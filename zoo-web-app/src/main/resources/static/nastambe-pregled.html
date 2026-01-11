@@ -192,13 +192,17 @@
 </header>
 
 <div class="container">
-
-    <!-- TRENUTNE NASTAMBE -->
+    <!-- AKTIVNE NASTAMBE -->
     <div class="card full-width">
-        <h3>Trenutne nastambe</h3>
-        <div id="trenutne-nastambe"></div>
+        <h3>Aktivne nastambe</h3>
+        <div id="aktivne-nastambe"></div>
     </div>
 
+    <!-- NEAKTIVNE NASTAMBE -->
+    <div class="card full-width">
+        <h3>Neaktivne nastambe</h3>
+        <div id="neaktivne-nastambe"></div>
+    </div>
 </div>
 
 <script>
@@ -225,13 +229,10 @@
     async function prikaziNastambe() {
         const res = await fetch(API_URL_N);
         const data = await res.json();
-        const container = document.getElementById("trenutne-nastambe");
-        container.innerHTML = "";
-
-        if (data.length === 0) {
-            container.innerHTML = "<p style='color:#777;text-align:center;'>Nema dodanih nastambi.</p>";
-            return;
-        }
+        const aktivneContainer = document.getElementById("aktivne-nastambe");
+        const neaktivneContainer = document.getElementById("neaktivne-nastambe");
+        neaktivneContainer.innerHTML = "";
+        aktivneContainer.innerHTML = "";
 
         data.forEach(n => {
             const div = document.createElement("div");
@@ -241,11 +242,15 @@
             <strong>Oznaka:</strong> ${n.oznaka}<br>
             <strong>Geometrija:</strong> ${n.geometrija}<br>
             <strong>Karakteristike:</strong> ${n.karakteristike?.map(k => k.naziv).join(", ") || "Nema"}<br>
+            <strong>Infrastruktura:</strong> ${n.infrastruktura?.map(i => i.naziv).join(", ") || "Nema"}<br>
             <strong>Opis:</strong> ${n.opis ? n.opis : "Nema opisa."}<br>
         `;
-
             div.innerHTML = html;
-            container.appendChild(div);
+
+            if(n.aktivna === true)
+                aktivneContainer.appendChild(div);
+            else
+                neaktivneContainer.appendChild(div);
         });
     }
 
