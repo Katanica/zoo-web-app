@@ -234,60 +234,98 @@
     const API_J = "http://localhost:8080/api/jedinke";
     const API_S = "http://localhost:8080/api/skupine";
 
+    // --- JEDINKE ---
+
     async function prikaziJedinke() {
         const res = await fetch(API_J);
         const data = await res.json();
+
         const containerAkt = document.getElementById("trenutne-jedinke");
         const containerNeakt = document.getElementById("neaktivne-jedinke");
+
         containerAkt.innerHTML = "";
         containerNeakt.innerHTML = "";
 
         data.forEach(z => {
-
             const div = document.createElement("div");
             div.className = "zivotinja-card";
 
-            // DOVRSIT OPIS NABAVE ???
-            let html = `<strong>Ime:</strong> ${z.nadimak}<br>`;
-            html += `<strong>Vrsta:</strong> ${z.hrvatskiNaziv} (${z.latinskiNaziv})<br>`;
+            let html = `<strong>Ime:</strong> ${z.nadimak ?? "N/A"}<br>`;
+            html += `<strong>Vrsta:</strong> ${z.hrvatskiNaziv ?? "N/A"} (${z.latinskiNaziv ?? "N/A"})<br>`;
             html += `<strong>Nastamba:</strong> ${z.nastamba ? z.nastamba.oznaka : "N/A"}<br>`;
             html += `<strong>Način nabave:</strong> ${z.nacinNabave ? z.nacinNabave.opisNabave : "N/A"}<br>`;
-            html += `<strong>Datum nabave:</strong> ${z.datumNabave ? z.datumNabave : "N/A"}<br>`;
-            if(!z.aktivna) html += `<strong>Datum neaktivnosti:</strong> ${z.datumNeaktivnosti ? z.datumNeaktivnosti : "N/A"}&nbsp;&nbsp;&nbsp;<strong>Razlog neaktivnosti:</strong> ${z.razlogNeaktivnosti ? z.razlogNeaktivnosti : "N/A"}`;
+            html += `<strong>Datum nabave:</strong> ${z.datumNabave ?? "N/A"}<br>`;
 
+            if (!z.aktivna) {
+                html += `<strong>Datum neaktivnosti:</strong> ${z.datumNeaktivnosti ?? "N/A"}&nbsp;&nbsp;&nbsp;`;
+                html += `<strong>Razlog neaktivnosti:</strong> ${z.razlogNeaktivnosti ?? "N/A"}`;
+            }
 
             div.innerHTML = html;
 
-            if(z.aktivna === true) containerAkt.appendChild(div);
-            else containerNeakt.appendChild(div);
+            if (z.aktivna === true) {
+                containerAkt.appendChild(div);
+            } else {
+                containerNeakt.appendChild(div);
+            }
         });
     }
+
+    // --- SKUPINE ---
 
     async function prikaziSkupine() {
         const res = await fetch(API_S);
         const data = await res.json();
-        const containerAkt = document.getElementById("trenutne-skupine");
-        containerAkt.innerHTML = "";
-        const containerNeakt = document.getElementById("neaktivne-skupine");
-        containerNeakt.innerHTML = "";
+
+        const contAkt = document.getElementById("trenutne-skupine");
+        const contNeakt = document.getElementById("neaktivne-skupine");
+
+        contAkt.innerHTML = "";
+        contNeakt.innerHTML = "";
+
+        if (!data || data.length === 0) {
+            contAkt.innerHTML = "<p>Nema skupina.</p>";
+            return;
+        }
 
         data.forEach(s => {
             const div = document.createElement("div");
             div.className = "zivotinja-card";
-            let html = "";
 
-            html += `<strong>Vrsta:</strong> ${s.hrvatskiNaziv} (${s.latinskiNaziv})<br>`;
-            html += `<strong>Nastamba:</strong> ${s.nastamba ? s.nastamba.oznaka : "N/A"}<br>`;
-            html += `<strong>Način nabave:</strong> ${s.nacinNabave ? s.nacinNabave.opisNabave : "N/A"}<br>`;
-            html += `<strong>Procijenjeni broj:</strong> ${s.procijenjeniBroj ? s.procijenjeniBroj : "N/A"}<br>`;
-            if(!s.aktivna) html += `<strong>Datum neaktivnosti:</strong> ${s.datumNeaktivnosti ? s.datumNeaktivnosti : "N/A"}&nbsp;&nbsp;&nbsp;<strong>Razlog neaktivnosti:</strong> ${s.razlogNeaktivnosti ? s.razlogNeaktivnosti : "N/A"}`;
+            const nastambaOznaka = s.nastamba && s.nastamba.oznaka ? s.nastamba.oznaka : "N/A";
+            const nacinNabave = s.nacinNabave && s.nacinNabave.opisNabave ? s.nacinNabave.opisNabave : "N/A";
+
+            let html = `<strong>Identifikator:</strong> ${s.identifikator ?? "N/A"}<br>`;
+            html += `<strong>Latinski naziv:</strong> ${s.latinskiNaziv ?? "N/A"}<br>`;
+            html += `<strong>Hrvatski naziv:</strong> ${s.hrvatskiNaziv ?? "N/A"}<br>`;
+            html += `<strong>Nastamba:</strong> ${nastambaOznaka}<br>`;
+            html += `<strong>Način nabave:</strong> ${nacinNabave}<br>`;
+            html += `<strong>Procijenjeni broj:</strong> ${s.procijenjeniBroj ?? "N/A"}<br>`;
+            html += `<strong>Datum nabave:</strong> ${s.datumNabave ?? "N/A"}<br>`;
+
+            if (!s.aktivna) {
+                html += `<strong>Datum neaktivnosti:</strong> ${s.datumNeaktivnosti ?? "N/A"}&nbsp;&nbsp;&nbsp;`;
+                html += `<strong>Razlog neaktivnosti:</strong> ${s.razlogNeaktivnosti ?? "N/A"}`;
+            }
 
             div.innerHTML = html;
+
+            if (s.aktivna === true) {
+                contAkt.appendChild(div);
+            } else {
+                contNeakt.appendChild(div);
+            }
         });
     }
 
-    prikaziSkupine();
-    prikaziJedinke();
+    // --- INIT ---
+
+    document.addEventListener("DOMContentLoaded", () => {
+        prikaziJedinke();
+        prikaziSkupine();
+    });
 </script>
+
+
 </body>
 </html>

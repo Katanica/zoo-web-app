@@ -27,6 +27,8 @@ public class SkupinaController {
         return skupinaService.getSveSkupine();
     }
 
+
+
     // ✔ broj aktivnih (samo jedna verzija)
     @GetMapping("/broj")
     public long getBrojAktivnihSkupina() {

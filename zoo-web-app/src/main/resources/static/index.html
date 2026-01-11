@@ -252,7 +252,7 @@
     // ------------- OBAVEZE ----------
     async function ucitajBrojObaveza() {
         try {
-            const resp = await fetch("http://localhost:8080/api/obaveze/broj");
+            const resp = await fetch("http://localhost:8080/api/obaveza/broj");
             let data = await resp.json();
 
             if (typeof data === "number") {
@@ -309,7 +309,7 @@
     <div class="stats">
         <div class="stat-box">
             <h3 id="broj-zivotinja">--</h3>
-            <p>ŽIVOTINJA</p>
+            <p>JEDINKA</p>
         </div>
 
         <div class="stat-box">
@@ -354,7 +354,7 @@
             </div>
         </div>
 
-        <!-- Skupine -->
+        <!-- Skupine
         <div class="menu-card">
             <div class="menu-header">
                 <i class="fas fa-layer-group"></i> Skupine
@@ -371,6 +371,7 @@
                 </div>
             </div>
         </div>
+        -->
 
         <!-- Životinje -->
         <div class="menu-card">
