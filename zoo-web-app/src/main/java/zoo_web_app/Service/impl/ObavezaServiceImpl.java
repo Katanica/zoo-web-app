@@ -1,26 +1,39 @@
 package zoo_web_app.Service.impl;
 
 import org.springframework.stereotype.Service;
-import zoo_web_app.Entity.Obaveza;
-import zoo_web_app.Entity.StatusObaveze;
+import zoo_web_app.DTO.ObavezaFrontend;
+import zoo_web_app.Entity.*;
+import zoo_web_app.Repository.JedinkaRepository;
 import zoo_web_app.Repository.ObavezaRepository;
-import zoo_web_app.Repository.StatusObavezeRepository;
+import zoo_web_app.Repository.RadnikRepository;
+import zoo_web_app.Repository.SkupinaRepository;
 import zoo_web_app.Service.ObavezaService;
 import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static zoo_web_app.Entity.StatusObaveze.PLANIRANO;
 
 @Service
 public class ObavezaServiceImpl implements ObavezaService {
 
     private final ObavezaRepository obavezaRepository;
-    private final StatusObavezeRepository statusObavezeRepository;
+    private final RadnikRepository radnikRepository;
+    private final JedinkaRepository jedinkaRepository;
+    private final SkupinaRepository skupinaRepository;
 
-    public ObavezaServiceImpl(ObavezaRepository obavezaRepository, StatusObavezeRepository statusObavezeRepository) {
+    public ObavezaServiceImpl(
+            ObavezaRepository obavezaRepository,
+            RadnikRepository radnikRepository,
+            JedinkaRepository jedinkaRepository,
+            SkupinaRepository skupinaRepository) {
         this.obavezaRepository = obavezaRepository;
-        this.statusObavezeRepository = statusObavezeRepository;
-    }
+        this.radnikRepository = radnikRepository;
+        this.jedinkaRepository = jedinkaRepository;
+        this.skupinaRepository = skupinaRepository;
+        }
 
     @Override
     public List<Obaveza> findAll() {
@@ -39,101 +52,53 @@ public class ObavezaServiceImpl implements ObavezaService {
     }
 
     @Override
-    public Obaveza create(Obaveza obaveza) {
+    public Obaveza create(ObavezaFrontend obaveza) {
+        Obaveza o = new Obaveza();
 
-        if (obaveza.getRadnik() != null && obaveza.getDatumOd() != null && obaveza.getDatumDo() != null) {
+        o.setTip(obaveza.getTip());
+        o.setStatus(PLANIRANO);
+        o.setRepeatType(obaveza.getRepeatType());
+        o.setRepeatEvery(obaveza.getRepeatEvery());
+        o.setKomentar(obaveza.getKomentar());
 
-            List<Obaveza> konflikt = obavezaRepository.provjeriPreklapanje(
-                    obaveza.getRadnik().getId(),
-                    obaveza.getDatumOd(),
-                    obaveza.getDatumDo()
-            );
+        if(obaveza.getRadnikId() != null){
+            Radnik r = radnikRepository.findById(obaveza.getRadnikId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Radnik ne postoji!"));
+            o.setRadnik(r);
+        }
+        else
+            o.setRadnik(null);
 
-            if (!konflikt.isEmpty()) {
-                throw new ResourceNotFoundException("Radnik već ima obavezu u tom periodu!");
-            }
+        if(obaveza.getIdJedinke() != null){
+            Jedinka j = jedinkaRepository.findById(obaveza.getIdJedinke())
+                    .orElseThrow(() -> new ResourceNotFoundException("Jedinka ne postoji!"));
+            o.setJedinka(j);
+            o.setSkupina(null);
+        }
+        else if(obaveza.getIdSkupine() != null){
+            Skupina s = skupinaRepository.findById(obaveza.getIdSkupine())
+                    .orElseThrow(() -> new ResourceNotFoundException("Skupina ne postoji!"));
+            o.setSkupina(s);
+            o.setJedinka(null);
         }
 
-        provjeriLicencu(obaveza);
-        provjeriIstekLicence(obaveza);
-
-        return obavezaRepository.save(obaveza);
-    }
-
-    @Override
-    public Obaveza update(Long id, Obaveza updated) {
-
-        Obaveza o = findById(id);
-
-        if (updated.getRadnik() != null && updated.getDatumOd() != null && updated.getDatumDo() != null) {
-
-            List<Obaveza> konflikt = obavezaRepository.provjeriPreklapanje(
-                    updated.getRadnik().getId(),
-                    updated.getDatumOd(),
-                    updated.getDatumDo()
-            );
-
-            if (!konflikt.isEmpty()) {
-                throw new ResourceNotFoundException("Radnik već ima obavezu u tom periodu!");
-            }
+        if(obaveza.getVrijemeOd().isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("Vrijeme početka obaveze ne može biti u prošlosti!");
         }
-
-        o.setTip(updated.getTip());
-        o.setStatus(updated.getStatus());
-        o.setRadnik(updated.getRadnik());
-        o.setJedinka(updated.getJedinka());
-        o.setSkupina(updated.getSkupina());
-        o.setDatumOd(updated.getDatumOd());
-        o.setDatumDo(updated.getDatumDo());
-        o.setKomentar(updated.getKomentar());
-
-        provjeriLicencu(o);
-        provjeriIstekLicence(o);
+        else{
+            o.setVrijemeOd(obaveza.getVrijemeOd());
+            o.setVrijemeDo(obaveza.getVrijemeOd().plusMinutes(obaveza.getTrajanje()));
+        }
 
         return obavezaRepository.save(o);
     }
 
     @Override
-    public void delete(Long id) {
-        Obaveza o = findById(id);
-
-        StatusObaveze status = statusObavezeRepository
-                .findByNazivStatusa("OTKAZANA")
-                .orElseThrow(() -> new ResourceNotFoundException("Status OTKAZANA ne postoji u bazi!"));
-
-        o.setStatus(status);
-        obavezaRepository.save(o);
+    public Obaveza update(Long id, Obaveza updated) {
+        return null;
     }
 
-    private void provjeriLicencu(Obaveza obaveza) {
-        if (obaveza.getRadnik() == null) return;
-        if (!obaveza.getTip().isZahtjevaLicencu()) return;
+    @Override
+    public void delete(Long id) {}
 
-        boolean imaLicencu = obaveza.getRadnik()
-                .getObrazovanja()
-                .stream()
-                .anyMatch(o -> o.getObrazovanje().getNaziv().equalsIgnoreCase("VODIC"));
-
-        if (!imaLicencu) {
-            throw new ResourceNotFoundException("Radnik nema potrebnu licencu za ovu obavezu.");
-        }
-    }
-
-    private void provjeriIstekLicence(Obaveza obaveza) {
-        if (obaveza.getRadnik() == null) return;
-        if (!obaveza.getTip().isZahtjevaLicencu()) return;
-
-        boolean isteklaLicenca = obaveza.getRadnik()
-                .getObrazovanja()
-                .stream()
-                .anyMatch(o ->
-                        o.getObrazovanje().getNaziv().equalsIgnoreCase("VODIC")
-                                && o.getDatumIsteka() != null
-                                && o.getDatumIsteka().isBefore(LocalDate.now())
-                );
-
-        if (isteklaLicenca) {
-            throw new ResourceNotFoundException("Licenca VODIC je istekla - radnik ne smije voditi turu.");
-        }
-    }
 }

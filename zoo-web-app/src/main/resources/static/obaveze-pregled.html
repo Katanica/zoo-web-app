@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZOO WEB APP - Tjedni raspored obaveza</title>
+
+    <style>
+        :root{
+            --primary:#2c3e50;
+            --secondary:#3498db;
+            --danger:#e74c3c;
+            --success:#27ae60;
+            --light:#ecf0f1;
+            --dark:#2c3e50;
+        }
+
+        *{ box-sizing:border-box; margin:0; padding:0; }
+
+        body{
+            font-family:'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding:2rem 1rem;
+            min-height:100vh;
+            color:var(--dark);
+        }
+
+        header{ text-align:center; margin-bottom:2rem; }
+        h1{ color:var(--primary); }
+
+        .back-btn{
+            display:inline-block;
+            margin-bottom:1rem;
+            background:var(--secondary);
+            color:#fff;
+            padding:0.6rem 1.2rem;
+            border-radius:8px;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+            display:grid;
+            grid-template-columns:1fr;
+            gap:1.5rem;
+        }
+
+        .card{
+            background:#fff;
+            padding:1.5rem;
+            border-radius:12px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .toolbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:1rem;
+            margin-bottom:1rem;
+            flex-wrap:wrap;
+        }
+
+        .week-nav{
+            display:flex;
+            align-items:center;
+            gap:0.6rem;
+        }
+
+        .week-nav button{
+            background:var(--secondary);
+            color:#fff;
+            border:none;
+            padding:0.35rem 0.8rem;
+            border-radius:6px;
+            cursor:pointer;
+            font-size:1rem;
+        }
+
+        .week-range{
+            font-weight:700;
+            color:var(--primary);
+            background:var(--light);
+            padding:0.35rem 0.6rem;
+            border-radius:8px;
+        }
+
+        .muted{ color:#777; font-size:0.9rem; }
+
+        .input{
+            padding:0.6rem;
+            border-radius:6px;
+            border:1px solid #ccc;
+            min-width:220px;
+            background:#fff;
+        }
+
+        .btn{
+            padding:0.6rem 1rem;
+            border:none;
+            border-radius:6px;
+            background:var(--success);
+            color:#fff;
+            font-weight:600;
+            cursor:pointer;
+        }
+
+        /* TABLICA: redovi = dani, stupci = "lista obaveza" */
+        .schedule-wrap{ margin-top:1rem; overflow:hidden; border-radius:12px; }
+        .schedule-grid{
+            width:100%;
+            border-collapse:collapse;
+            table-layout:fixed;
+        }
+        .schedule-grid th, .schedule-grid td{
+            border:1px solid #ddd;
+            padding:0.6rem;
+            vertical-align:top;
+        }
+        .schedule-grid thead th{
+            background:var(--light);
+            color:var(--primary);
+            font-weight:700;
+            text-align:left;
+        }
+
+        .day-col{ width:220px; }
+        .cell{ min-height:90px; }
+
+        .stavka{
+            background:var(--light);
+            padding:0.5rem 0.6rem;
+            border-radius:10px;
+            margin-bottom:0.45rem;
+            border-left:4px solid var(--secondary);
+        }
+
+        .line{
+            margin-top:0.25rem;
+            font-size:0.9rem;
+            color:#444;
+        }
+
+        .badge{
+            font-size:0.75rem;
+            font-weight:700;
+            padding:0.2rem 0.5rem;
+            border-radius:999px;
+            display:inline-block;
+            margin-right:0.4rem;
+            background:#eef3ff;
+            color:#2c58b8;
+        }
+
+        .empty{ color:#999; }
+
+        @media (max-width: 1100px){
+            body{ padding:1.2rem 0.6rem; }
+            .schedule-wrap{ overflow-x:auto; }
+            .schedule-grid{ min-width:900px; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <a class="back-btn" href="index.html">POČETNA</a>
+    <h1>ZOO WEB APP – Tjedni raspored obaveza</h1>
+</header>
+
+<div class="container">
+    <div class="card">
+        <div class="toolbar">
+            <div>
+                <h3 style="border:none;margin:0;color:var(--primary)">Pregled obaveza (pon–ned)</h3>
+                <div class="muted">Sve obaveze u odabranom tjednu</div>
+            </div>
+
+            <div class="week-nav">
+                <button id="btn-prev-week" type="button">←</button>
+                <span id="week-range" class="week-range"></span>
+                <button id="btn-next-week" type="button">→</button>
+            </div>
+        </div>
+
+        <div class="toolbar" style="margin-top:0.2rem">
+            <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;">
+                <input id="search" class="input" type="text" placeholder="Pretraži (tip, komentar, životinja...)">
+                <button id="btn-refresh" class="btn" type="button">Osvježi</button>
+            </div>
+            <div class="muted">U istom danu može biti više obaveza (sortirano po vremenu).</div>
+        </div>
+
+        <div class="schedule-wrap">
+            <table class="schedule-grid">
+                <thead>
+                <tr>
+                    <th class="day-col">Dan</th>
+                    <th>Obaveze</th>
+                </tr>
+                </thead>
+                <tbody id="schedule-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_OBAVEZE = "http://localhost:8080/api/obaveza";
+
+    const scheduleBody = document.getElementById("schedule-body");
+    const weekRange = document.getElementById("week-range");
+    const btnPrev = document.getElementById("btn-prev-week");
+    const btnNext = document.getElementById("btn-next-week");
+    const btnRefresh = document.getElementById("btn-refresh");
+    const search = document.getElementById("search");
+
+    let pomakTjedna = 0;
+
+    function ponedjeljak(ref = new Date()){
+        const d = new Date(ref);
+        d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+        d.setHours(0,0,0,0);
+        return d;
+    }
+
+    function isoDate(d){
+        return new Date(d).toISOString().split("T")[0];
+    }
+
+    function fmtTime(d){
+        return new Date(d).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+    }
+
+    function escapeHtml(str){
+        return String(str ?? "")
+            .replaceAll("&","&amp;")
+            .replaceAll("<","&lt;")
+            .replaceAll(">","&gt;")
+            .replaceAll('"',"&quot;")
+            .replaceAll("'","&#039;");
+    }
+
+    function formatRange(start, end){
+        return start.getDate() + "." + (start.getMonth() + 1) + "." + start.getFullYear()
+            + ". - " + end.getDate() + "." + (end.getMonth() + 1) + "." + start.getFullYear() + ".";
+    }
+
+    function dayName(i){
+        return ["Ponedjeljak","Utorak","Srijeda","Četvrtak","Petak","Subota","Nedjelja"][i];
+    }
+
+    function min(a, b){
+        if (a < b) return a
+        else return b;
+    }
+
+    // ---- Ponavljanja (osnovno): NONE i DAILY
+    function occurrencesInWeek(task, weekStart, weekEnd){
+        const out = [];
+        const start = new Date(task.vrijemeOd);
+        const type = task.repeatType;
+        const every = (task.repeatEvery === "NONE" || task.repeatEvery == null || task.repeatEvery === "") ? 1 : Number(task.repeatEvery);
+
+        if (type === "NONE"){
+            if (start >= weekStart && start <= weekEnd) out.push(new Date(start));
+            return out;
+        }
+
+        if (type === "DAILY"){
+            if (start > weekEnd) return out;
+            const msDay = 24*60*60*1000;
+
+            const diffDays = Math.floor((weekStart - start) / msDay);
+            let k = Math.ceil(diffDays / every);
+            if (k < 0) k = 0;
+
+            let cur = new Date(start.getTime() + k * every * msDay);
+
+            while (cur <= weekEnd){
+                if (cur >= weekStart) out.push(new Date(cur));
+                cur = new Date(cur.getTime() + every * msDay);
+            }
+            return out;
+        }
+
+        function lastDayOfMonth(d){
+            // zadnji dan trenutnog mjeseca kao BROJ (28/29/30/31)
+            return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+        }
+
+        function addMonthsSafe(cur, monthsToAdd, targetDay){
+            cur.setDate(1);
+            cur.setMonth(cur.getMonth() + monthsToAdd);
+            cur.setDate(min(targetDay, lastDayOfMonth(cur)));
+            return cur;
+        }
+
+        if (type === "MONTHLY") {
+            if (start > weekEnd) return out;
+
+            let cur = new Date(task.vrijemeOd);
+            const targetDay = cur.getDate(); // zaključaš jednom
+
+            while (cur < weekStart){
+                addMonthsSafe(cur, every, targetDay);
+            }
+
+            while (cur <= weekEnd){
+                out.push(new Date(cur));
+                addMonthsSafe(cur, every, targetDay);
+            }
+
+            return out;
+        }
+
+        // helper: zadnji dan u mjesecu (28/29/30/31)
+        function lastDayOfMonth(d){
+            return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+        }
+
+// helper: sigurno dodaj godine (čuva dan, a ako ne postoji -> zadnji dan mjeseca)
+        function addYearsSafe(cur, yearsToAdd, targetDay){
+            cur.setDate(1);
+            cur.setFullYear(cur.getFullYear() + yearsToAdd);
+            cur.setDate(min(targetDay, lastDayOfMonth(cur)));
+            return cur;
+        }
+
+        if (type === "YEARLY") {
+            if (start > weekEnd) return out;
+
+            let cur = new Date(task.vrijemeOd);
+            const targetDay = cur.getDate(); // zaključaj dan (npr 29, 30, 31)
+
+            while (cur < weekStart){
+                addYearsSafe(cur, every, targetDay);
+            }
+
+            while (cur <= weekEnd){
+                out.push(new Date(cur));
+                addYearsSafe(cur, every, targetDay);
+            }
+
+            return out;
+        }
+
+
+
+        // MONTHLY/YEARLY: može se dodati, ali ostavljam prazno da ne izmišljam.
+        return out;
+    }
+
+    function nazivZivotinje(o){
+        if (o.jedinka) return `${o.jedinka.hrvatskiNaziv} (${o.jedinka.nadimak})`;
+        if (o.skupina) return `${o.skupina.hrvatskiNaziv} (skupina)`;
+        return "—";
+    }
+
+    function renderStavka(o, occDate){
+        const tip = escapeHtml(o.tip);
+        const zivotinja = escapeHtml(nazivZivotinje(o));
+        const komentar = escapeHtml(o.komentar || "");
+        const time = fmtTime(occDate);
+        const radnik = o.radnik ? escapeHtml(o.radnik.ime) + " " + escapeHtml(o.radnik.prezime) : "Nije dodijeljen radnik";
+        const trajanje = (o.trajanje != null && o.trajanje !== 0) ? ` · ${o.trajanje} min` : "";
+
+        return `
+      <div class="stavka">
+        <span class="badge">${time}${trajanje}</span>
+        <div class="line"><strong>${tip} </strong>${zivotinja}</div>
+        <div class="line"><strong>RADNIK: </strong>${radnik}</div>
+        ${komentar ? `<div class="line"><strong>KOMENTAR: </strong>${komentar}</div>` : ""}
+      </div>
+    `;
+    }
+
+    async function ucitajTjedan(){
+        scheduleBody.innerHTML = "";
+
+        const start = ponedjeljak(new Date());
+        start.setDate(start.getDate() + pomakTjedna * 7);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        end.setHours(23,59,59,999);
+
+        weekRange.textContent = formatRange(start, end);
+
+        const res = await fetch(API_OBAVEZE);
+        const data = await res.json();
+
+        const q = search.value.trim().toLowerCase();
+
+        // 1) napravi mapu: dayKey -> array stavki (expanded)
+        const map = new Map();
+        for (let i=0;i<7;i++){
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            map.set(isoDate(d), []);
+        }
+
+        for (const o of data){
+            // pretraga (tip, komentar, životinja)
+            if (q){
+                const hay = [
+                    o.tip,
+                    o.komentar,
+                    o.jedinka?.hrvatskiNaziv,
+                    o.jedinka?.nadimak,
+                    o.skupina?.hrvatskiNaziv
+                ].join(" ").toLowerCase();
+
+                if (!hay.includes(q)) continue;
+            }
+
+            // expand occurrences unutar tjedna
+            const occs = occurrencesInWeek(o, start, end);
+
+            for (const occ of occs){
+                const key = isoDate(occ);
+                if (!map.has(key)) continue;
+                map.get(key).push({ obaveza: o, occDate: occ });
+            }
+        }
+
+        // 2) sortiraj unutar svakog dana po vremenu
+        for (const [key, arr] of map.entries()){
+            arr.sort((a,b) => a.occDate - b.occDate);
+        }
+
+        // 3) render 7 redova (Pon..Ned)
+        for (let i=0;i<7;i++){
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            const key = isoDate(d);
+
+            const tr = document.createElement("tr");
+
+            const th = document.createElement("th");
+            th.className = "day-col";
+            th.innerHTML = `<div><strong>${dayName(i)}</strong></div><div class="muted">${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}</div>`;
+            tr.appendChild(th);
+
+            const td = document.createElement("td");
+            td.className = "cell";
+
+            const items = map.get(key) || [];
+            if (items.length === 0){
+                td.innerHTML = `<span class="empty">—</span>`;
+            } else {
+                td.innerHTML = items.map(x => renderStavka(x.obaveza, x.occDate)).join("");
+            }
+
+            tr.appendChild(td);
+            scheduleBody.appendChild(tr);
+        }
+    }
+
+    function pomakniTjedan(delta){
+        pomakTjedna += delta;
+        ucitajTjedan();
+    }
+
+    btnPrev.addEventListener("click", () => pomakniTjedan(-1));
+    btnNext.addEventListener("click", () => pomakniTjedan(1));
+    btnRefresh.addEventListener("click", () => ucitajTjedan());
+    search.addEventListener("input", () => ucitajTjedan());
+
+    document.addEventListener("DOMContentLoaded", () => {
+        ucitajTjedan();
+    });
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@ package zoo_web_app.Controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zoo_web_app.DTO.ObavezaFrontend;
 import zoo_web_app.Entity.Obaveza;
 import zoo_web_app.Service.ObavezaService;
 
@@ -36,7 +37,7 @@ public class ObavezaController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Obaveza> create(@RequestBody Obaveza obaveza) {
+    public ResponseEntity<Obaveza> create(@RequestBody ObavezaFrontend obaveza) {
         return ResponseEntity.ok(obavezaService.create(obaveza));
     }
 
