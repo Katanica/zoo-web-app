@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>ZOO WEB APP - Obaveze</title>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        body {
+            font-family: Segoe UI, sans-serif;
+            background: linear-gradient(135deg,#f5f7fa,#c3cfe2);
+            color: var(--dark);
+            padding: 2rem;
+        }
+
+        header { text-align:center; margin-bottom:2rem; }
+        h1 { color:var(--primary); }
+        h4{ margin-bottom: 0.5em;}
+
+        .back-btn {
+            background: var(--secondary);
+            color:white;
+            padding:0.7rem 1.5rem;
+            text-decoration:none;
+            border-radius:8px;
+            font-weight:600;
+        }
+
+        .container {
+            max-width:1000px;
+            margin:auto;
+            display:grid;
+            grid-template-columns:1fr;
+            gap:1.5rem;
+        }
+
+        .card {
+            background:white;
+            padding:1.5rem;
+            border-radius:12px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .manji-input, select {
+            width:100%;
+            padding:0.7rem;
+            border:1px solid #ccc;
+            border-radius:6px;
+        }
+
+        .veci-button {
+            background:var(--success);
+            color:white;
+            border:none;
+            padding:0.7rem 1.2rem;
+            border-radius:6px;
+            cursor:pointer;
+            margin-top:0.5rem;
+        }
+
+        .obaveza-card {
+            background:var(--light);
+            padding:1rem;
+            border-radius:10px;
+            border-left:4px solid var(--secondary);
+            margin-bottom:1rem;
+            position:relative;
+        }
+
+        .delete-btn {
+            position:absolute;
+            top:1rem;
+            right:1rem;
+            background:var(--danger);
+            color:white;
+            padding:0.4rem 0.7rem;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+        }
+
+        #blurOverlay {
+            position: fixed;
+            inset: 0;
+
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.2);
+
+            opacity: 0;
+            transition: opacity 0.5s ease;
+
+            z-index: 8000;
+        }
+
+        #blurOverlay.show {
+            opacity: 1;
+        }
+
+        #customAlertDiv.show {
+            opacity: 1;
+            transform: translate(-50%, -75%) scale(1);
+        }
+
+
+        #customAlertDiv {
+            height: 15vh;
+            width: 35vh;
+            background-color: white;
+            position: fixed;
+            z-index: 9000;
+
+            top: 50%;
+            left: 50%;
+
+            padding: 4%;
+            border: 1px solid black;
+            border-radius: 15px;
+
+            opacity: 0;
+            transform: translate(-50%, -75%) scale(0.95);
+            transition:
+                    opacity 0.5s ease,
+                    transform 0.5s ease;
+        }
+
+        #customAlertButton{
+            align-self: center;
+
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            z-index: 9001;
+
+            background-color: #222;
+            color: white;
+            cursor: pointer;
+
+            transition: background-color 0.2s ease;
+        }
+
+        #customAlertButton:hover {
+            background-color: #444;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div id="customAlertDiv">
+    </div>
+    <div id="blurOverlay">
+
+    </div>
+
+<header>
+    <a href="index.html" class="back-btn">POČETNA</a>
+    <h1>OBAVEZE</h1>
+</header>
+
+<div class="container">
+
+    <!-- NOVA OBAVEZA -->
+    <div class="card">
+        <h3>Dodaj novu obavezu</h3>
+
+        <h4>Vrsta obaveze</h4>
+        <select id="tip">
+            <option value="HRANJENJE">Hranjenje</option>
+            <option value="ČIŠĆENJE">Čišćenje</option>
+            <option value="PREGLED">Veterinarski pregled</option>
+            <option value="LIJEČENJE">Liječenje</option>
+            <option value="PREMJEŠTANJE">Premještanje</option>
+            <option value="OSTALO">Ostalo</option>
+        </select>
+
+        <h4>Životinja</h4>
+        <select id="zivotinja">
+            <option value="none" selected>(bez životinje)</option>
+            <optgroup id="jedinka-group" label="JEDINKE">
+            </optgroup>
+            <optgroup id="skupina-group"  label="SKUPINE">
+            </optgroup>
+
+        </select>
+
+        <h4>Komentar</h4>
+        <input type="text" id="komentar" class="manji-input" placeholder="npr. Hranjenje mesa, detalji...">
+
+        <h4>Period obaveze</h4>
+        <select id="ponavljanje" onchange="periodObavezeChange()">
+            <option value="NONE">Jednokratna</option>
+            <option value="DAILY">Svaki dan</option>
+            <option value="MONTHLY">Mjesečno</option>
+            <option value="YEARLY">Godišnje</option>
+        </select>
+
+        <div id="ponavljanje-broj" style="display: none;">
+            <h4>Ponavljanje (svaka 3 dana, 3 mjeseca...)</h4>
+            <input type="number" id="ponavljanje-input" class="manji-input">
+        </div>
+
+        <div id="datum-početka">
+            <h4>Datum i vrijeme početka</h4>
+            <input type="datetime-local" id="date-time" class="manji-input">
+        </div>
+
+        <div id="trajanje">
+            <h4>Trajanje (u minutama)</h4>
+            <input type="number" id="trajanje-input" class="manji-input">
+        </div>
+
+        <h4>Dodijeli radnika (opcionalno)</h4>
+        <select id="radnik">
+
+        </select>
+
+        <button class="veci-button" onclick="dodajObavezu()">Dodaj obavezu</button>
+    </div>
+
+    <!-- LISTA OBAVEZA -->
+    <div class="card">
+        <h3>Planirane obaveze</h3>
+        <div id="obaveze"></div>
+    </div>
+    <div class="card">
+        <h3>Prošle obaveze</h3>
+        <div id="prošle-obaveze"></div>
+    </div>
+
+</div>
+
+<script>
+    const API_O = "http://localhost:8080/api/obaveza";
+    const API_J = "http://localhost:8080/api/jedinke";
+    const API_S = "http://localhost:8080/api/skupine";
+    const API_R = "http://localhost:8080/api/radnik";
+
+    async function prikaziZivotinje() {
+        const resJ = await fetch(API_J);
+        const dataJ = await resJ.json();
+
+        const resS = await fetch(API_S);
+        const dataS = await resS.json();
+
+        const jedinkaGroup = document.getElementById("jedinka-group");
+        const skupinaGroup = document.getElementById("skupina-group");
+        jedinkaGroup.innerHTML = "";
+        skupinaGroup.innerHTML = "";
+
+        dataJ.forEach(j => {
+            if(j.aktivna === true){
+                const op = document.createElement("option");
+                op.value = "j"+j.id;
+                op.textContent = j.nadimak + " " + j.hrvatskiNaziv + " (" + j.latinskiNaziv + "). " + "Nastamba: " + (j.nastamba == null ? "N/A" : j.nastamba.oznaka);
+                jedinkaGroup.appendChild(op);
+            }
+        });
+
+        dataS.forEach(s => {
+            if(s.aktivna === true){
+                const op = document.createElement("option");
+                op.value = "s"+s.id;
+                op.textContent = s.identifikator + " " + s.hrvatskiNaziv + " (" + s.latinskiNaziv + "). " + "Nastamba: " + (s.nastamba ? s.nastamba.oznaka : "N/A");
+                skupinaGroup.appendChild(op);
+            }
+        });
+    }
+
+    function periodObavezeChange(){
+        const ponavljanjeBroj = document.getElementById("ponavljanje-broj");
+        const ponavljanjeTip = document.getElementById("ponavljanje");
+
+        if(ponavljanjeTip.value === "NONE")
+            ponavljanjeBroj.style.display = "none";
+        else
+            ponavljanjeBroj.style.display = "block";
+    }
+
+    async function prikaziRadnike() {
+        const res = await fetch(API_R);
+        const data = await res.json();
+        const sel = document.getElementById("radnik");
+        sel.innerHTML = '<option value="" selected>(bez radnika)</option>';
+
+        data.forEach(r => {
+            const op = document.createElement("option");
+            op.value = r.id;
+            op.textContent = r.ime + " " + r.prezime;
+            sel.appendChild(op);
+        });
+    }
+
+    async function prikaziObaveze() {
+        const res = await fetch(API_O);
+        const data = await res.json();
+        const contPlanirane = document.getElementById("obaveze");
+        const contProsle = document.getElementById("prošle-obaveze");
+        contPlanirane.innerHTML = "";
+        contProsle.innerHTML = "";
+
+        console.log(data);
+
+        data.forEach(o => {
+            const danas = new Date();
+            danas.setHours(0, 0, 0, 0);
+
+            let vrijemeZaProvjeru = new Date(o.vrijemeOd);
+            vrijemeZaProvjeru.setHours(0, 0, 0, 0);
+                const d = document.createElement("div");
+                d.className = "obaveza-card";
+
+                const dani = ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"];
+                const datum = new Date(o.vrijemeOd);
+                console.log(datum);
+                const danIndex = datum.getDay();
+
+                d.innerHTML = "";
+                d.innerHTML += `<strong>Tip:</strong> ${o.tip}<br>`;
+                d.innerHTML += `<strong>Status:</strong> ${o.status}<br>`;
+                d.innerHTML += `<strong>Radnik:</strong> ${o.radnik ? `${o.radnik.ime} ${o.radnik.prezime}` : "Radnik nije dodijeljen"}<br>`;
+                d.innerHTML += o.jedinka ? `<strong>Jedinka:</strong> ${o.jedinka.hrvatskiNaziv} ${o.jedinka.nadimak}, Nastamba: ${o.jedinka.nastamba.oznaka}<br>`:
+                o.skupina ? `<strong>Skupina:</strong> ${o.skupina.hrvatskiNaziv}, Nastamba: ${o.skupina.nastamba.oznaka}<br>`:
+                o.komentar ? `<strong>Komentar:</strong> ${o.komentar}` : "";
+                d.innerHTML += `<strong>Planirano vrijeme:</strong> ${dani[danIndex]}, ${datum.getDate()}.${datum.getMonth() + 1}.${datum.getFullYear()}, ${datum.getHours()}:${datum.getMinutes()}<br>`;
+                d.innerHTML += `<strong>Period:</strong> ${o.repeatEvery} ${o.repeatType.toLocaleString()}<br>`;
+
+                const btn = document.createElement("button");
+                btn.className = "delete-btn";
+                btn.textContent = "Obriši";
+                btn.onclick = async () => {
+                    await fetch(`${API_O}/${o.id}`, { method: "DELETE" });
+                    await prikaziObaveze();
+                };
+                d.appendChild(btn);
+                if(o.repeatType === "NONE"){
+                    if(vrijemeZaProvjeru < danas){
+                        contProsle.appendChild(d);
+                    }
+                    else
+                        contPlanirane.appendChild(d);
+                }
+                else
+                    contPlanirane.appendChild(d);
+        });
+    }
+
+    async function dodajObavezu(){
+        const repeatTypeInput = document.getElementById("ponavljanje").value
+        const repeatEveryInput = document.getElementById("ponavljanje-input").value
+        const tipInput = document.getElementById("tip").value;
+        const radnikInput = document.getElementById("radnik");
+        const idZivotinjeInput = document.getElementById("zivotinja");
+        const trajanjeInput = document.getElementById("trajanje-input");
+        const vrijemeOdInput = document.getElementById("date-time");
+        const komentarInput = document.getElementById("komentar");
+        console.log(repeatTypeInput);
+
+        const payload = {
+            tip: tipInput,
+            status: "PLANIRANO",
+            radnikId: radnikInput.value || null,
+            //idZivotinje: idZivotinjeInput.value.trim(),
+            idJedinke: idZivotinjeInput.value[0] === "j" ? Number(idZivotinjeInput.value.slice(1)) : null,
+            idSkupine: idZivotinjeInput.value[0] === "s" ? Number(idZivotinjeInput.value.slice(1)) : null,
+            repeatType: repeatTypeInput,
+            repeatEvery: repeatTypeInput === "NONE" ? "NONE" : repeatEveryInput,
+            trajanje: Number(trajanjeInput.value),
+            vrijemeOd: vrijemeOdInput.value,
+            komentar: komentarInput.value.trim()
+        };
+
+        const res = await fetch(API_O, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+        });
+
+        if(!res.ok){
+            const msg = await res.json();
+            customAlert(msg.message);
+            return;
+        }
+
+        window.location.reload();
+
+
+    }
+    function customAlertButton(){
+        const div = document.getElementById("customAlertDiv");
+        const blur = document.getElementById("blurOverlay");
+
+        div.style.display ="none";
+        blur.style.display= "none";
+
+    }
+
+    function customAlert(txt){
+        const div = document.getElementById("customAlertDiv");
+        div.innerHTML = "";
+
+        div.innerHTML += txt;
+        div.innerHTML += `<button id="customAlertButton onClick="customAlertButton()">OK</button>`
+
+        div.style.display = "block";
+
+        const blur = document.getElementById("blurOverlay");
+
+        requestAnimationFrame(() => {
+            div.classList.add("show");
+            blur.classList.add("show");
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        customAlertButton(); // da se sklone blur i alert prozori
+        prikaziZivotinje();
+        prikaziRadnike();
+        prikaziObaveze();
+    });
+</script>
+
+</body>
+</html>

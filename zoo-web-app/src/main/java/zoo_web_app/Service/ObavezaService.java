@@ -1,5 +1,6 @@
 package zoo_web_app.Service;
 
+import zoo_web_app.DTO.ObavezaFrontend;
 import zoo_web_app.Entity.Obaveza;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface ObavezaService {
 
     Obaveza findById(Long id);
 
-    Obaveza create(Obaveza obaveza);
+    Obaveza create(ObavezaFrontend obaveza);
 
     Obaveza update(Long id, Obaveza obaveza);
 

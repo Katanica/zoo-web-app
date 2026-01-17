@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -18,12 +19,10 @@ public class Obaveza {
     @Column(name = "id_obaveze")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_tipa", nullable = false)
     private TipObaveze tip;
 
-    @ManyToOne
-    @JoinColumn(name = "id_statusa", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private StatusObaveze status;
 
     @ManyToOne
@@ -31,18 +30,22 @@ public class Obaveza {
     private Radnik radnik;  // moze biti null
 
     @ManyToOne
-    @JoinColumn(name = "id_jedinke")
+    @JoinColumn(name = "id_jedinke", nullable = true)
     private Jedinka jedinka;
 
     @ManyToOne
-    @JoinColumn(name = "id_skupine")
+    @JoinColumn(name = "id_skupine", nullable = true)
     private Skupina skupina;
 
-    @Column(name = "datum_od")
-    private LocalDate datumOd;
+    private boolean active = true;
+    private RepeatType repeatType; // NONE, DAILY, MONTHLY!!!
+    private Integer repeatEvery; // npr. 1 dan, 3 mjeseca... (null ako NONE)
 
-    @Column(name = "datum_do")
-    private LocalDate datumDo;
+    @Column(name = "vrijeme_od")
+    private LocalDateTime vrijemeOd;
+
+    @Column(name = "vrijeme_do")
+    private LocalDateTime vrijemeDo;
 
     @Column(name = "komentar")
     private String komentar;
