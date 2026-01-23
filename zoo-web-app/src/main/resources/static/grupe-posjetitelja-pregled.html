@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZOO WEB APP - Grupe posjetitelja (pregled)</title>
+    <style>
+        :root {
+          --primary: #2c3e50;
+          --secondary: #3498db;
+          --danger: #e74c3c;
+          --success: #27ae60;
+          --light: #ecf0f1;
+          --dark: #2c3e50;
+          --gray: #95a5a6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; text-decoration: none; }
+
+        body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+          color: var(--dark);
+          line-height: 1.6;
+          min-height: 100vh;
+          padding: 2rem 1rem;
+        }
+
+        header { text-align: center; margin-bottom: 2rem; }
+        header h1 { font-size: 2.2rem; color: var(--primary); font-weight: 600; }
+
+        .back-btn {
+          display: inline-block;
+          background: var(--secondary);
+          color: white;
+          border: 0;
+          padding: 0.7rem 1.5rem;
+          border-radius: 8px;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          transition: 0.3s;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          cursor: pointer;
+        }
+        .back-btn:hover { background: #2980b9; transform: translateY(-2px); }
+
+        .container {
+          max-width: 1000px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.5rem;
+        }
+
+        .card {
+          background: white;
+          padding: 1.5rem;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+          margin-bottom: 1rem;
+          color: var(--primary);
+          font-size: 1.3rem;
+          border-bottom: 2px solid var(--secondary);
+          padding-bottom: 0.5rem;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        .item-card {
+          background: var(--light);
+          padding: 1rem;
+          border-radius: 10px;
+          margin-bottom: 1rem;
+          border-left: 4px solid var(--secondary);
+          position: relative;
+        }
+
+        .delete-btn {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          background: var(--danger);
+          color: white;
+          border: none;
+          padding: 0.4rem 0.8rem;
+          border-radius: 6px;
+          font-size: 0.8rem;
+          cursor: pointer;
+        }
+        .delete-btn:hover { background: #c0392b; }
+
+        .top-actions {
+          display: flex;
+          gap: 0.8rem;
+          justify-content: center;
+          flex-wrap: wrap;
+          margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+          .container { grid-template-columns: 1fr; }
+          .full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <a href="index.html" class="back-btn">POČETNA</a>
+    <h1>ZOO WEB APP - GRUPE POSJETITELJA</h1>
+
+    <div class="top-actions">
+        <a href="grupe-posjetitelja-dodaj.html" class="back-btn">Dodaj grupu</a>
+    </div>
+</header>
+
+<div class="container">
+    <div id="lista" class="card full-width">
+        <h3>Popis grupa posjetitelja</h3>
+        <div id="grupe"></div>
+    </div>
+</div>
+
+<script>
+    // ✅ OVO MORA BITI endpoint za GRUPE (ne /api/vodic)
+    const API_GRUPE = "/api/grupaPosjetitelja";
+
+    function safe(v) {
+      return (v === null || v === undefined || v === "") ? "N/A" : v;
+    }
+
+    function vodicLabel(vodic) {
+      if (!vodic) return "N/A";
+      const ime = vodic.ime ?? "";
+      const prez = vodic.prezime ?? "";
+      const full = (ime + " " + prez).trim();
+      return full !== "" ? full : ("Vodič #" + safe(vodic.id));
+    }
+
+        function formatDate(dt) {
+            if (!dt) return "N/A";
+                return dt.split("T")[0];
+    }
+
+    function formatTime(dt) {
+      if (!dt) return "N/A";
+      return dt.split("T")[1]?.substring(0, 5) ?? "N/A";
+    }
+
+
+    async function loadGrupe() {
+      const res = await fetch(API_GRUPE);
+      if (!res.ok) {
+        const t = await res.text();
+        alert("Greška na " + API_GRUPE + ": " + t);
+        return;
+      }
+
+      const data = await res.json();
+      const cont = document.getElementById("grupe");
+      cont.innerHTML = "";
+
+      if (!data || data.length === 0) {
+        cont.innerHTML = "<p>Nema grupa.</p>";
+        return;
+      }
+
+      data.forEach(g => {
+        const div = document.createElement("div");
+        div.className = "item-card";
+
+        div.innerHTML = `
+          <button class="delete-btn" onclick="obrisiGrupu(${g.id})">Obriši</button>
+
+          <strong>Naziv:</strong> ${safe(g.naziv)}<br>
+          <strong>Kontakt mail:</strong> ${safe(g.kontaktMail)}<br>
+          <strong>Broj osoba:</strong> ${safe(g.brojOsoba)}<br>
+          <strong>Datum dolaska:</strong> ${formatDate(g.datumDolaska)}<br>
+          <strong>Vrijeme početka:</strong> ${formatTime(g.vrijemePocetka)}<br>
+          <strong>Vrijeme kraja:</strong> ${formatTime(g.vrijemeKraja)}<br>
+          <strong>Vodič:</strong> ${safe(vodicLabel(g.vodic))}<br>
+          <strong>Status:</strong> ${safe(g.status)}
+        `;
+
+        cont.appendChild(div);
+      });
+    }
+
+    async function obrisiGrupu(id) {
+      if (!confirm("Jesi siguran da želiš obrisati grupu?")) return;
+
+      const res = await fetch(`${API_GRUPE}/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const t = await res.text();
+        alert("Greška pri brisanju: " + t);
+        return;
+      }
+      loadGrupe();
+    }
+
+    document.addEventListener("DOMContentLoaded", loadGrupe);
+</script>
+</body>
+</html>
