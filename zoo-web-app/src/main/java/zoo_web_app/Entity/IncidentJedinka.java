@@ -1,5 +1,6 @@
 package zoo_web_app.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,6 +16,7 @@ public class IncidentJedinka {
     @Column(name = "id_incident_jedinka")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_incidenta", nullable = false)
     private Incident incident;
