@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZOO WEB APP - Dodaj grupu posjetitelja</title>
+    <style>
+        :root {
+          --primary: #2c3e50;
+          --secondary: #3498db;
+          --danger: #e74c3c;
+          --success: #27ae60;
+          --light: #ecf0f1;
+          --dark: #2c3e50;
+          --gray: #95a5a6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; text-decoration: none; }
+
+        body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+          color: var(--dark);
+          line-height: 1.6;
+          min-height: 100vh;
+          padding: 2rem 1rem;
+        }
+
+        header { text-align: center; margin-bottom: 2rem; }
+        header h1 { font-size: 2.2rem; color: var(--primary); font-weight: 600; }
+
+        .back-btn {
+          display: inline-block;
+          background: var(--secondary);
+          color: white;
+          border: 0;
+          padding: 0.7rem 1.5rem;
+          border-radius: 8px;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          transition: 0.3s;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          cursor: pointer;
+        }
+        .back-btn:hover { background: #2980b9; transform: translateY(-2px); }
+
+        .container {
+          max-width: 1000px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.5rem;
+        }
+
+        .card {
+          background: white;
+          padding: 1.5rem;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+          margin-bottom: 1rem;
+          color: var(--primary);
+          font-size: 1.3rem;
+          border-bottom: 2px solid var(--secondary);
+          padding-bottom: 0.5rem;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        .manji-input {
+          width: 100%;
+          padding: 0.7rem;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          margin: 0.5rem 0;
+          font-size: 1rem;
+        }
+
+        .veci-button {
+          background: var(--success);
+          color: white;
+          border: none;
+          padding: 0.7rem 1.2rem;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 600;
+          margin-top: 0.5rem;
+          transition: 0.3s;
+        }
+        .veci-button:hover { background: #219a52; transform: translateY(-2px); }
+
+        .danger-button {
+          background: var(--danger);
+          color: white;
+          border: none;
+          padding: 0.7rem 1.2rem;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 600;
+          margin-top: 0.5rem;
+          transition: 0.3s;
+          margin-left: 10px;
+        }
+        .danger-button:hover { background: #c0392b; transform: translateY(-2px); }
+
+        @media (max-width: 768px) {
+          .container { grid-template-columns: 1fr; }
+          .full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <a href="index.html" class="back-btn">POČETNA</a>
+    <h1>ZOO WEB APP - DODAJ GRUPU POSJETITELJA</h1>
+</header>
+
+<div class="container">
+    <div class="card full-width">
+        <h3>Unos grupe</h3>
+
+        <label><strong>Naziv grupe:</strong></label>
+        <input type="text" id="naziv" class="manji-input" placeholder="npr. Škola 'Mostar' - 3A" required>
+
+        <label><strong>Kontakt mail:</strong></label>
+        <input type="email" id="kontaktMail" class="manji-input" placeholder="npr. skola@mail.com">
+
+        <label><strong>Broj osoba:</strong></label>
+        <input type="number" id="brojOsoba" class="manji-input" min="1" placeholder="npr. 25">
+
+        <label><strong>Datum dolaska:</strong></label>
+        <input type="date" id="datumDolaska" class="manji-input" required>
+
+        <label><strong>Vrijeme početka:</strong></label>
+        <input type="time" id="vrijemePocetka" class="manji-input" required>
+
+        <label><strong>Vrijeme kraja:</strong></label>
+        <input type="time" id="vrijemeKraja" class="manji-input" required>
+
+        <label><strong>Vodič:</strong></label>
+        <select id="vodic" class="manji-input" required></select>
+
+        <label><strong>Status:</strong></label>
+        <select id="status" class="manji-input">
+            <option value="NAJAVLJENO">NAJAVLJENO</option>
+            <option value="VODIC_DODIJELJEN">VODIC_DODIJELJEN</option>
+            <option value="U_TOKU">U_TOKU</option>
+            <option value="ZAVRSENO">ZAVRSENO</option>
+            <option value="OTKAZANO">OTKAZANO</option>
+        </select>
+
+        <button class="veci-button" onclick="spremiGrupu()">Spremi</button>
+        <a href="grupe-posjetitelja-pregled.html"><button class="danger-button" type="button">Nazad</button></a>
+    </div>
+</div>
+
+<script>
+    const API_GRUPE = "/api/grupaPosjetitelja";
+    const API_VODICI = "/api/vodic";
+
+    function combineDateTime(dateStr, timeStr) {
+      // dateStr: "YYYY-MM-DD"
+      // timeStr: "HH:MM" ili "HH:MM:SS"
+      if (!dateStr || !timeStr) return null;
+      const t = timeStr.length === 5 ? (timeStr + ":00") : timeStr; // dodaj sekunde
+      return `${dateStr}T${t}`; // "YYYY-MM-DDTHH:MM:SS"
+    }
+
+    function dateAtMidnight(dateStr) {
+      if (!dateStr) return null;
+      return `${dateStr}T00:00:00`;
+    }
+
+    async function loadVodici() {
+      const res = await fetch(API_VODICI);
+      if (!res.ok) {
+        const t = await res.text();
+        alert("Greška na " + API_VODICI + ": " + t);
+        return;
+      }
+
+      const data = await res.json();
+      const select = document.getElementById("vodic");
+      select.innerHTML = "";
+
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "-- odaberi vodiča --";
+      select.appendChild(placeholder);
+
+      if (!data || data.length === 0) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Nema vodiča u bazi";
+        select.appendChild(opt);
+        return;
+      }
+
+      const seen = new Set();
+      data.forEach(v => {
+        if (!v || v.id == null) return;
+        if (seen.has(v.id)) return;
+        seen.add(v.id);
+
+        const opt = document.createElement("option");
+        opt.value = v.id;
+        const full = ((v.ime ?? "") + " " + (v.prezime ?? "")).trim();
+        opt.textContent = full !== "" ? full : ("Vodič #" + v.id);
+        select.appendChild(opt);
+      });
+    }
+
+    async function spremiGrupu() {
+      const naziv = document.getElementById("naziv").value?.trim();
+      const kontaktMail = document.getElementById("kontaktMail").value?.trim();
+      const brojOsoba = document.getElementById("brojOsoba").value;
+
+      const datumDolaska = document.getElementById("datumDolaska").value;     // date
+      const vrijemePocetka = document.getElementById("vrijemePocetka").value; // time
+      const vrijemeKraja = document.getElementById("vrijemeKraja").value;     // time
+
+      const vodicId = document.getElementById("vodic").value;
+      const status = document.getElementById("status").value;
+
+      if (!naziv) {
+        alert("Molim unesite naziv grupe.");
+        return;
+      }
+      if (!datumDolaska || !vrijemePocetka || !vrijemeKraja) {
+        alert("Molim unesite datum dolaska + vrijeme početka + vrijeme kraja.");
+        return;
+      }
+      if (!vodicId) {
+        alert("Molim odaberite vodiča.");
+        return;
+      }
+
+      // (Opcionalno) provjera da kraj nije prije početka (na isti datum)
+      const start = new Date(combineDateTime(datumDolaska, vrijemePocetka));
+      const end = new Date(combineDateTime(datumDolaska, vrijemeKraja));
+      if (end <= start) {
+        alert("Vrijeme kraja mora biti nakon vremena početka.");
+        return;
+      }
+
+      const body = {
+        naziv: naziv,
+        kontaktMail: kontaktMail || null,
+        brojOsoba: brojOsoba ? Number(brojOsoba) : null,
+
+        // backend traži LocalDateTime:
+        datumDolaska: dateAtMidnight(datumDolaska),
+        vrijemePocetka: combineDateTime(datumDolaska, vrijemePocetka),
+        vrijemeKraja: combineDateTime(datumDolaska, vrijemeKraja),
+
+        status: status || "NAJAVLJENO",
+        vodic: { id: Number(vodicId) }
+      };
+
+      const res = await fetch(API_GRUPE, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        const t = await res.text();
+        alert("Greška pri spremanju: " + t);
+        return;
+      }
+
+      window.location.href = "grupe-posjetitelja-pregled.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadVodici();
+    });
+</script>
+</body>
+</html>
