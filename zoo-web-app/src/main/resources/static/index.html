@@ -216,7 +216,7 @@
     //----------  JEDINKE-------------
     async function ucitajBrojJedinki(){
         try{
-            const resp = await fetch("http://localhost:8080/api/jedinke/broj");
+            const resp = await fetch("/api/jedinke/broj");
             const broj = await resp.json();
             document.getElementById("broj-zivotinja").textContent = broj;
         }
@@ -229,7 +229,7 @@
     async function ucitajBrojSkupina(){
         try{
             // PROMIJENI endpoint ako vam se drugačije zove
-            const resp = await fetch("http://localhost:8080/api/skupine/broj");
+            const resp = await fetch("/api/skupine/broj");
             const broj = await resp.json();
             document.getElementById("broj-skupina").textContent = broj;
         }
@@ -241,7 +241,7 @@
     //---------- NASTAMBE ------------
     async function ucitajBrojNastambi() {
         try {
-            const resp = await fetch("http://localhost:8080/api/nastambe/broj");
+            const resp = await fetch("/api/nastambe/broj");
             const broj = await resp.json();
             document.getElementById("broj-nastambi").textContent = broj;
         } catch (err) {
@@ -252,7 +252,7 @@
     // ------------- OBAVEZE ----------
     async function ucitajBrojObaveza() {
         try {
-            const resp = await fetch("http://localhost:8080/api/obaveza/broj");
+            const resp = await fetch("/api/obaveza/broj");
             let data = await resp.json();
 
             if (typeof data === "number") {
@@ -276,7 +276,7 @@
     //---------------RADNICI-------------------------
     async function ucitajBrojRadnika() {
         try {
-            const resp = await fetch("http://localhost:8080/api/radnik/broj");
+            const resp = await fetch("/api/radnik/broj");
             const broj = await resp.json();
             document.getElementById("broj-radnika").textContent = broj;
         } catch (err) {
