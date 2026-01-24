@@ -33,7 +33,7 @@ public class DataSeeder implements CommandLineRunner {
             repo.save(new VrstaIncidenta(null, naziv, null));
             return;
         }
-        
+
         VrstaIncidenta keep = all.get(0);
 
         for (int i = 1; i < all.size(); i++) {
