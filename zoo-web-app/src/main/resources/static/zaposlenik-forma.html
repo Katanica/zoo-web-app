@@ -2,79 +2,117 @@
 <html lang="hr">
 <head>
     <meta charset="UTF-8">
-    <title>Novi zaposlenik</title>
+    <title>ZOO - Novi Radnik</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        label { display: block; margin: 10px 0 5px; }
-        input, select, textarea { width: 100%; padding: 8px; }
-        button { padding: 10px 20px; margin-top: 20px; }
-        .btn-cancel { background: #6c757d; color: white; }
+        :root {
+            --primary-dark: #1a5e4b;
+            --bg-gradient: linear-gradient(135deg,#f5f7fa,#c3cfe2);
+            --success: #27ae60;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-gradient);
+            padding: 2rem; margin: 0; min-height: 100vh;
+        }
+        .container { max-width: 600px; margin: auto; }
+        .card {
+            background: white; padding: 2.5rem;
+            border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        header { margin-bottom: 2rem; text-align: center; }
+        .back-btn {
+            background: #3498db; color: white;
+            padding: 0.6rem 1.2rem; text-decoration: none; border-radius: 8px;
+            font-weight: 600;
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--primary-dark); }
+        input, textarea {
+            width: 100%; padding: 12px; border: 1px solid #ccc;
+            border-radius: 8px; box-sizing: border-box; font-size: 1rem;
+        }
+        .save-btn {
+            width: 100%; background: var(--primary-dark); color: white;
+            border: none; padding: 15px; border-radius: 8px;
+            cursor: pointer; font-weight: 700; font-size: 1.1rem;
+            margin-top: 15px; transition: background 0.2s;
+        }
+        .save-btn:hover { background: #144a3b; }
     </style>
 </head>
 <body>
-<h1>Novi zaposlenik</h1>
 
-<form id="forma">
-    <input type="hidden" id="id" />
+<div class="container">
+    <header>
+        <a href="zaposlenici.html" class="back-btn">← Spisak radnika</a>
+        <h1 style="color: var(--primary-dark); margin-top: 25px;">Novi Radnik</h1>
+    </header>
 
-    <label>Ime:</label>
-    <input type="text" id="ime" required />
+    <div class="card">
+        <form id="radnikForm">
+            <div class="form-group">
+                <label>Ime *</label>
+                <input type="text" id="ime" required>
+            </div>
+            <div class="form-group">
+                <label>Prezime *</label>
+                <input type="text" id="prezime" required>
+            </div>
+            <div class="form-group">
+                <label>Broj mobitela (Obavezno) *</label>
+                <input type="text" id="mobitel" required placeholder="Npr. 063 123 456">
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="email">
+            </div>
+            <div class="form-group">
+                <label>Položeni tečajevi i prakse</label>
+                <textarea id="tecajevi" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Obrazovanje i licence</label>
+                <input type="text" id="licence">
+            </div>
 
-    <label>Prezime:</label>
-    <input type="text" id="prezime" required />
-
-    <label>Email:</label>
-    <input type="email" id="email" required />
-
-    <label>Telefon:</label>
-    <input type="text" id="telefon" required />
-
-    <label>Obrazovanje:</label>
-    <input type="text" id="obrazovanje" />
-
-    <label>Kvalifikacije:</label>
-    <textarea id="kvalifikacije" rows="2"></textarea>
-
-    <label>Status:</label>
-    <select id="status">
-        <option value="STALNI">Stalni</option>
-        <option value="PRIVREMENI">Privremeni</option>
-    </select>
-
-    <button type="button" onclick="spremi()">Spremi</button>
-    <button type="button" class="btn-cancel" onclick="window.location.href='zaposlenici.html'">Odustani</button>
-</form>
+            <button type="button" class="save-btn" onclick="spremiRadnika()">SPREMI RADNIKA</button>
+        </form>
+    </div>
+</div>
 
 <script>
-    function spremi() {
-        const zaposlenik = {
-            id: document.getElementById('id').value || null,
-            ime: document.getElementById('ime').value,
-            prezime: document.getElementById('prezime').value,
-            email: document.getElementById('email').value,
-            telefon: document.getElementById('telefon').value,
-            obrazovanje: document.getElementById('obrazovanje').value || null,
-            kvalifikacije: document.getElementById('kvalifikacije').value || null,
-            status: document.getElementById('status').value,
-            licence: [],
-            smjene: [],
-            bolovanja: [],
-            godisnjiOdmori: []
+    async function spremiRadnika() {
+        const podaci = {
+            ime: document.getElementById('ime').value.trim(),
+            prezime: document.getElementById('prezime').value.trim(),
+            telefon: document.getElementById('mobitel').value.trim(), // Mora biti 'telefon' zbog Jave
+            email: document.getElementById('email').value.trim(),
+            tecajevi: document.getElementById('tecajevi').value.trim(),
+            licence: document.getElementById('licence').value.trim()
         };
 
-        const method = zaposlenik.id ? 'PUT' : 'POST';
-        const url = zaposlenik.id ? `/api/zaposlenici/${zaposlenik.id}` : '/api/zaposlenici';
+        if(!podaci.ime || !podaci.prezime || !podaci.telefon) {
+            alert("Popunite obavezna polja!");
+            return;
+        }
 
-        fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(zaposlenik)
-        })
-        .then(res => {
-            if (!res.ok) throw new Error('Greška: ' + res.status);
-            window.location.href = 'zaposlenici.html';
-        })
-        .catch(err => alert('Greška: ' + err.message));
+        try {
+            const response = await fetch('/api/radnik', { // Putanja je '/api/radnik'
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(podaci)
+            });
+
+            if(response.ok) {
+                alert('Radnik uspješno spremljen!');
+                window.location.href = 'zaposlenici.html';
+            } else {
+                const errorData = await response.json();
+                alert('Greška: ' + (errorData.message || 'Neuspješno spremanje'));
+            }
+        } catch (error) {
+            alert('Problem s povezivanjem na server.');
+        }
     }
 </script>
 </body>

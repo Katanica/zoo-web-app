@@ -2,83 +2,94 @@
 <html lang="hr">
 <head>
     <meta charset="UTF-8">
-    <title>Zaposlenici</title>
+    <title>ZOO - Spisak Radnika</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #f0f0f0; }
-        button, .btn { padding: 6px 12px; margin: 2px; cursor: pointer; }
-        .delete { background: #dc3545; color: white; border: none; }
-        input { padding: 6px; margin: 2px; width: 200px; }
+        :root {
+            --primary-dark: #1a5e4b;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-gradient);
+            padding: 2rem; margin: 0;
+        }
+        .container { max-width: 1100px; margin: auto; }
+        .spisak-card {
+            background: white; border-radius: 12px;
+            overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .spisak-header {
+            background: var(--primary-dark); color: white;
+            padding: 1.5rem 2rem; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .add-btn {
+            background: white; color: var(--primary-dark);
+            padding: 0.6rem 1.2rem; text-decoration: none;
+            border-radius: 6px; font-weight: 700;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #666; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        .tag { background: #eef2f7; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; margin: 2px; display: inline-block; }
     </style>
 </head>
 <body>
-<h1>Zaposlenici</h1>
 
-<input type="text" id="filter" placeholder="Filtriraj po kvalifikaciji..." />
-<button onclick="ucitajZaposlenike()">Traži</button>
-<button onclick="window.location.href='zaposlenik-forma.html'">+ Novi zaposlenik</button>
+<div class="container">
+    <header style="text-align:center; margin-bottom:20px;">
+        <a href="index.html" style="color:#3498db; text-decoration:none;">← Početna</a>
+    </header>
 
-<table id="tabela">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Ime</th>
-        <th>Prezime</th>
-        <th>Email</th>
-        <th>Status</th>
-        <th>Akcije</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+    <div class="spisak-card">
+        <div class="spisak-header">
+            <h2>👥 SPISAK ZAPOSLENIKA</h2>
+            <a href="zaposlenik-forma.html" class="add-btn">+ DODAJ RADNIKA</a>
+        </div>
+        <div style="padding: 20px;">
+            <table>
+                <thead>
+                <tr>
+                    <th>Radnik</th>
+                    <th>Mobitel</th>
+                    <th>Tečajevi</th>
+                    <th>Licence</th>
+                    <th>Akcije</th>
+                </tr>
+                </thead>
+                <tbody id="lista-radnika"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <script>
-    function ucitajZaposlenike() {
-        const filter = document.getElementById('filter').value.trim();
-        const url = filter ? `/api/zaposlenici/filter?kvalifikacija=${encodeURIComponent(filter)}` : '/api/zaposlenici';
+    async function ucitajRadnike() {
+        const res = await fetch('/api/radnik');
+        const radnici = await res.json();
+        const tbody = document.getElementById('lista-radnika');
+        tbody.innerHTML = '';
 
-        fetch(url)
-            .then(res => {
-                if (!res.ok) throw new Error('Greška: ' + res.status);
-                return res.json();
-            })
-            .then(data => {
-                const tbody = document.querySelector('#tabela tbody');
-                tbody.innerHTML = '';
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6">Nema rezultata</td></tr>';
-                    return;
-                }
-                data.forEach(z => {
-                    const row = `<tr>
-                        <td>${z.id}</td>
-                        <td>${z.ime}</td>
-                        <td>${z.prezime}</td>
-                        <td>${z.email}</td>
-                        <td>${z.status}</td>
-                        <td>
-                            <button class="delete" onclick="obrisi(${z.id})">Obriši</button>
-                        </td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-            })
-            .catch(err => {
-                alert('Greška: ' + err.message);
-                console.error(err);
-            });
+        radnici.forEach(r => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${r.ime} ${r.prezime}</strong><br><small>${r.email || ''}</small></td>
+                    <td>${r.telefon}</td>
+                    <td>${r.tecajevi ? r.tecajevi.split(',').map(t => `<span class="tag">${t}</span>`).join('') : '/'}</td>
+                    <td>${r.licence || '/'}</td>
+                    <td><button onclick="obrisi(${r.id})" style="color:red; cursor:pointer; background:none; border:none;">Obriši</button></td>
+                </tr>`;
+        });
     }
 
-    function obrisi(id) {
-        if (confirm('Sigurno obrisati?')) {
-            fetch(`/api/zaposlenici/${id}`, { method: 'DELETE' })
-                .then(() => ucitajZaposlenike());
+    async function obrisi(id) {
+        if(confirm("Sigurno?")) {
+            await fetch('/api/radnik/' + id, { method: 'DELETE' });
+            ucitajRadnike();
         }
     }
 
-    ucitajZaposlenike();
+    document.addEventListener("DOMContentLoaded", ucitajRadnike);
 </script>
 </body>
 </html>
