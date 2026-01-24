@@ -67,27 +67,29 @@
 
 <script>
     fetch("/api/troskovi")
-        .then(response => response.json())
-        .then(data => {
-            const tbody = document.querySelector("#troskoviTable tbody");
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.querySelector("#troskoviTable tbody");
+        tbody.innerHTML = "";
 
-            data.forEach(t => {
-                const row = document.createElement("tr");
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5">Nema troškova.</td></tr>`;
+          return;
+        }
 
-                row.innerHTML = `
-                    <td>${t.id}</td>
-                    <td>${t.opis ?? "/"}</td>
-                    <td>${t.iznos ?? "/"}</td>
-                    <td>${t.datum ?? "/"}</td>
-                    <td>${t.nazivSkupine ?? t.nazivZivotinje ?? "/"}</td>
-                `;
-
-                tbody.appendChild(row);
-            });
-        })
-        .catch(err => {
-            console.error("Greška kod dohvaćanja troškova:", err);
+        data.forEach(t => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${t.id ?? "/"}</td>
+            <td>${t.opis ?? "/"}</td>
+            <td>${t.iznos ?? "/"}</td>
+            <td>${t.datum ?? "/"}</td>
+            <td>${t.skupina?.identifikator ?? t.jedinka?.identifikator ?? "/"}</td>
+          `;
+          tbody.appendChild(row);
         });
+      })
+      .catch(err => console.error("Greška kod dohvaćanja troškova:", err));
 </script>
 
 </body>
