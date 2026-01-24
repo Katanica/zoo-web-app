@@ -72,6 +72,6 @@ public class JedinkaServiceImpl implements JedinkaService {
 
     @Override
     public long brojJedinki() {
-        return jedinkaRepository.count();
+        return jedinkaRepository.countByAktivnaTrue();
     }
 }
