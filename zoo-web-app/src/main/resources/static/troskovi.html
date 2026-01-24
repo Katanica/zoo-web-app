@@ -31,7 +31,7 @@
         }
 
         th {
-            background: #4CAF50;
+            background: #3498db;
             color: white;
         }
 
@@ -43,12 +43,34 @@
             max-width: 1200px;
             margin: auto;
         }
+
+        .back-btn {
+    display: inline-block;
+    background: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 auto 20px auto;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: #2980b9;
+}
+
+
     </style>
 
 </head>
 <body>
 
 <div class="container">
+    <div style="text-align: center;">
+    <a href="index.html" class="back-btn">POČETNA</a>
+    </div>
+
     <h1>Pregled troškova</h1>
 
     <table id="troskoviTable">
@@ -67,27 +89,29 @@
 
 <script>
     fetch("/api/troskovi")
-        .then(response => response.json())
-        .then(data => {
-            const tbody = document.querySelector("#troskoviTable tbody");
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.querySelector("#troskoviTable tbody");
+        tbody.innerHTML = "";
 
-            data.forEach(t => {
-                const row = document.createElement("tr");
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5">Nema troškova.</td></tr>`;
+          return;
+        }
 
-                row.innerHTML = `
-                    <td>${t.id}</td>
-                    <td>${t.opis ?? "/"}</td>
-                    <td>${t.iznos ?? "/"}</td>
-                    <td>${t.datum ?? "/"}</td>
-                    <td>${t.nazivSkupine ?? t.nazivZivotinje ?? "/"}</td>
-                `;
-
-                tbody.appendChild(row);
-            });
-        })
-        .catch(err => {
-            console.error("Greška kod dohvaćanja troškova:", err);
+        data.forEach(t => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${t.id ?? "/"}</td>
+            <td>${t.opis ?? "/"}</td>
+            <td>${t.iznos ?? "/"}</td>
+            <td>${t.datum ?? "/"}</td>
+            <td>${t.skupina?.identifikator ?? t.jedinka?.identifikator ?? "/"}</td>
+          `;
+          tbody.appendChild(row);
         });
+      })
+      .catch(err => console.error("Greška kod dohvaćanja troškova:", err));
 </script>
 
 </body>

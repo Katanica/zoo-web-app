@@ -1,5 +1,6 @@
 package zoo_web_app.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -52,9 +53,11 @@ public class Skupina {
     @Column(name = "razlog_neaktivnosti")
     private String razlogNeaktivnosti;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "skupina")
     private List<Obaveza> obaveze;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "skupina")
     private List<Trosak> troskovi;
 
