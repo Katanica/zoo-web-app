@@ -33,19 +33,15 @@ public class DataSeeder implements CommandLineRunner {
             repo.save(new VrstaIncidenta(null, naziv, null));
             return;
         }
-
-        // Ako ih ima više, ostavi jednu, ostale obriši
+        
         VrstaIncidenta keep = all.get(0);
 
         for (int i = 1; i < all.size(); i++) {
             VrstaIncidenta candidate = all.get(i);
 
-            // Brisati samo ako nema incidenata (da ne pukne FK)
             if (candidate.getIncidenti() == null || candidate.getIncidenti().isEmpty()) {
                 repo.delete(candidate);
             } else {
-                // Ako ovaj ima incidente, bolje njega zadržati,
-                // pa pokušati obrisati "keep" ako je prazan
                 if (keep.getIncidenti() == null || keep.getIncidenti().isEmpty()) {
                     repo.delete(keep);
                     keep = candidate;
