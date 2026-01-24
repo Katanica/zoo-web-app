@@ -129,5 +129,3 @@ Aplikacija bi trebala centralizirati sve informacije te biti dovoljno fleksibiln
 * Softver se može kasnije **prodavati drugim zoološkim vrtovima** uz mogućnost nadogradnje.
 
 ---
-
-Želiš da ti ovaj finalni opis formatiram kao **službeni dokument (Word ili PDF)** s naslovnicom i podnaslovima za predaju na fakultetu?
