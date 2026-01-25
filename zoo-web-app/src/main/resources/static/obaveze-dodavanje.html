@@ -299,102 +299,154 @@
             sel.appendChild(op);
         });
     }
+    function parseLocalDateTime(s){
+    if (!s) return null;
+    const [datePart, timePart = "00:00:00"] = s.split("T");
+    const [y, m, d] = datePart.split("-").map(Number);
+    const [hh, mm, ss = "0"] = timePart.split(":");
+    return new Date(y, m - 1, d, Number(hh), Number(mm), Number(ss));
+}
 
     async function prikaziObaveze() {
-        const res = await fetch(API_O);
-        const data = await res.json();
-        const contPlanirane = document.getElementById("obaveze");
-        const contProsle = document.getElementById("prošle-obaveze");
-        contPlanirane.innerHTML = "";
-        contProsle.innerHTML = "";
+    const res = await fetch(API_O);
+    const data = await res.json();
 
-        console.log(data);
+    const contPlanirane = document.getElementById("obaveze");
+    const contProsle = document.getElementById("prošle-obaveze");
+    contPlanirane.innerHTML = "";
+    contProsle.innerHTML = "";
 
-        data.forEach(o => {
-            const danas = new Date();
-            danas.setHours(0, 0, 0, 0);
+    data.forEach(o => {
+        const danas = new Date();
+        danas.setHours(0, 0, 0, 0);
 
-            let vrijemeZaProvjeru = new Date(o.vrijemeOd);
-            vrijemeZaProvjeru.setHours(0, 0, 0, 0);
-                const d = document.createElement("div");
-                d.className = "obaveza-card";
+        const vrijemeZaProvjeru = parseLocalDateTime(o.vrijemeOd);
+        if (!vrijemeZaProvjeru) return;
+        vrijemeZaProvjeru.setHours(0, 0, 0, 0);
 
-                const dani = ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"];
-                const datum = new Date(o.vrijemeOd);
-                console.log(datum);
-                const danIndex = datum.getDay();
+        const d = document.createElement("div");
+        d.className = "obaveza-card";
 
-                d.innerHTML = "";
-                d.innerHTML += `<strong>Tip:</strong> ${o.tip}<br>`;
-                d.innerHTML += `<strong>Status:</strong> ${o.status}<br>`;
-                d.innerHTML += `<strong>Radnik:</strong> ${o.radnik ? `${o.radnik.ime} ${o.radnik.prezime}` : "Radnik nije dodijeljen"}<br>`;
-                d.innerHTML += o.jedinka ? `<strong>Jedinka:</strong> ${o.jedinka.hrvatskiNaziv} ${o.jedinka.nadimak}, Nastamba: ${o.jedinka.nastamba.oznaka}<br>`:
-                o.skupina ? `<strong>Skupina:</strong> ${o.skupina.hrvatskiNaziv}, Nastamba: ${o.skupina.nastamba.oznaka}<br>`:
-                o.komentar ? `<strong>Komentar:</strong> ${o.komentar}` : "";
-                d.innerHTML += `<strong>Planirano vrijeme:</strong> ${dani[danIndex]}, ${datum.getDate()}.${datum.getMonth() + 1}.${datum.getFullYear()}, ${datum.getHours()}:${datum.getMinutes()}<br>`;
-                d.innerHTML += `<strong>Period:</strong> ${o.repeatEvery} ${o.repeatType.toLocaleString()}<br>`;
+        const dani = ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"];
+        const datum = parseLocalDateTime(o.vrijemeOd);
+        if (!datum) return;
 
-                const btn = document.createElement("button");
-                btn.className = "delete-btn";
-                btn.textContent = "Obriši";
-                btn.onclick = async () => {
-                    await fetch(`${API_O}/${o.id}`, { method: "DELETE" });
-                    await prikaziObaveze();
-                };
-                d.appendChild(btn);
-                if(o.repeatType === "NONE"){
-                    if(vrijemeZaProvjeru < danas){
-                        contProsle.appendChild(d);
-                    }
-                    else
-                        contPlanirane.appendChild(d);
-                }
-                else
-                    contPlanirane.appendChild(d);
-        });
-    }
+        const danIndex = datum.getDay();
 
-    async function dodajObavezu(){
-        const repeatTypeInput = document.getElementById("ponavljanje").value
-        const repeatEveryInput = document.getElementById("ponavljanje-input").value
-        const tipInput = document.getElementById("tip").value;
-        const radnikInput = document.getElementById("radnik");
-        const idZivotinjeInput = document.getElementById("zivotinja");
-        const trajanjeInput = document.getElementById("trajanje-input");
-        const vrijemeOdInput = document.getElementById("date-time");
-        const komentarInput = document.getElementById("komentar");
-        console.log(repeatTypeInput);
+        d.innerHTML = "";
+        d.innerHTML += `<strong>Tip:</strong> ${o.tip}<br>`;
+        d.innerHTML += `<strong>Status:</strong> ${o.status}<br>`;
+        d.innerHTML += `<strong>Radnik:</strong> ${o.radnik ? `${o.radnik.ime} ${o.radnik.prezime}` : "Radnik nije dodijeljen"}<br>`;
 
-        const payload = {
-            tip: tipInput,
-            status: "PLANIRANO",
-            radnikId: radnikInput.value || null,
-            //idZivotinje: idZivotinjeInput.value.trim(),
-            idJedinke: idZivotinjeInput.value[0] === "j" ? Number(idZivotinjeInput.value.slice(1)) : null,
-            idSkupine: idZivotinjeInput.value[0] === "s" ? Number(idZivotinjeInput.value.slice(1)) : null,
-            repeatType: repeatTypeInput,
-            repeatEvery: repeatTypeInput === "NONE" ? "NONE" : repeatEveryInput,
-            trajanje: Number(trajanjeInput.value),
-            vrijemeOd: vrijemeOdInput.value,
-            komentar: komentarInput.value.trim()
-        };
-
-        const res = await fetch(API_O, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(payload)
-        });
-
-        if(!res.ok){
-            const msg = await res.json();
-            customAlert(msg.message);
-            return;
+        if (o.jedinka) {
+            d.innerHTML += `<strong>Jedinka:</strong> ${o.jedinka.hrvatskiNaziv} ${o.jedinka.nadimak}, Nastamba: ${o.jedinka.nastamba.oznaka}<br>`;
+        } else if (o.skupina) {
+            d.innerHTML += `<strong>Skupina:</strong> ${o.skupina.hrvatskiNaziv}, Nastamba: ${o.skupina.nastamba.oznaka}<br>`;
         }
 
-        window.location.reload();
+        if (o.komentar) {
+            d.innerHTML += `<strong>Komentar:</strong> ${o.komentar}<br>`;
+        }
 
+        d.innerHTML += `<strong>Planirano vrijeme:</strong> ${dani[danIndex]}, ${datum.getDate()}.${datum.getMonth() + 1}.${datum.getFullYear()}, ${String(datum.getHours()).padStart(2,"0")}:${String(datum.getMinutes()).padStart(2,"0")}<br>`;
+        d.innerHTML += `<strong>Period:</strong> ${o.repeatEvery ?? "-"} ${o.repeatType}<br>`;
 
+        const btn = document.createElement("button");
+        btn.className = "delete-btn";
+        btn.textContent = "Obriši";
+        btn.onclick = async () => {
+            await fetch(`${API_O}/${o.id}`, { method: "DELETE" });
+            await prikaziObaveze();
+        };
+        d.appendChild(btn);
+
+        if (o.repeatType === "NONE") {
+            if (vrijemeZaProvjeru < danas) {
+                contProsle.appendChild(d);
+            } else {
+                contPlanirane.appendChild(d);
+            }
+        } else {
+            contPlanirane.appendChild(d);
+        }
+    });
+}
+    function toIntOrNull(v){
+    return (!v || v === "NONE") ? null : Number(v);
+}
+
+async function dodajObavezu(){
+    const repeatTypeInput = document.getElementById("ponavljanje").value;
+    const repeatEveryInput = document.getElementById("ponavljanje-input").value;
+    const tipInput = document.getElementById("tip").value;
+    const radnikInput = document.getElementById("radnik");
+    const idZivotinjeInput = document.getElementById("zivotinja");
+    const trajanjeInput = document.getElementById("trajanje-input");
+    const vrijemeOdInput = document.getElementById("date-time");
+    const komentarInput = document.getElementById("komentar");
+
+    const trajanjeRaw = (trajanjeInput.value || "").trim().replace(",", ".");
+    const trajanjeBroj = parseInt(trajanjeRaw, 10);
+
+if (Number.isNaN(trajanjeBroj) || trajanjeBroj <= 0) {
+    customAlert("Trajanje mora biti cijeli broj veći od 0 (npr. 30).");
+    return;
+}
+
+    if (!vrijemeOdInput.value) {
+    customAlert("Datum i vrijeme početka su obavezni.");
+    return;
     }
+
+
+
+
+    const payload = {
+        tip: tipInput,
+        status: "PLANIRANO",
+
+        radnikId: toIntOrNull(radnikInput.value),
+
+        idJedinke: idZivotinjeInput.value[0] === "j"
+            ? Number(idZivotinjeInput.value.slice(1))
+            : null,
+
+        idSkupine: idZivotinjeInput.value[0] === "s"
+            ? Number(idZivotinjeInput.value.slice(1))
+            : null,
+
+        repeatType: repeatTypeInput,
+
+        repeatEvery: repeatTypeInput === "NONE"
+            ? null
+            : toIntOrNull(repeatEveryInput),
+
+        trajanje: trajanjeBroj,
+
+        vrijemeOd: vrijemeOdInput.value,
+        komentar: komentarInput.value.trim()
+    };
+console.log("SALJEM PAYLOAD:", payload);
+    const res = await fetch(API_O, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    if(!res.ok){
+        const msg = await res.json();
+        customAlert(msg.message);
+        return;
+    }
+
+    window.location.reload();
+}
+
+
+
+
+
+
     function customAlertButton(){
         const div = document.getElementById("customAlertDiv");
         const blur = document.getElementById("blurOverlay");

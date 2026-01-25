@@ -82,13 +82,23 @@ public class ObavezaServiceImpl implements ObavezaService {
             o.setJedinka(null);
         }
 
-        if(obaveza.getVrijemeOd().isBefore(LocalDateTime.now())){
+        if (obaveza.getVrijemeOd() == null) {
+            throw new IllegalArgumentException("VrijemeOd je obavezno.");
+        }
+        if (obaveza.getTrajanje() == null) {
+            throw new IllegalArgumentException("Trajanje je obavezno.");
+        }
+        if (obaveza.getTrajanje() <= 0) {
+            throw new IllegalArgumentException("Trajanje mora biti veće od 0.");
+        }
+
+        if (obaveza.getVrijemeOd().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Vrijeme početka obaveze ne može biti u prošlosti!");
         }
-        else{
-            o.setVrijemeOd(obaveza.getVrijemeOd());
-            o.setVrijemeDo(obaveza.getVrijemeOd().plusMinutes(obaveza.getTrajanje()));
-        }
+
+        o.setVrijemeOd(obaveza.getVrijemeOd());
+        o.setVrijemeDo(obaveza.getVrijemeOd().plusMinutes(obaveza.getTrajanje()));
+
 
         return obavezaRepository.save(o);
     }
