@@ -18,5 +18,6 @@ public class ObavezaFrontend {
     private Integer repeatEvery;
     private Integer trajanje;
     private LocalDateTime vrijemeOd;
+    private LocalDateTime vrijemeDo;
     private String komentar;
 }

@@ -227,8 +227,13 @@
     }
 
     function isoDate(d){
-        return new Date(d).toISOString().split("T")[0];
-    }
+    const x = new Date(d);
+    const yyyy = x.getFullYear();
+    const mm = String(x.getMonth() + 1).padStart(2, "0");
+    const dd = String(x.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+}
+
 
     function fmtTime(d){
         return new Date(d).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
@@ -257,12 +262,36 @@
         else return b;
     }
 
+    function parseLocalDateTime(s){
+          if (!s) return null;
+
+          // skini timezone ako ga ima (Z ili +01:00 / -05:00)
+          s = String(s).trim().replace(/Z$/, "").replace(/([+-]\d{2}:\d{2})$/, "");
+
+          const [datePart, timePart = "00:00:00"] = s.split("T");
+          const [y, m, d] = datePart.split("-").map(Number);
+
+          const parts = timePart.split(":");
+          const hh = Number(parts[0] || 0);
+          const mm = Number(parts[1] || 0);
+
+          // sekunde mogu doći kao "00.000" -> uzmi samo cijeli dio
+          const ss = Number(String(parts[2] || "0").split(".")[0]);
+
+          const dt = new Date(y, m - 1, d, hh, mm, ss);
+          return Number.isNaN(dt.getTime()) ? null : dt;
+}
+
+
+
     // ---- Ponavljanja (osnovno): NONE i DAILY
     function occurrencesInWeek(task, weekStart, weekEnd){
         const out = [];
-        const start = new Date(task.vrijemeOd);
+        const start = parseLocalDateTime(task.vrijemeOd);
+        if (!start) return [];
         const type = task.repeatType;
-        const every = (task.repeatEvery === "NONE" || task.repeatEvery == null || task.repeatEvery === "") ? 1 : Number(task.repeatEvery);
+        const every = (task.repeatEvery == null || task.repeatEvery === "") ? 1 : Number(task.repeatEvery);
+
 
         if (type === "NONE"){
             if (start >= weekStart && start <= weekEnd) out.push(new Date(start));
@@ -301,7 +330,8 @@
         if (type === "MONTHLY") {
             if (start > weekEnd) return out;
 
-            let cur = new Date(task.vrijemeOd);
+            let cur = new Date(start);
+
             const targetDay = cur.getDate(); // zaključaš jednom
 
             while (cur < weekStart){
@@ -332,7 +362,8 @@
         if (type === "YEARLY") {
             if (start > weekEnd) return out;
 
-            let cur = new Date(task.vrijemeOd);
+            let cur = new Date(start);
+
             const targetDay = cur.getDate(); // zaključaj dan (npr 29, 30, 31)
 
             while (cur < weekStart){
@@ -376,6 +407,12 @@
       </div>
     `;
     }
+    function keyFromDateLocal(d){
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+}
 
     async function ucitajTjedan(){
         scheduleBody.innerHTML = "";
@@ -419,7 +456,8 @@
             const occs = occurrencesInWeek(o, start, end);
 
             for (const occ of occs){
-                const key = isoDate(occ);
+                const key = keyFromDateLocal(occ);
+
                 if (!map.has(key)) continue;
                 map.get(key).push({ obaveza: o, occDate: occ });
             }
@@ -434,7 +472,8 @@
         for (let i=0;i<7;i++){
             const d = new Date(start);
             d.setDate(start.getDate() + i);
-            const key = isoDate(d);
+            const key = keyFromDateLocal(d);
+
 
             const tr = document.createElement("tr");
 
