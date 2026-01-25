@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radnici</title>
+    <style>
+        :root{
+            --bg:#f6f7fb;
+            --card:#ffffff;
+            --text:#111827;
+            --muted:#6b7280;
+            --border:#e5e7eb;
+            --primary:#2563eb;
+            --danger:#dc2626;
+            --shadow: 0 10px 25px rgba(0,0,0,.06);
+            --radius: 14px;
+        }
+
+        *{ box-sizing: border-box; }
+        body{
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container{
+            max-width: 1200px;
+            margin: 28px auto;
+            padding: 0 16px;
+        }
+
+        .header{
+            display:flex;
+            align-items:flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        h1{
+            margin: 0;
+            font-size: 40px;
+            letter-spacing: .2px;
+        }
+
+        .toolbar{
+            display:flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items:center;
+            justify-content: flex-start;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .input{
+            display:flex;
+            align-items:center;
+            gap: 10px;
+            flex: 1;
+            min-width: 260px;
+        }
+
+        input[type="text"]{
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            background: #fff;
+        }
+        input[type="text"]:focus{
+            border-color: rgba(37,99,235,.55);
+            box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+        }
+
+        .btn{
+            border: 1px solid var(--border);
+            background: #fff;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .15s;
+            font-weight: 600;
+        }
+        .btn:hover{ transform: translateY(-1px); box-shadow: 0 8px 16px rgba(0,0,0,.06); }
+        .btn-primary{
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+        .btn-danger{
+            background: var(--danger);
+            border-color: var(--danger);
+            color: #fff;
+        }
+
+        .card{
+            margin-top: 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        thead th{
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #f3f4f6;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 14px;
+            color: #111827;
+        }
+
+        tbody td{
+            border-bottom: 1px solid var(--border);
+            padding: 14px;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        tbody tr:hover{
+            background: #fafafa;
+        }
+
+        .radnik-cell .ime-prezime{
+            font-weight: 800;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        .radnik-cell .email{
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .telefon{
+            font-weight: 700;
+        }
+
+        .badge{
+            display:inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 12px;
+            border: 1px solid var(--border);
+            background: #fff;
+        }
+        .badge-green{ background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.25); color: #065f46; }
+        .badge-yellow{ background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.25); color: #92400e; }
+        .badge-gray{ background: rgba(107,114,128,.12); border-color: rgba(107,114,128,.25); color: #374151; }
+
+        .muted{ color: var(--muted); }
+
+        .actions{
+            display:flex;
+            gap: 8px;
+        }
+
+        .empty{
+            padding: 18px 14px;
+            color: var(--muted);
+        }
+
+        /* Malo bolji izgled na manjem ekranu */
+        @media (max-width: 900px){
+            thead{ display:none; }
+            table, tbody, tr, td{ display:block; width:100%; }
+            tbody tr{ border-bottom: 1px solid var(--border); }
+            tbody td{
+                border: none;
+                border-bottom: 1px dashed var(--border);
+                display:flex;
+                justify-content: space-between;
+                gap: 12px;
+            }
+            tbody td::before{
+                content: attr(data-label);
+                font-weight: 800;
+                color: #111827;
+                min-width: 150px;
+            }
+            .actions{ justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Radnici</h1>
+    </div>
+
+    <div class="toolbar">
+        <div class="input">
+            <input type="text" id="filter" placeholder="Filtriraj po obrazovanju/licenci..." />
+        </div>
+
+        <button class="btn" onclick="ucitajRadnike()">Traži</button>
+        <button class="btn btn-primary" onclick="window.location.href='radnik-forma.html'">+ Novi radnik</button>
+    </div>
+
+    <div class="card">
+        <table id="tabela">
+            <thead>
+            <tr>
+                <th style="width: 70px;">ID</th>
+                <th>Radnik</th>
+                <th style="width: 180px;">Telefon</th>
+                <th style="width: 320px;">Obrazovanje / Licenca</th>
+                <th style="width: 140px;">Status</th>
+                <th style="width: 140px;">Akcije</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="empty" class="empty" style="display:none;">Nema rezultata</div>
+    </div>
+</div>
+
+<script>
+    // endpoint koji vraća DTO s poljima: id, ime, prezime, email, telefon, status, obrazovanje
+    const API_URL = '/api/radnik/sa-obrazovanjima';
+
+    function statusBadge(status){
+        const s = String(status || '').toUpperCase();
+        if (s.includes('AKTIV')) return `<span class="badge badge-green">${status}</span>`;
+        if (s.includes('ZAPOS')) return `<span class="badge badge-yellow">${status}</span>`;
+        if (s.includes('STAL')) return `<span class="badge badge-green">${status}</span>`;
+        if (s.includes('PRIV')) return `<span class="badge badge-yellow">${status}</span>`;
+        return `<span class="badge badge-gray">${status || '-'}</span>`;
+    }
+
+    function showEmpty(show){
+        document.getElementById('empty').style.display = show ? 'block' : 'none';
+    }
+
+    function ucitajRadnike() {
+        const filterText = document.getElementById('filter').value.trim().toLowerCase();
+
+        fetch(API_URL)
+            .then(res => {
+                if (!res.ok) throw new Error('Greška: ' + res.status);
+                return res.json();
+            })
+            .then(data => {
+                const tbody = document.querySelector('#tabela tbody');
+                tbody.innerHTML = '';
+                showEmpty(false);
+
+                if (!data || data.length === 0) {
+                    showEmpty(true);
+                    return;
+                }
+
+                let prikaz = data;
+                if (filterText) {
+                    prikaz = data.filter(r =>
+                        String(r.obrazovanje ?? '').toLowerCase().includes(filterText)
+                    );
+                }
+
+                if (prikaz.length === 0) {
+                    showEmpty(true);
+                    return;
+                }
+
+                prikaz.forEach(r => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td data-label="ID">${r.id ?? ''}</td>
+
+                        <td data-label="Radnik" class="radnik-cell">
+                            <div class="ime-prezime">${r.ime ?? ''} ${r.prezime ?? ''}</div>
+                            <div class="email">${r.email ?? ''}</div>
+                        </td>
+
+                        <td data-label="Telefon" class="telefon">${r.telefon ?? '-'}</td>
+
+                        <td data-label="Obrazovanje / Licenca">${r.obrazovanje ?? '-'}</td>
+
+                        <td data-label="Status">${statusBadge(r.status)}</td>
+
+                        <td data-label="Akcije">
+                            <div class="actions">
+                                <button class="btn btn-danger" onclick="obrisi(${r.id})">Obriši</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(err => {
+                alert('Greška: ' + err.message);
+                console.error(err);
+            });
+    }
+
+    function obrisi(id) {
+        if (!confirm('Sigurno obrisati?')) return;
+
+        fetch(`/api/radnik/${id}`, { method: 'DELETE' })
+            .then(res => {
+                if (!res.ok) throw new Error('Greška brisanje: ' + res.status);
+                ucitajRadnike();
+            })
+            .catch(err => {
+                alert('Greška: ' + err.message);
+                console.error(err);
+            });
+    }
+
+    // Enter = traži
+    document.getElementById('filter').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') ucitajRadnike();
+    });
+
+    ucitajRadnike();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Novi radnik</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f7fa;
+            padding: 40px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            max-width: 900px;
+            margin: auto;
+            padding: 30px 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        label {
+            font-weight: 600;
+            margin-top: 18px;
+            display: block;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-top: 6px;
+            font-size: 14px;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 2px rgba(13,110,253,0.15);
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        /* BUTTONS */
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 10px 22px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-save {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #0b5ed7;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #5c636a;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>Novi radnik</h1>
+
+    <form id="forma">
+
+        <input type="hidden" id="id" />
+
+        <div class="grid">
+
+            <div>
+                <label>Ime</label>
+                <input type="text" id="ime" required />
+            </div>
+
+            <div>
+                <label>Prezime</label>
+                <input type="text" id="prezime" required />
+            </div>
+
+            <div>
+                <label>Email</label>
+                <input type="email" id="email" required />
+            </div>
+
+            <div>
+                <label>Telefon</label>
+                <input type="text" id="telefon" required />
+            </div>
+
+            <div class="full">
+                <label>Obrazovanje / Licenca</label>
+                <input type="text" id="obrazovanje" />
+                <div class="hint">
+                    Unesi više vrijednosti odvojeno zarezom, npr:
+                    <b>VSS, Hranitelj</b>
+                </div>
+            </div>
+
+            <div class="full">
+                <label>Kvalifikacije</label>
+                <textarea id="kvalifikacije" rows="2"></textarea>
+            </div>
+
+            <div class="full">
+                <label>Status</label>
+                <select id="status">
+                    <option value="STALNI">Stalni</option>
+                    <option value="PRIVREMENI">Privremeni</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="buttons">
+            <button type="button" class="btn-save" onclick="spremi()">Spremi</button>
+            <button type="button" class="btn-cancel"
+                    onclick="window.location.href='Radnik.html'">
+                Odustani
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    async function spremi() {
+        try {
+            const ime = document.getElementById('ime').value.trim();
+            const prezime = document.getElementById('prezime').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telefon = document.getElementById('telefon').value.trim();
+            const status = document.getElementById('status').value;
+
+            const obrazovanja = document.getElementById('obrazovanje').value
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
+
+            const payload = { ime, prezime, email, telefon, status, obrazovanja };
+
+            const res = await fetch('/api/radnik/kreiraj-sa-obrazovanjima', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                const txt = await res.text();
+                throw new Error(res.status + ' - ' + txt);
+            }
+
+            window.location.href = 'Radnik.html';
+
+        } catch (err) {
+            alert('Greška: ' + err.message);
+            console.error(err);
+        }
+    }
+</script>
+
+</body>
+</html>

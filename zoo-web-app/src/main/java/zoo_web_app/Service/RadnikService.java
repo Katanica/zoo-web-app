@@ -1,5 +1,6 @@
 package zoo_web_app.Service;
 
+import zoo_web_app.DTO.RadnikCreate;
 import zoo_web_app.Entity.Radnik;
 
 import java.util.List;
@@ -17,4 +18,8 @@ public interface RadnikService {
     void delete(Long id);
 
     long brojRadnika();
+
+    List<Radnik> findAllWithObrazovanja();
+
+    Radnik createSaObrazovanjima(RadnikCreate dto);
 }

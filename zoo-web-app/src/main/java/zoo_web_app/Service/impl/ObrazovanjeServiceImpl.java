@@ -7,6 +7,7 @@ import zoo_web_app.Service.ObrazovanjeService;
 import zoo_web_app.Exception.ResourceNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ObrazovanjeServiceImpl implements ObrazovanjeService {
@@ -43,5 +44,10 @@ public class ObrazovanjeServiceImpl implements ObrazovanjeService {
     @Override
     public void delete(Long id) {
         obrazovanjeRepository.delete(findById(id));
+    }
+
+    @Override
+    public Optional<Obrazovanje> findByNaziv(String naziv) {
+        return obrazovanjeRepository.findByNaziv(naziv);
     }
 }
