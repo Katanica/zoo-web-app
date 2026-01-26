@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 
 @Entity
@@ -49,4 +50,8 @@ public class Obaveza {
 
     @Column(name = "komentar")
     private String komentar;
+
+    public Long getTrajanje() {
+        return ChronoUnit.MINUTES.between(vrijemeOd, vrijemeDo);
+    }
 }

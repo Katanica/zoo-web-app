@@ -28,8 +28,9 @@ public class Trosak {
     @Column(name = "tip_troska", nullable = false)
     private String tipTroska; // npr. "EUR" ili "SATI"
 
+    @Getter
     @Column(name = "iznos", nullable = false)
-    private BigDecimal iznos;
+    private Double iznos;
 
     @Column(name = "opis")
     private String opis;
@@ -42,4 +43,5 @@ public class Trosak {
 
     @Column(name = "satnica")
     private Double satnica;
+
 }
