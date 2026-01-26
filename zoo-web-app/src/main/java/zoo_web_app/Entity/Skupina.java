@@ -63,4 +63,8 @@ public class Skupina {
 
     @OneToMany(mappedBy = "skupina")
     private List<IncidentSkupina> incidenti;
+
+    public String sastaviIme() {
+        return hrvatskiNaziv + " " + identifikator;
+    }
 }

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>ZOO WEB APP - Izvještaji</title>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        body {
+            font-family: Segoe UI, sans-serif;
+            background: linear-gradient(135deg,#f5f7fa,#c3cfe2);
+            color: var(--dark);
+            padding: 2rem;
+        }
+
+        header { text-align:center; margin-bottom:2rem; }
+        h1 { color:var(--primary); }
+        h4 { margin-bottom: 0.5em; }
+
+        .back-btn {
+            background: var(--secondary);
+            color:white;
+            padding:0.7rem 1.5rem;
+            text-decoration:none;
+            border-radius:8px;
+            font-weight:600;
+            display:inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            max-width:1000px;
+            margin:auto;
+            display:grid;
+            grid-template-columns:1fr;
+            gap:1.5rem;
+        }
+
+        .card {
+            background:white;
+            padding:1.5rem;
+            border-radius:12px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .manji-input, select {
+            width:100%;
+            padding:0.7rem;
+            border:1px solid #ccc;
+            border-radius:6px;
+        }
+
+        .row {
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 720px){
+            .row { grid-template-columns: 1fr; }
+        }
+
+        .veci-button {
+            background:var(--success);
+            color:white;
+            border:none;
+            padding:0.7rem 1.2rem;
+            border-radius:6px;
+            cursor:pointer;
+            margin-top:0.8rem;
+            font-weight:600;
+        }
+        .veci-button.secondary { background: var(--secondary); margin-left: .5rem; }
+
+        .hint {
+            background: var(--light);
+            border-left: 4px solid var(--secondary);
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .radio-wrap{
+            display:flex;
+            flex-direction:column;
+            gap:0.5rem;
+            padding:0.2rem 0;
+        }
+        .radio-item{
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+        }
+
+        .divider{
+            height:1px;
+            background:#e6e6e6;
+            margin: 1rem 0;
+        }
+
+        /* custom alert */
+        #blurOverlay {
+            position: fixed; inset: 0;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 8000;
+            display:none;
+        }
+        #blurOverlay.show { opacity: 1; }
+
+        #customAlertDiv {
+            min-height: 15vh;
+            width: min(420px, 90vw);
+            background-color: white;
+            position: fixed;
+            z-index: 9000;
+            top: 50%;
+            left: 50%;
+            padding: 18px;
+            border: 1px solid black;
+            border-radius: 15px;
+            opacity: 0;
+            transform: translate(-50%, -75%) scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            display:none;
+        }
+        #customAlertDiv.show {
+            opacity: 1;
+            transform: translate(-50%, -75%) scale(1);
+        }
+
+        #customAlertButton{
+            margin-top: 12px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: #222;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        #customAlertButton:hover { background-color: #444; }
+
+        .small-note{ opacity:0.85; font-size: 0.95rem; margin-top: 0.5rem; }
+    </style>
+</head>
+
+<body>
+<div id="customAlertDiv"></div>
+<div id="blurOverlay"></div>
+
+<header>
+    <a href="index.html" class="back-btn">POČETNA</a>
+    <h1>IZVJEŠTAJI (PDF)</h1>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h3>Generiraj izvještaj</h3>
+
+        <h4>Tip izvještaja</h4>
+        <select id="reportType" onchange="reportTypeChange()">
+            <option value="TROSKOVI">Troškovi po životinjama/skupinama</option>
+            <option value="RADNICI">Rad radnika (sati po aktivnostima)</option>
+        </select>
+
+        <div class="divider"></div>
+
+        <!-- TROŠKOVI -->
+        <div id="sectionTroskovi">
+            <div class="row">
+                <div>
+                    <h4>Životinje: jedinka ili skupina</h4>
+                    <select id="animalType" onchange="animalTypeChange()">
+                        <option value="JEDINKA">Jedinke</option>
+                        <option value="SKUPINA">Skupine</option>
+                    </select>
+                </div>
+                <div>
+                    <h4>Za koga?</h4>
+                    <select id="animalScope" onchange="animalScopeChange()">
+                        <option value="ONE" selected>Odaberi jednu</option>
+                        <option value="ALL">Sve (rang lista)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="animalPickerWrap" style="margin-top:1rem;">
+                <h4>Odabir</h4>
+                <select id="animalPicker">
+                    <option value="none" selected>(odaberi)</option>
+                </select>
+            </div>
+
+            <div class="row" style="margin-top:1rem;">
+                <div>
+                    <h4>Od datuma</h4>
+                    <input type="date" id="dateFrom" class="manji-input">
+                </div>
+                <div>
+                    <h4>Do datuma</h4>
+                    <input type="date" id="dateTo" class="manji-input">
+                </div>
+            </div>
+
+            <h4 style="margin-top:1rem;">Šta uključiti u PDF</h4>
+            <div class="radio-wrap">
+                <label class="radio-item"><input type="radio" name="costMode" value="HOURS" checked> Samo radni sati</label>
+                <label class="radio-item"><input type="radio" name="costMode" value="MONEY"> Samo novac</label>
+                <label class="radio-item"><input type="radio" name="costMode" value="BOTH"> Oboje (radni sati + novac)</label>
+            </div>
+
+            <div id="sortWrapTroskovi" style="display:none; margin-top:1rem;">
+                <h4>Sortiranje (kad je odabrano “Sve”)</h4>
+                <select id="sortTroskovi">
+                    <option value="MONEY_DESC">Novac (najviše → najmanje)</option>
+                    <option value="MONEY_ASC">Novac (najmanje → najviše)</option>
+                    <option value="HOURS_DESC">Sati (najviše → najmanje)</option>
+                    <option value="HOURS_ASC">Sati (najmanje → najviše)</option>
+                    <option value="BOTH_MONEY_THEN_HOURS_DESC">Oboje: prvo novac ↓ pa sati ↓</option>
+                    <option value="BOTH_HOURS_THEN_MONEY_DESC">Oboje: prvo sati ↓ pa novac ↓</option>
+                </select>
+                <div class="small-note">Napomena: novac i sati su različite mjere, pa se ne pretvaraju jedno u drugo. :contentReference[oaicite:1]{index=1}</div>
+            </div>
+        </div>
+
+        <!-- RADNICI -->
+        <div id="sectionRadnici" style="display:none;">
+            <div class="row">
+                <div>
+                    <h4>Za koga?</h4>
+                    <select id="workerScope" onchange="workerScopeChange()">
+                        <option value="ONE" selected>Odaberi jednog radnika</option>
+                        <option value="ALL">Svi radnici (rang lista)</option>
+                    </select>
+                </div>
+                <div id="workerPickerWrap">
+                    <h4>Radnik</h4>
+                    <select id="workerPicker">
+                        <option value="none" selected>(odaberi)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:1rem;">
+                <div>
+                    <h4>Od datuma</h4>
+                    <input type="date" id="wDateFrom" class="manji-input">
+                </div>
+                <div>
+                    <h4>Do datuma</h4>
+                    <input type="date" id="wDateTo" class="manji-input">
+                </div>
+            </div>
+
+            <div id="sortWrapRadnici" style="display:none; margin-top:1rem;">
+                <h4>Sortiranje (kad je odabrano “Svi”)</h4>
+                <select id="sortRadnici">
+                    <option value="TOTAL_HOURS_DESC">Ukupno sati (najviše → najmanje)</option>
+                    <option value="TOTAL_HOURS_ASC">Ukupno sati (najmanje → najviše)</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="veci-button" onclick="downloadPDF()">Preuzmi PDF</button>
+        <button class="veci-button secondary" onclick="resetForm()">Reset</button>
+    </div>
+</div>
+
+<script>
+    const API_J = "http://localhost:8080/api/jedinke";
+    const API_S = "http://localhost:8080/api/skupine";
+    const API_R = "http://localhost:8080/api/radnik";
+
+    // prilagodi svojim endpointima
+    const API_PDF_TROSKOVI = "http://localhost:8080/api/izvjestaj/troskovi/pdf";
+    const API_PDF_RADNICI  = "http://localhost:8080/api/izvjestaj/radnici/pdf";
+
+    function alertHide(){
+        const div = document.getElementById("customAlertDiv");
+        const blur = document.getElementById("blurOverlay");
+        div.classList.remove("show");
+        blur.classList.remove("show");
+        setTimeout(() => { div.style.display="none"; blur.style.display="none"; }, 200);
+    }
+    function alertShow(txt){
+        const div = document.getElementById("customAlertDiv");
+        const blur = document.getElementById("blurOverlay");
+        div.innerHTML = `<div>${txt}</div><button id="customAlertButton" onclick="alertHide()">OK</button>`;
+        div.style.display = "block";
+        blur.style.display = "block";
+        requestAnimationFrame(() => { div.classList.add("show"); blur.classList.add("show"); });
+    }
+
+    function getRadio(name, fallback){
+        const r = document.querySelector(`input[name="${name}"]:checked`);
+        return r ? r.value : fallback;
+    }
+
+    function validateDatePair(fromId, toId){
+        const od = document.getElementById(fromId).value;
+        const to = document.getElementById(toId).value;
+        if((od && !to) || (!od && to)){
+            alertShow("Ako koristiš filter datuma, moraš unijeti i 'Od' i 'Do'.");
+            return null;
+        }
+        if(od && to && od > to){
+            alertShow("'Od datuma' ne može biti poslije 'Do datuma'.");
+            return null;
+        }
+        return {od: od || null, to: to || null};
+    }
+
+    async function loadJedinke(){
+        const sel = document.getElementById("animalPicker");
+        sel.innerHTML = '<option value="none" selected>(odaberi jedinku)</option>';
+        const res = await fetch(API_J);
+        const data = await res.json();
+        data.forEach(j => {
+            if(j.aktivna === true){
+                const op = document.createElement("option");
+                op.value = "j" + j.id;
+                op.textContent = `${j.nadimak} ${j.hrvatskiNaziv} (${j.latinskiNaziv})`;
+                sel.appendChild(op);
+            }
+        });
+    }
+
+    async function loadSkupine(){
+        const sel = document.getElementById("animalPicker");
+        sel.innerHTML = '<option value="none" selected>(odaberi skupinu)</option>';
+        const res = await fetch(API_S);
+        const data = await res.json();
+        data.forEach(s => {
+            if(s.aktivna === true){
+                const op = document.createElement("option");
+                op.value = "s" + s.id;
+                op.textContent = `${s.identifikator} ${s.hrvatskiNaziv} (${s.latinskiNaziv})`;
+                sel.appendChild(op);
+            }
+        });
+    }
+
+    async function loadRadnici(){
+        const sel = document.getElementById("workerPicker");
+        sel.innerHTML = '<option value="none" selected>(odaberi radnika)</option>';
+        const res = await fetch(API_R);
+        const data = await res.json();
+        data.forEach(r => {
+            const op = document.createElement("option");
+            op.value = String(r.id);
+            op.textContent = `${r.ime} ${r.prezime}`;
+            sel.appendChild(op);
+        });
+    }
+
+    function reportTypeChange(){
+        const t = document.getElementById("reportType").value;
+        document.getElementById("sectionTroskovi").style.display = (t === "TROSKOVI") ? "block" : "none";
+        document.getElementById("sectionRadnici").style.display  = (t === "RADNICI") ? "block" : "none";
+    }
+
+    async function animalTypeChange(){
+        const type = document.getElementById("animalType").value;
+        if(type === "JEDINKA") await loadJedinke();
+        else await loadSkupine();
+    }
+
+    function animalScopeChange(){
+        const scope = document.getElementById("animalScope").value;
+        document.getElementById("animalPickerWrap").style.display = (scope === "ONE") ? "block" : "none";
+        document.getElementById("sortWrapTroskovi").style.display = (scope === "ALL") ? "block" : "none";
+    }
+
+    function workerScopeChange(){
+        const scope = document.getElementById("workerScope").value;
+        document.getElementById("workerPickerWrap").style.display = (scope === "ONE") ? "block" : "none";
+        document.getElementById("sortWrapRadnici").style.display = (scope === "ALL") ? "block" : "none";
+    }
+
+    function resetForm(){
+        document.getElementById("reportType").value = "TROSKOVI";
+        reportTypeChange();
+
+        document.getElementById("animalType").value = "JEDINKA";
+        document.getElementById("animalScope").value = "ONE";
+        animalScopeChange();
+
+        document.getElementById("dateFrom").value = "";
+        document.getElementById("dateTo").value = "";
+
+        document.querySelector('input[name="costMode"][value="HOURS"]').checked = true;
+        document.getElementById("sortTroskovi").value = "MONEY_DESC";
+
+        document.getElementById("workerScope").value = "ONE";
+        workerScopeChange();
+
+        document.getElementById("wDateFrom").value = "";
+        document.getElementById("wDateTo").value = "";
+        document.getElementById("sortRadnici").value = "TOTAL_HOURS_DESC";
+    }
+
+    async function downloadPDF(){
+        const type = document.getElementById("reportType").value;
+
+        if(type === "TROSKOVI"){
+            const scope = document.getElementById("animalScope").value; // ONE | ALL
+            const datePair = validateDatePair("dateFrom","dateTo");
+            if(!datePair) return;
+
+            const animalType = document.getElementById("animalType").value; // JEDINKA | SKUPINA
+            const mode = getRadio("costMode", "HOURS"); // HOURS | MONEY | BOTH
+
+            let idJedinke = null, idSkupine = null;
+
+            if(scope === "ONE"){
+                const pick = document.getElementById("animalPicker").value;
+                if(!pick || pick === "none"){ alertShow("Odaberi jedinku ili skupinu."); return; }
+                idJedinke = (pick[0] === "j") ? Number(pick.slice(1)) : null;
+                idSkupine = (pick[0] === "s") ? Number(pick.slice(1)) : null;
+            }
+
+            const payload = {
+                scope: scope,                 // ONE | ALL
+                animalType: animalType,       // JEDINKA | SKUPINA (kad je ALL, kaže šta listamo)
+                mode: mode,                   // HOURS | MONEY | BOTH
+                idJedinke: idJedinke,
+                idSkupine: idSkupine,
+                dateFrom: datePair.od,
+                dateTo: datePair.to,
+                sort: (scope === "ALL") ? document.getElementById("sortTroskovi").value : null
+            };
+
+            await postAndDownloadBlob(API_PDF_TROSKOVI, payload, `troskovi_${scope}_${mode}.pdf`);
+            return;
+        }
+
+        if(type === "RADNICI"){
+            const scope = document.getElementById("workerScope").value; // ONE | ALL
+            const datePair = validateDatePair("wDateFrom","wDateTo");
+            if(!datePair) return;
+
+            let radnikId = null;
+            if(scope === "ONE"){
+                const pick = document.getElementById("workerPicker").value;
+                if(!pick || pick === "none"){ alertShow("Odaberi radnika."); return; }
+                radnikId = Number(pick);
+            }
+
+            const payload = {
+                scope: scope, // ONE | ALL
+                radnikId: radnikId,
+                dateFrom: datePair.od,
+                dateTo: datePair.to,
+                sort: (scope === "ALL") ? document.getElementById("sortRadnici").value : null
+            };
+
+            await postAndDownloadBlob(API_PDF_RADNICI, payload, `radnici_${scope}.pdf`);
+            return;
+        }
+    }
+
+    async function postAndDownloadBlob(url, payload, fileName){
+        try{
+            const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if(!res.ok){
+                let msg = "Greška pri generiranju PDF-a.";
+                try{
+                    const err = await res.json();
+                    if(err && err.message) msg = err.message;
+                }catch(e){}
+                alertShow(msg);
+                return;
+            }
+
+            const blob = await res.blob();
+            const objUrl = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = objUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            window.URL.revokeObjectURL(objUrl);
+        }catch(e){
+            alertShow("Ne mogu doći do servera. Provjeri da backend radi i da su API rute ispravne.");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        alertHide();
+        reportTypeChange();
+        await loadJedinke();
+        await loadRadnici();
+        animalScopeChange();
+        workerScopeChange();
+    });
+</script>
+
+</body>
+</html>

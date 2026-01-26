@@ -14,4 +14,6 @@ public interface SkupinaRepository extends JpaRepository<Skupina, Long> {
     List<Skupina> findAllAktivne();
 
     long countByAktivnaTrue();
+
+    List<Skupina> findByAktivnaTrue();
 }

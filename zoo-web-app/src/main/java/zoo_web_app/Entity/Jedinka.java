@@ -66,4 +66,8 @@ public class Jedinka {
     @OneToMany(mappedBy = "jedinka")
     @JsonIgnore
     private List<IncidentJedinka> incidenti;
+
+    public String sastaviIme(){
+        return hrvatskiNaziv + " " + nadimak;
+    }
 }

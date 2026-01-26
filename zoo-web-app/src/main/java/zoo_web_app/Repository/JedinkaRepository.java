@@ -13,4 +13,6 @@ public interface JedinkaRepository extends JpaRepository<Jedinka, Long> {
     @Query("SELECT j from Jedinka j where j.aktivna = true")
     List<Jedinka> findAllAktivne();
     long countByAktivnaTrue();
+
+    List<Jedinka> findByAktivnaTrue();
 }
