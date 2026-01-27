@@ -35,9 +35,6 @@ public class Radnik {
     @Column(name = "status")
     private String status;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "radnik")
-    private List<RadnikObrazovanje> obrazovanja;
 
     @JsonIgnore
     @OneToMany(mappedBy = "radnik")
@@ -47,8 +44,9 @@ public class Radnik {
     @OneToMany(mappedBy = "vodic")
     private List<GrupaPosjetitelja> grupe;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy="radnik", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RadnikObrazovanje> obrazovanje = new ArrayList<>();
+    private List<RadnikObrazovanje> obrazovanja = new ArrayList<>();
 
-}
+
+} 
