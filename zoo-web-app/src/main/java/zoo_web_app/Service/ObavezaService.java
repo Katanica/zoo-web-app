@@ -17,4 +17,10 @@ public interface ObavezaService {
     void delete(Long id);
 
     long brojObaveza();
+
+    List<Obaveza> getAktivne();
+    List<Obaveza> getProsle();
+
+    Obaveza zavrsi(Long id);
+
 }

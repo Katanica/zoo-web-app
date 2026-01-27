@@ -1,5 +1,5 @@
 package zoo_web_app.Repository;
-
+import zoo_web_app.Entity.StatusObaveze;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import zoo_web_app.Entity.Obaveza;
@@ -17,4 +17,7 @@ public interface ObavezaRepository extends JpaRepository<Obaveza, Long> {
     List<Obaveza> findByRadnikId(Long idRadnika);
 
     List<Obaveza> findBySkupinaId(Long idSkupine);
+
+    List<Obaveza> findByStatus(StatusObaveze status);
+
 }

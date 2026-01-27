@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ZOO WEB APP - Tjedni raspored obaveza</title>
+    <title>ZOO WEB APP - Obaveze (pregled)</title>
 
     <style>
         :root{
@@ -40,7 +40,7 @@
         }
 
         .container{
-            max-width:1200px;
+            max-width:1100px;
             margin:auto;
             display:grid;
             grid-template-columns:1fr;
@@ -63,39 +63,16 @@
             flex-wrap:wrap;
         }
 
-        .week-nav{
-            display:flex;
-            align-items:center;
-            gap:0.6rem;
-        }
-
-        .week-nav button{
-            background:var(--secondary);
-            color:#fff;
-            border:none;
-            padding:0.35rem 0.8rem;
-            border-radius:6px;
-            cursor:pointer;
-            font-size:1rem;
-        }
-
-        .week-range{
-            font-weight:700;
-            color:var(--primary);
-            background:var(--light);
-            padding:0.35rem 0.6rem;
-            border-radius:8px;
-        }
-
         .muted{ color:#777; font-size:0.9rem; }
 
-        .input{
+        .input, .select{
             padding:0.6rem;
             border-radius:6px;
             border:1px solid #ccc;
             min-width:220px;
             background:#fff;
         }
+        .select{ min-width:200px; }
 
         .btn{
             padding:0.6rem 1rem;
@@ -107,59 +84,75 @@
             cursor:pointer;
         }
 
-        /* TABLICA: redovi = dani, stupci = "lista obaveza" */
-        .schedule-wrap{ margin-top:1rem; overflow:hidden; border-radius:12px; }
-        .schedule-grid{
-            width:100%;
-            border-collapse:collapse;
-            table-layout:fixed;
+        .list{
+            display:flex;
+            flex-direction:column;
+            gap:0.7rem;
+            margin-top:0.8rem;
         }
-        .schedule-grid th, .schedule-grid td{
-            border:1px solid #ddd;
-            padding:0.6rem;
-            vertical-align:top;
-        }
-        .schedule-grid thead th{
-            background:var(--light);
-            color:var(--primary);
-            font-weight:700;
-            text-align:left;
-        }
-
-        .day-col{ width:220px; }
-        .cell{ min-height:90px; }
 
         .stavka{
             background:var(--light);
-            padding:0.5rem 0.6rem;
-            border-radius:10px;
-            margin-bottom:0.45rem;
+            padding:0.9rem 1rem;
+            border-radius:12px;
             border-left:4px solid var(--secondary);
         }
 
-        .line{
-            margin-top:0.25rem;
-            font-size:0.9rem;
-            color:#444;
+        .row-top{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:1rem;
+            flex-wrap:wrap;
+        }
+
+        .title{
+            font-weight:800;
+            color:var(--primary);
+            font-size:1.05rem;
         }
 
         .badge{
-            font-size:0.75rem;
-            font-weight:700;
-            padding:0.2rem 0.5rem;
+            font-size:0.78rem;
+            font-weight:800;
+            padding:0.25rem 0.55rem;
             border-radius:999px;
-            display:inline-block;
-            margin-right:0.4rem;
             background:#eef3ff;
             color:#2c58b8;
+            display:inline-block;
         }
 
-        .empty{ color:#999; }
+        .line{
+            margin-top:0.35rem;
+            color:#444;
+            font-size:0.95rem;
+        }
 
-        @media (max-width: 1100px){
-            body{ padding:1.2rem 0.6rem; }
-            .schedule-wrap{ overflow-x:auto; }
-            .schedule-grid{ min-width:900px; }
+        .actions{
+            margin-top:0.7rem;
+            display:flex;
+            gap:0.5rem;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+
+        .btn-mini{
+            border:none;
+            border-radius:10px;
+            padding:0.45rem 0.7rem;
+            cursor:pointer;
+            font-weight:800;
+            font-size:0.9rem;
+            background:var(--success);
+            color:#fff;
+        }
+
+        .btn-mini:disabled{ opacity:0.6; cursor:not-allowed; }
+
+        .empty{
+            color:#999;
+            padding:0.9rem 0.2rem;
+            text-align:center;
         }
     </style>
 </head>
@@ -167,77 +160,45 @@
 <body>
 <header>
     <a class="back-btn" href="index.html">POČETNA</a>
-    <h1>ZOO WEB APP – Tjedni raspored obaveza</h1>
+    <h1>ZOO WEB APP – Obaveze (pregled)</h1>
 </header>
 
 <div class="container">
     <div class="card">
         <div class="toolbar">
             <div>
-                <h3 style="border:none;margin:0;color:var(--primary)">Pregled obaveza (pon–ned)</h3>
-                <div class="muted">Sve obaveze u odabranom tjednu</div>
+                <h3 style="border:none;margin:0;color:var(--primary)">Pregled obaveza</h3>
+                <div class="muted">Bez rasporeda i datuma – samo lista (Aktivne/Prošle).</div>
             </div>
-
-            <div class="week-nav">
-                <button id="btn-prev-week" type="button">←</button>
-                <span id="week-range" class="week-range"></span>
-                <button id="btn-next-week" type="button">→</button>
-            </div>
+            <button id="btn-refresh" class="btn" type="button">Osvježi</button>
         </div>
 
         <div class="toolbar" style="margin-top:0.2rem">
             <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;">
-                <input id="search" class="input" type="text" placeholder="Pretraži (tip, komentar, životinja...)">
-                <button id="btn-refresh" class="btn" type="button">Osvježi</button>
+                <select id="status-filter" class="select">
+                    <option value="aktivne">Aktivne (PLANIRANO)</option>
+                    <option value="prosle">Prošle (OBAVLJENO)</option>
+                </select>
+                <input id="search" class="input" type="text" placeholder="Pretraži (tip, komentar, životinja, radnik...)">
             </div>
-            <div class="muted">U istom danu može biti više obaveza (sortirano po vremenu).</div>
+            <div class="muted" id="count"></div>
         </div>
 
-        <div class="schedule-wrap">
-            <table class="schedule-grid">
-                <thead>
-                <tr>
-                    <th class="day-col">Dan</th>
-                    <th>Obaveze</th>
-                </tr>
-                </thead>
-                <tbody id="schedule-body"></tbody>
-            </table>
-        </div>
+        <div id="list" class="list"></div>
+        <div id="empty" class="empty" style="display:none;">Nema obaveza za prikaz.</div>
     </div>
 </div>
 
 <script>
-    const API_OBAVEZE = "http://localhost:8080/api/obaveza";
+    const API_BASE = "/api/obaveza";
 
-    const scheduleBody = document.getElementById("schedule-body");
-    const weekRange = document.getElementById("week-range");
-    const btnPrev = document.getElementById("btn-prev-week");
-    const btnNext = document.getElementById("btn-next-week");
-    const btnRefresh = document.getElementById("btn-refresh");
+    const listEl = document.getElementById("list");
+    const emptyEl = document.getElementById("empty");
+    const countEl = document.getElementById("count");
+
+    const statusFilter = document.getElementById("status-filter");
     const search = document.getElementById("search");
-
-    let pomakTjedna = 0;
-
-    function ponedjeljak(ref = new Date()){
-        const d = new Date(ref);
-        d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-        d.setHours(0,0,0,0);
-        return d;
-    }
-
-    function isoDate(d){
-    const x = new Date(d);
-    const yyyy = x.getFullYear();
-    const mm = String(x.getMonth() + 1).padStart(2, "0");
-    const dd = String(x.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-}
-
-
-    function fmtTime(d){
-        return new Date(d).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-    }
+    const btnRefresh = document.getElementById("btn-refresh");
 
     function escapeHtml(str){
         return String(str ?? "")
@@ -248,140 +209,23 @@
             .replaceAll("'","&#039;");
     }
 
-    function formatRange(start, end){
-        return start.getDate() + "." + (start.getMonth() + 1) + "." + start.getFullYear()
-            + ". - " + end.getDate() + "." + (end.getMonth() + 1) + "." + start.getFullYear() + ".";
-    }
-
-    function dayName(i){
-        return ["Ponedjeljak","Utorak","Srijeda","Četvrtak","Petak","Subota","Nedjelja"][i];
-    }
-
-    function min(a, b){
-        if (a < b) return a
-        else return b;
-    }
-
     function parseLocalDateTime(s){
-          if (!s) return null;
+        if (!s) return null;
+        s = String(s).trim().replace(/Z$/, "").replace(/([+-]\d{2}:\d{2})$/, "");
+        const [datePart, timePart = "00:00:00"] = s.split("T");
+        const [y, m, d] = datePart.split("-").map(Number);
+        const parts = timePart.split(":");
+        const hh = Number(parts[0] || 0);
+        const mm = Number(parts[1] || 0);
+        const ss = Number(String(parts[2] || "0").split(".")[0]);
+        const dt = new Date(y, m - 1, d, hh, mm, ss);
+        return Number.isNaN(dt.getTime()) ? null : dt;
+    }
 
-          // skini timezone ako ga ima (Z ili +01:00 / -05:00)
-          s = String(s).trim().replace(/Z$/, "").replace(/([+-]\d{2}:\d{2})$/, "");
-
-          const [datePart, timePart = "00:00:00"] = s.split("T");
-          const [y, m, d] = datePart.split("-").map(Number);
-
-          const parts = timePart.split(":");
-          const hh = Number(parts[0] || 0);
-          const mm = Number(parts[1] || 0);
-
-          // sekunde mogu doći kao "00.000" -> uzmi samo cijeli dio
-          const ss = Number(String(parts[2] || "0").split(".")[0]);
-
-          const dt = new Date(y, m - 1, d, hh, mm, ss);
-          return Number.isNaN(dt.getTime()) ? null : dt;
-}
-
-
-
-    // ---- Ponavljanja (osnovno): NONE i DAILY
-    function occurrencesInWeek(task, weekStart, weekEnd){
-        const out = [];
-        const start = parseLocalDateTime(task.vrijemeOd);
-        if (!start) return [];
-        const type = task.repeatType;
-        const every = (task.repeatEvery == null || task.repeatEvery === "") ? 1 : Number(task.repeatEvery);
-
-
-        if (type === "NONE"){
-            if (start >= weekStart && start <= weekEnd) out.push(new Date(start));
-            return out;
-        }
-
-        if (type === "DAILY"){
-            if (start > weekEnd) return out;
-            const msDay = 24*60*60*1000;
-
-            const diffDays = Math.floor((weekStart - start) / msDay);
-            let k = Math.ceil(diffDays / every);
-            if (k < 0) k = 0;
-
-            let cur = new Date(start.getTime() + k * every * msDay);
-
-            while (cur <= weekEnd){
-                if (cur >= weekStart) out.push(new Date(cur));
-                cur = new Date(cur.getTime() + every * msDay);
-            }
-            return out;
-        }
-
-        function lastDayOfMonth(d){
-            // zadnji dan trenutnog mjeseca kao BROJ (28/29/30/31)
-            return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-        }
-
-        function addMonthsSafe(cur, monthsToAdd, targetDay){
-            cur.setDate(1);
-            cur.setMonth(cur.getMonth() + monthsToAdd);
-            cur.setDate(min(targetDay, lastDayOfMonth(cur)));
-            return cur;
-        }
-
-        if (type === "MONTHLY") {
-            if (start > weekEnd) return out;
-
-            let cur = new Date(start);
-
-            const targetDay = cur.getDate(); // zaključaš jednom
-
-            while (cur < weekStart){
-                addMonthsSafe(cur, every, targetDay);
-            }
-
-            while (cur <= weekEnd){
-                out.push(new Date(cur));
-                addMonthsSafe(cur, every, targetDay);
-            }
-
-            return out;
-        }
-
-        // helper: zadnji dan u mjesecu (28/29/30/31)
-        function lastDayOfMonth(d){
-            return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-        }
-
-// helper: sigurno dodaj godine (čuva dan, a ako ne postoji -> zadnji dan mjeseca)
-        function addYearsSafe(cur, yearsToAdd, targetDay){
-            cur.setDate(1);
-            cur.setFullYear(cur.getFullYear() + yearsToAdd);
-            cur.setDate(min(targetDay, lastDayOfMonth(cur)));
-            return cur;
-        }
-
-        if (type === "YEARLY") {
-            if (start > weekEnd) return out;
-
-            let cur = new Date(start);
-
-            const targetDay = cur.getDate(); // zaključaj dan (npr 29, 30, 31)
-
-            while (cur < weekStart){
-                addYearsSafe(cur, every, targetDay);
-            }
-
-            while (cur <= weekEnd){
-                out.push(new Date(cur));
-                addYearsSafe(cur, every, targetDay);
-            }
-
-            return out;
-        }
-
-
-
-        // MONTHLY/YEARLY: može se dodati, ali ostavljam prazno da ne izmišljam.
-        return out;
+    function fmtTimeOnly(s){
+        const d = parseLocalDateTime(s);
+        if (!d) return "";
+        return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
     }
 
     function nazivZivotinje(o){
@@ -390,126 +234,118 @@
         return "—";
     }
 
-    function renderStavka(o, occDate){
+    function nazivRadnika(o){
+        if (!o.radnik) return "Nije dodijeljen radnik";
+        return `${o.radnik.ime} ${o.radnik.prezime}`;
+    }
+
+    function getId(o){
+        return o?.id ?? o?.obavezaId ?? o?.ID ?? null;
+    }
+
+    function getUrl(){
+        return statusFilter.value === "prosle"
+            ? `${API_BASE}/prosle`
+            : `${API_BASE}/aktivne`;
+    }
+
+    function matchesSearch(o, q){
+        if (!q) return true;
+        const hay = [
+            getId(o),
+            o.tip,
+            o.komentar,
+            o.jedinka?.hrvatskiNaziv,
+            o.jedinka?.nadimak,
+            o.skupina?.hrvatskiNaziv,
+            o.radnik?.ime,
+            o.radnik?.prezime
+        ].join(" ").toLowerCase();
+        return hay.includes(q);
+    }
+
+    async function zavrsiObavezu(id, btn){
+        if (!id){
+            alert("Ne mogu naći ID obaveze (provjeri JSON).");
+            return;
+        }
+        if (!confirm("Označiti obavezu kao OBAVLJENO?")) return;
+
+        try{
+            btn.disabled = true;
+            const res = await fetch(`${API_BASE}/${id}/zavrsi`, { method:"PATCH" });
+            if (!res.ok){
+                const t = await res.text();
+                throw new Error(t || `Greška ${res.status}`);
+            }
+            await ucitaj();
+        }catch(e){
+            alert("Ne mogu završiti obavezu: " + e.message);
+        }finally{
+            btn.disabled = false;
+        }
+    }
+
+    function renderItem(o){
+        const id = getId(o);
         const tip = escapeHtml(o.tip);
         const zivotinja = escapeHtml(nazivZivotinje(o));
+        const radnik = escapeHtml(nazivRadnika(o));
         const komentar = escapeHtml(o.komentar || "");
-        const time = fmtTime(occDate);
-        const radnik = o.radnik ? escapeHtml(o.radnik.ime) + " " + escapeHtml(o.radnik.prezime) : "Nije dodijeljen radnik";
-        const trajanje = (o.trajanje != null && o.trajanje !== 0) ? ` · ${o.trajanje} min` : "";
+
+        // NEMA datuma — samo vrijeme (ako želiš i ovo maknuti, obriši badge blok)
+        const t = fmtTimeOnly(o.vrijemeOd);
+        const badge = t ? `<span class="badge">${escapeHtml(t)}</span>` : `<span class="badge">—</span>`;
+
+        const isProsle = (statusFilter.value === "prosle");
+
+        const akcija = !isProsle
+            ? `<div class="actions">
+           <button class="btn-mini" type="button" onclick="zavrsiObavezu(${id}, this)">Obavljeno</button>
+         </div>`
+            : "";
 
         return `
       <div class="stavka">
-        <span class="badge">${time}${trajanje}</span>
-        <div class="line"><strong>${tip} </strong>${zivotinja}</div>
-        <div class="line"><strong>RADNIK: </strong>${radnik}</div>
-        ${komentar ? `<div class="line"><strong>KOMENTAR: </strong>${komentar}</div>` : ""}
+        <div class="row-top">
+          <div class="title">${tip}</div>
+          ${badge}
+        </div>
+
+        <div class="line"><strong>ŽIVOTINJA:</strong> ${zivotinja}</div>
+        <div class="line"><strong>RADNIK:</strong> ${radnik}</div>
+        ${komentar ? `<div class="line"><strong>KOMENTAR:</strong> ${komentar}</div>` : ""}
+
+        ${akcija}
       </div>
     `;
     }
-    function keyFromDateLocal(d){
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-}
 
-    async function ucitajTjedan(){
-        scheduleBody.innerHTML = "";
+    async function ucitaj(){
+        listEl.innerHTML = "";
+        emptyEl.style.display = "none";
+        countEl.textContent = "";
 
-        const start = ponedjeljak(new Date());
-        start.setDate(start.getDate() + pomakTjedna * 7);
-        const end = new Date(start);
-        end.setDate(start.getDate() + 6);
-        end.setHours(23,59,59,999);
-
-        weekRange.textContent = formatRange(start, end);
-
-        const res = await fetch(API_OBAVEZE);
+        const res = await fetch(getUrl());
         const data = await res.json();
 
         const q = search.value.trim().toLowerCase();
+        const filtered = data.filter(o => matchesSearch(o, q));
 
-        // 1) napravi mapu: dayKey -> array stavki (expanded)
-        const map = new Map();
-        for (let i=0;i<7;i++){
-            const d = new Date(start);
-            d.setDate(start.getDate() + i);
-            map.set(isoDate(d), []);
+        countEl.textContent = `Ukupno: ${filtered.length}`;
+
+        if (filtered.length === 0){
+            emptyEl.style.display = "block";
+            return;
         }
 
-        for (const o of data){
-            // pretraga (tip, komentar, životinja)
-            if (q){
-                const hay = [
-                    o.tip,
-                    o.komentar,
-                    o.jedinka?.hrvatskiNaziv,
-                    o.jedinka?.nadimak,
-                    o.skupina?.hrvatskiNaziv
-                ].join(" ").toLowerCase();
-
-                if (!hay.includes(q)) continue;
-            }
-
-            // expand occurrences unutar tjedna
-            const occs = occurrencesInWeek(o, start, end);
-
-            for (const occ of occs){
-                const key = keyFromDateLocal(occ);
-
-                if (!map.has(key)) continue;
-                map.get(key).push({ obaveza: o, occDate: occ });
-            }
-        }
-
-        // 2) sortiraj unutar svakog dana po vremenu
-        for (const [key, arr] of map.entries()){
-            arr.sort((a,b) => a.occDate - b.occDate);
-        }
-
-        // 3) render 7 redova (Pon..Ned)
-        for (let i=0;i<7;i++){
-            const d = new Date(start);
-            d.setDate(start.getDate() + i);
-            const key = keyFromDateLocal(d);
-
-
-            const tr = document.createElement("tr");
-
-            const th = document.createElement("th");
-            th.className = "day-col";
-            th.innerHTML = `<div><strong>${dayName(i)}</strong></div><div class="muted">${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}</div>`;
-            tr.appendChild(th);
-
-            const td = document.createElement("td");
-            td.className = "cell";
-
-            const items = map.get(key) || [];
-            if (items.length === 0){
-                td.innerHTML = `<span class="empty">—</span>`;
-            } else {
-                td.innerHTML = items.map(x => renderStavka(x.obaveza, x.occDate)).join("");
-            }
-
-            tr.appendChild(td);
-            scheduleBody.appendChild(tr);
-        }
+        listEl.innerHTML = filtered.map(renderItem).join("");
     }
 
-    function pomakniTjedan(delta){
-        pomakTjedna += delta;
-        ucitajTjedan();
-    }
-
-    btnPrev.addEventListener("click", () => pomakniTjedan(-1));
-    btnNext.addEventListener("click", () => pomakniTjedan(1));
-    btnRefresh.addEventListener("click", () => ucitajTjedan());
-    search.addEventListener("input", () => ucitajTjedan());
-
-    document.addEventListener("DOMContentLoaded", () => {
-        ucitajTjedan();
-    });
+    btnRefresh.addEventListener("click", ucitaj);
+    statusFilter.addEventListener("change", ucitaj);
+    search.addEventListener("input", ucitaj);
+    document.addEventListener("DOMContentLoaded", ucitaj);
 </script>
 </body>
 </html>
