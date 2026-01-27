@@ -3,6 +3,8 @@ package zoo_web_app.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.DoubleStream;
 
@@ -46,5 +48,7 @@ public class Radnik {
     private List<GrupaPosjetitelja> grupe;
 
 
+    @OneToMany(mappedBy="radnik", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RadnikObrazovanje> obrazovanje = new ArrayList<>();
 
 }

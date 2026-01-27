@@ -51,9 +51,10 @@ public class RadnikController {
         return ResponseEntity.ok(radnikService.update(id, radnik));
     }
 
-    // DELETE
+    // DELETE /api/radnik ovako mi je endpoint za radnik controller
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+        System.out.println("DELETE radnik id = " + id);
         radnikService.delete(id);
         return ResponseEntity.noContent().build();
     }
