@@ -1,6 +1,8 @@
 package zoo_web_app.Service.impl;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import zoo_web_app.DTO.ObavezaFrontend;
 import zoo_web_app.Entity.*;
 import zoo_web_app.Repository.JedinkaRepository;
@@ -109,6 +111,29 @@ public class ObavezaServiceImpl implements ObavezaService {
     }
 
     @Override
-    public void delete(Long id) {}
+    public void delete(Long id) {
+        if (!obavezaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Obaveza s ID " + id + " ne postoji");
+        }
+        obavezaRepository.deleteById(id);
+    }
+
+    @Override
+    public Obaveza zavrsi(Long id){
+        Obaveza o = obavezaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Obaveza s ID " + id + " ne postoji!"));
+        o.setStatus(StatusObaveze.OBAVLJENO);
+        return obavezaRepository.save(o);
+    }
+
+    @Override
+    public List<Obaveza> getAktivne() {
+        return obavezaRepository.findByStatus(StatusObaveze.PLANIRANO);
+    }
+
+    @Override
+    public List<Obaveza> getProsle() {
+        return obavezaRepository.findByStatus(StatusObaveze.OBAVLJENO);
+    }
 
 }

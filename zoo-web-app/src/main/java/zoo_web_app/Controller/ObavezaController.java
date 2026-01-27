@@ -1,5 +1,6 @@
 package zoo_web_app.Controller;
 
+import ch.qos.logback.core.status.Status;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zoo_web_app.DTO.ObavezaFrontend;
@@ -55,5 +56,20 @@ public class ObavezaController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         obavezaService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/aktivne")
+    public ResponseEntity<List<Obaveza>> aktivne() {
+        return ResponseEntity.ok(obavezaService.getAktivne());
+    }
+
+    @GetMapping("/prosle")
+    public ResponseEntity<List<Obaveza>> prosle(){
+        return ResponseEntity.ok(obavezaService.getProsle());
+    }
+
+    @PatchMapping("/{id}/zavrsi")
+    public ResponseEntity<Obaveza> zavrsi(@PathVariable Long id) {
+        return ResponseEntity.ok(obavezaService.zavrsi(id));
     }
 }
