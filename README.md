@@ -1,5 +1,3 @@
----
-
 Zoo Web App
 
 Ova web aplikacija služi za osnovno upravljanje podacima zoološkog vrta. Projekt je izrađen kao backend–frontend aplikacija koristeći Spring Boot (REST API) i jednostavan HTML/CSS/JavaScript frontend. Aplikacija je razvijana postupno i pokriva funkcionalnosti koje su stvarno implementirane u projektu.
@@ -37,5 +35,3 @@ Aplikacija nema autentikaciju ni korisničke uloge. Nisu implementirane smjene r
 
 Pokretanje aplikacije:
 Potrebno je konfigurirati bazu podataka u application.properties datoteci. Aplikacija se pokreće pomoću Maven naredbe mvn spring-boot:run, nakon čega je dostupna na adresi [http://localhost:8080](http://localhost:8080).
-
----
