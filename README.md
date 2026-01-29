@@ -1,7 +1,7 @@
 🦁 Zoo Web App
 
-Web aplikacija za osnovno upravljanje podacima zoološkog vrta, razvijena kao Spring Boot + REST + HTML/JS projekt.
-Aplikacija omogućuje evidenciju životinja, skupina, nastambi, zaposlenika, troškova, incidenata i posjetiteljskih grupa.
+Web aplikacija za osnovno upravljanje podacima zoološkog vrta, razvijena kao Spring Boot + REST + HTML/JavaScript projekt.
+Aplikacija omogućuje evidenciju životinja, skupina, nastambi, zaposlenika, troškova, incidenata i grupa posjetitelja.
 
 🧩 Korištene tehnologije
 
@@ -17,33 +17,33 @@ Hibernate / JPA
 
 SQL Server / MySQL (ovisno o konfiguraciji)
 
-HTML + CSS + Vanilla JavaScript
+HTML, CSS, Vanilla JavaScript
 
 Maven
 
 📁 Struktura projekta
 zoo-web-app/
 ├── src/main/java/zoo_web_app
-│   ├── Controller        # REST kontroleri
-│   ├── Service           # Servisni sloj (interface + impl)
-│   ├── Repository        # JPA repozitoriji
-│   ├── Entity            # Entiteti baze podataka
-│   ├── DTO               # DTO objekti (npr. Trošak)
-│   └── config            # Seederi i konfiguracija
+│   ├── Controller
+│   ├── Service
+│   ├── Repository
+│   ├── Entity
+│   ├── DTO
+│   └── config
 │
 ├── src/main/resources
-│   ├── static            # HTML stranice (frontend)
+│   ├── static
 │   ├── application.properties
-│   └── data.sql          # Inicijalni podaci
+│   └── data.sql
 
-✅ Trenutno implementirane funkcionalnosti
+✅ Implementirane funkcionalnosti
 🐾 Životinje i skupine
 
 Evidencija pojedinačnih jedinki
 
 Evidencija skupina životinja
 
-Aktivne / neaktivne životinje (bez brisanja)
+Aktivne i neaktivne jedinke (bez fizičkog brisanja)
 
 Povezanost sa:
 
@@ -59,11 +59,11 @@ incidentima
 
 Evidencija nastambi
 
-Geometrija i opis
+Geometrija i opis nastambe
 
-Povezivanje skupina s nastambom
+Jedna skupina pripada jednoj nastambi
 
-Nastamba može imati više skupina
+Jedna nastamba može imati više skupina
 
 👷 Radnici i vodiči
 
@@ -81,7 +81,9 @@ Dodavanje i pregled grupa
 
 Dodjela jednog vodiča po grupi
 
-Datum dolaska + vrijeme početka i kraja
+Datum dolaska
+
+Vrijeme početka i završetka posjete
 
 Status grupe (npr. NAJAVLJENO)
 
@@ -91,43 +93,43 @@ Evidencija incidenata
 
 Vrste incidenata
 
-Povezivanje:
+Povezivanje incidenata sa:
 
-sa skupinama
+skupinama
 
-s jedinkama
+jedinkama
 
-Pregled i dodavanje kroz UI
+Pregled i unos putem web sučelja
 
-💸 Troškovi (najnovije nadograđeno)
+💸 Troškovi
 
-Troškovi su potpuno funkcionalni i obrađeni u backendu.
+Troškovi su u potpunosti implementirani u backendu i frontendu.
 
 Podržano:
 
 Troškovi vezani uz:
 
-jedinku
+pojedinačnu jedinku
 
-skupinu
+skupinu životinja
 
 Tip troška:
 
-NOVČANI
+novčani trošak
 
-SATI RADA
+trošak u satima rada
 
-Automatski izračun ukupnog troška (SATI × SATNICA)
+Automatski izračun ukupnog troška (broj sati × satnica)
 
-DTO sloj (TrosakDto) za siguran ispis
+DTO sloj za siguran i kontroliran ispis podataka
 
 Backend:
+
+TrosakController
 
 TrosakService
 
 TrosakServiceImpl
-
-TrosakController
 
 TrosakDto
 
@@ -137,27 +139,27 @@ troskovi.html – pregled troškova
 
 troskovi-dodavanje.html – unos troškova
 
-📊 Izvještaji (djelomično)
+📊 Izvještaji
 
-Postoji IzvjestajController
+Postoji osnovni IzvjestajController
 
-Trenutno dostupni osnovni REST endpointi
+Trenutno dostupni REST endpointi za dohvat podataka
 
-PDF / Excel export nije implementiran
+Izvoz u PDF / Excel nije implementiran
 
 🚧 Ograničenja trenutne verzije
 
 Nema autentikacije i korisničkih uloga
 
-Nema:
+Nisu implementirani:
 
-smjena radnika
+smjene radnika
 
-automatskih ponavljajućih obaveza
+automatsko ponavljanje obaveza
 
-exporta u PDF / Excel
+PDF / Excel export izvještaja
 
-Frontend je čisti HTML/JS (bez frameworka)
+Frontend je izrađen bez JS frameworka (čisti HTML + JS)
 
 ▶️ Pokretanje aplikacije
 
