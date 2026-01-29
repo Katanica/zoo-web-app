@@ -1,106 +1,173 @@
-# 🐾 Zoo Web App  
-Spring Boot aplikacija za upravljanje zoološkim vrtom  
-(backend + dokumentacija u /docs)
+🦁 Zoo Web App
 
----
+Web aplikacija za osnovno upravljanje podacima zoološkog vrta, razvijena kao Spring Boot + REST + HTML/JS projekt.
+Aplikacija omogućuje evidenciju životinja, skupina, nastambi, zaposlenika, troškova, incidenata i posjetiteljskih grupa.
 
-## 📌 Opis projekta
+🧩 Korištene tehnologije
 
-**Zoo Web App** je backend aplikacija napravljena u **Spring Bootu** sa MySQL bazom podataka.  
-Projekt omogućava upravljanje različitim dijelovima zoološkog vrta, uključujući:
+Java 21
 
-- životinje  
-- jedinke  
-- radnike  
-- grupe  
-- troškove  
-- hranjenje  
-- edukacije i posjete  
+Spring Boot
 
-Aplikacija koristi REST API pristup i podržava standardne CRUD operacije za sve entitete.
+Spring Web
 
----
+Spring Data JPA
 
-## 🧱 Tehnologije
+Hibernate / JPA
 
-- Java 21+
-- Spring Boot
-- Spring Web
-- Spring Data JPA / Hibernate
-- MySQL
-- Maven
-- Lombok
+SQL Server / MySQL (ovisno o konfiguraciji)
 
----
+HTML + CSS + Vanilla JavaScript
 
-## 📂 Struktura projekta
+Maven
 
-```
+📁 Struktura projekta
 zoo-web-app/
-│
 ├── src/main/java/zoo_web_app
-│   ├── Entity/        # JPA entiteti
-│   ├── Repository/    # Repository sloj
-│   ├── Service/       # Poslovna logika
-│   ├── Controller/    # REST API kontroleri
-│   └── ZooWebAppApplication.java
+│   ├── Controller        # REST kontroleri
+│   ├── Service           # Servisni sloj (interface + impl)
+│   ├── Repository        # JPA repozitoriji
+│   ├── Entity            # Entiteti baze podataka
+│   ├── DTO               # DTO objekti (npr. Trošak)
+│   └── config            # Seederi i konfiguracija
 │
 ├── src/main/resources
-│   ├── application.properties  # MySQL konfiguracija
-│   └── static/                 # HTML forme za testiranje
-│
-├── docs/              # ER dijagrami, slike, specifikacije
-├── pom.xml
-└── README.md
-```
+│   ├── static            # HTML stranice (frontend)
+│   ├── application.properties
+│   └── data.sql          # Inicijalni podaci
 
-## 🚀 Pokretanje aplikacije
+✅ Trenutno implementirane funkcionalnosti
+🐾 Životinje i skupine
 
-### 1. Kloniraj projekt
-```bash
-git clone https://github.com/USERNAME/zoo-web-app.git
-```
+Evidencija pojedinačnih jedinki
 
-### 2. Kreiraj bazu
-```sql
-CREATE DATABASE zoo_db;
-```
+Evidencija skupina životinja
 
-### 3. Pokreni aplikaciju
-Terminal:
-```bash
+Aktivne / neaktivne životinje (bez brisanja)
+
+Povezanost sa:
+
+nastambama
+
+načinom nabave
+
+troškovima
+
+incidentima
+
+🏠 Nastambe
+
+Evidencija nastambi
+
+Geometrija i opis
+
+Povezivanje skupina s nastambom
+
+Nastamba može imati više skupina
+
+👷 Radnici i vodiči
+
+Evidencija radnika
+
+Posebna uloga vodiča
+
+Dodjela vodiča grupama posjetitelja
+
+Povezanost s obavezama i incidentima
+
+👥 Grupe posjetitelja
+
+Dodavanje i pregled grupa
+
+Dodjela jednog vodiča po grupi
+
+Datum dolaska + vrijeme početka i kraja
+
+Status grupe (npr. NAJAVLJENO)
+
+🚨 Incidenti
+
+Evidencija incidenata
+
+Vrste incidenata
+
+Povezivanje:
+
+sa skupinama
+
+s jedinkama
+
+Pregled i dodavanje kroz UI
+
+💸 Troškovi (najnovije nadograđeno)
+
+Troškovi su potpuno funkcionalni i obrađeni u backendu.
+
+Podržano:
+
+Troškovi vezani uz:
+
+jedinku
+
+skupinu
+
+Tip troška:
+
+NOVČANI
+
+SATI RADA
+
+Automatski izračun ukupnog troška (SATI × SATNICA)
+
+DTO sloj (TrosakDto) za siguran ispis
+
+Backend:
+
+TrosakService
+
+TrosakServiceImpl
+
+TrosakController
+
+TrosakDto
+
+Frontend:
+
+troskovi.html – pregled troškova
+
+troskovi-dodavanje.html – unos troškova
+
+📊 Izvještaji (djelomično)
+
+Postoji IzvjestajController
+
+Trenutno dostupni osnovni REST endpointi
+
+PDF / Excel export nije implementiran
+
+🚧 Ograničenja trenutne verzije
+
+Nema autentikacije i korisničkih uloga
+
+Nema:
+
+smjena radnika
+
+automatskih ponavljajućih obaveza
+
+exporta u PDF / Excel
+
+Frontend je čisti HTML/JS (bez frameworka)
+
+▶️ Pokretanje aplikacije
+
+Konfigurirati bazu u application.properties
+
+Pokrenuti aplikaciju:
+
 mvn spring-boot:run
-```
-ili IntelliJ → Run.
 
----
 
-## 🐾 Funkcionalnosti
+Otvoriti u pregledniku:
 
-- Upravljanje životinjama  
-- Upravljanje jedinkama  
-- Evidencija radnika  
-- Grupe i vodiči  
-- Troškovi i hranjenje  
-- REST API za sve entitete  
-- Automatsko kreiranje tablica putem Hibernate-a  
-
----
-
-## 📌 Plan razvoja
-
-- [ ] Dodati DTO modele  
-- [ ] Dodati mapiranje (ModelMapper)  
-- [ ] Validacija ulaznih podataka  
-- [ ] Autentifikacija (Spring Security)  
-- [ ] Moderni frontend (React/Angular)  
-- [ ] Docker podrška  
-
----
-
-## 👥 Autori
-
-Ivan Nikic, Gabrijel Katana, Jurica Stjepanovic, Mario Ljusanin i Marko Samardzic 
-Fakultet strojarstva, računarstva i elektrotehnike (FSRE)
-
----
+http://localhost:8080
