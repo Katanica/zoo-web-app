@@ -1,175 +1,41 @@
-🦁 Zoo Web App
+---
 
-Web aplikacija za osnovno upravljanje podacima zoološkog vrta, razvijena kao Spring Boot + REST + HTML/JavaScript projekt.
-Aplikacija omogućuje evidenciju životinja, skupina, nastambi, zaposlenika, troškova, incidenata i grupa posjetitelja.
+Zoo Web App
 
-🧩 Korištene tehnologije
+Ova web aplikacija služi za osnovno upravljanje podacima zoološkog vrta. Projekt je izrađen kao backend–frontend aplikacija koristeći Spring Boot (REST API) i jednostavan HTML/CSS/JavaScript frontend. Aplikacija je razvijana postupno i pokriva funkcionalnosti koje su stvarno implementirane u projektu.
 
-Java 21
+Aplikacija omogućuje evidenciju životinja, skupina životinja, nastambi, radnika, vodiča, grupa posjetitelja, incidenata i troškova. Naglasak je stavljen na ispravne relacije u bazi podataka, rad REST servisa i funkcionalan web prikaz podataka.
 
-Spring Boot
+Korištene tehnologije:
+Java 21, Spring Boot (Spring Web, Spring Data JPA), Hibernate/JPA, SQL Server ili MySQL (ovisno o konfiguraciji), Maven, HTML, CSS i čisti JavaScript.
 
-Spring Web
+Struktura projekta sastoji se od Controller, Service, Repository, Entity i DTO slojeva. Backend je organiziran prema REST arhitekturi, a frontend koristi fetch API za komunikaciju s backendom.
 
-Spring Data JPA
+Životinje i skupine:
+Implementirana je evidencija pojedinačnih jedinki i skupina životinja. Svaka jedinka i skupina može biti aktivna ili neaktivna, pri čemu se zapisi ne brišu iz baze nego se deaktiviraju uz razlog. Skupine i jedinke povezane su s nastambama, načinima nabave, troškovima i incidentima.
 
-Hibernate / JPA
+Nastambe:
+Implementirana je evidencija nastambi s osnovnim podacima kao što su oznaka, opis i geometrija. Jedna skupina pripada jednoj nastambi, dok jedna nastamba može imati više skupina.
 
-SQL Server / MySQL (ovisno o konfiguraciji)
+Radnici i vodiči:
+Radnici su evidentirani kao entiteti u sustavu. Dio radnika može imati ulogu vodiča koji se dodjeljuju grupama posjetitelja. Radnici su povezani s obavezama, grupama posjetitelja i incidentima.
 
-HTML, CSS, Vanilla JavaScript
+Grupe posjetitelja:
+Omogućen je unos i pregled grupa posjetitelja. Svaka grupa ima naziv, kontakt podatke, broj osoba, datum dolaska, vrijeme početka i završetka posjete te dodijeljenog vodiča. Status grupe (npr. najavljeno) također se evidentira.
 
-Maven
+Incidenti:
+Implementirana je evidencija incidenata u zoološkom vrtu. Incidenti imaju datum, opis i vrstu, te mogu biti povezani s jedinkama i skupinama životinja. Incidenti se unose i pregledavaju putem web sučelja.
 
-📁 Struktura projekta
-zoo-web-app/
-├── src/main/java/zoo_web_app
-│   ├── Controller
-│   ├── Service
-│   ├── Repository
-│   ├── Entity
-│   ├── DTO
-│   └── config
-│
-├── src/main/resources
-│   ├── static
-│   ├── application.properties
-│   └── data.sql
+Troškovi:
+Troškovi su implementirani za pojedinačne jedinke i skupine životinja. Troškovi mogu biti novčani ili iskazani u satima rada. U backendu je implementiran izračun ukupnog troška (npr. broj sati puta satnica). Za prikaz troškova koristi se DTO sloj kako bi se izbjegli problemi s cikličkim referencama i kako bi se prikazali samo potrebni podaci. Omogućen je unos i pregled troškova putem web stranica.
 
-✅ Implementirane funkcionalnosti
-🐾 Životinje i skupine
+Izvještaji:
+Postoji osnovni controller za izvještaje i dohvat podataka putem REST API-ja. Napredni izvještaji (PDF ili Excel) nisu implementirani.
 
-Evidencija pojedinačnih jedinki
+Ograničenja trenutne verzije:
+Aplikacija nema autentikaciju ni korisničke uloge. Nisu implementirane smjene radnika, automatsko ponavljanje obaveza niti izvoz izvještaja u PDF ili Excel format. Frontend je izrađen bez korištenja JavaScript frameworka.
 
-Evidencija skupina životinja
+Pokretanje aplikacije:
+Potrebno je konfigurirati bazu podataka u application.properties datoteci. Aplikacija se pokreće pomoću Maven naredbe mvn spring-boot:run, nakon čega je dostupna na adresi [http://localhost:8080](http://localhost:8080).
 
-Aktivne i neaktivne jedinke (bez fizičkog brisanja)
-
-Povezanost sa:
-
-nastambama
-
-načinom nabave
-
-troškovima
-
-incidentima
-
-🏠 Nastambe
-
-Evidencija nastambi
-
-Geometrija i opis nastambe
-
-Jedna skupina pripada jednoj nastambi
-
-Jedna nastamba može imati više skupina
-
-👷 Radnici i vodiči
-
-Evidencija radnika
-
-Posebna uloga vodiča
-
-Dodjela vodiča grupama posjetitelja
-
-Povezanost s obavezama i incidentima
-
-👥 Grupe posjetitelja
-
-Dodavanje i pregled grupa
-
-Dodjela jednog vodiča po grupi
-
-Datum dolaska
-
-Vrijeme početka i završetka posjete
-
-Status grupe (npr. NAJAVLJENO)
-
-🚨 Incidenti
-
-Evidencija incidenata
-
-Vrste incidenata
-
-Povezivanje incidenata sa:
-
-skupinama
-
-jedinkama
-
-Pregled i unos putem web sučelja
-
-💸 Troškovi
-
-Troškovi su u potpunosti implementirani u backendu i frontendu.
-
-Podržano:
-
-Troškovi vezani uz:
-
-pojedinačnu jedinku
-
-skupinu životinja
-
-Tip troška:
-
-novčani trošak
-
-trošak u satima rada
-
-Automatski izračun ukupnog troška (broj sati × satnica)
-
-DTO sloj za siguran i kontroliran ispis podataka
-
-Backend:
-
-TrosakController
-
-TrosakService
-
-TrosakServiceImpl
-
-TrosakDto
-
-Frontend:
-
-troskovi.html – pregled troškova
-
-troskovi-dodavanje.html – unos troškova
-
-📊 Izvještaji
-
-Postoji osnovni IzvjestajController
-
-Trenutno dostupni REST endpointi za dohvat podataka
-
-Izvoz u PDF / Excel nije implementiran
-
-🚧 Ograničenja trenutne verzije
-
-Nema autentikacije i korisničkih uloga
-
-Nisu implementirani:
-
-smjene radnika
-
-automatsko ponavljanje obaveza
-
-PDF / Excel export izvještaja
-
-Frontend je izrađen bez JS frameworka (čisti HTML + JS)
-
-▶️ Pokretanje aplikacije
-
-Konfigurirati bazu u application.properties
-
-Pokrenuti aplikaciju:
-
-mvn spring-boot:run
-
-
-Otvoriti u pregledniku:
-
-http://localhost:8080
+---
